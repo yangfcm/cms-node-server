@@ -19,7 +19,7 @@ app.use('/api', tagRouter);
 /** Handles 404 Error */
 app.use((req, res, next) => {	
 	res.status(404).send({
-		error: "error",
+		name: "404",
 		code: 404,
 		message: "The url doesn't exist"
 	});

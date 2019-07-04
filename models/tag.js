@@ -9,16 +9,19 @@ const TagSchema = new mongoose.Schema({
 	name: {
 		type: String,
 		unique: [true, 'The tag already exists'],
-		trime: true,
+		trim: true,
+		required: [true, 'Tag name is required'],
 		maxlength: [20, 'Tag is too long'] 
 	},
 	createdAt: {
 		type: Number,
-		required: true
+		required: true,
+		default: 0
 	},
-	updatdAt: {
+	updatedAt: {
 		type: Number,
-		required: true
+		required: true,
+		default: 0
 	}
 });
 
