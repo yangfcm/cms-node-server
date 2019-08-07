@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-const AdminSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
 	email: {		// Email - can be used for login
 		type: String,
 		required: [true, 'Email cannot be empty'],
@@ -51,7 +51,7 @@ const AdminSchema = new mongoose.Schema({
 	status: {		// 0 - inactive, 1 - active 
 		type: Number,
 		required: true,
-		default: 0
+		default: 1
 	},
 	createdAt: {
 		type: Number,
@@ -63,6 +63,6 @@ const AdminSchema = new mongoose.Schema({
 	}
 });
 
-const Admin = mongoose.model('Admin', AdminSchema);
+const User = mongoose.model('User', UserSchema);
 
-module.exports = Admin;
+module.exports = User;
