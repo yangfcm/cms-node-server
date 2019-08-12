@@ -6,7 +6,7 @@ const AdminSchema = new mongoose.Schema({
 		type: String,
 		required: [true, 'Email cannot be empty'],
 		lowercase: true,
-		unique: [true, 'This email is already taken.'],
+		unique: true,
 		trim: true,
 		validate: {
 			validator: (value) => validator.isEmail(value),
@@ -27,6 +27,7 @@ const AdminSchema = new mongoose.Schema({
 	},
 	username: {		// username - can be used for login
 		type: String,
+		unique: true,
 		required: [true, 'Username is required'],
 		trim: true,
 		maxlength: [20, 'Username is too long']

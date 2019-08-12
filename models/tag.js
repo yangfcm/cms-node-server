@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const TagSchema = new mongoose.Schema({
 	name: {
 		type: String,
-		unique: [true, 'The tag already exists'],
+		unique: true,
 		trim: true,
 		required: [true, 'Tag name is required'],
 		maxlength: [20, 'Tag is too long'] 

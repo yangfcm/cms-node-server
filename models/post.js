@@ -18,7 +18,8 @@ const PostSchema = new mongoose.Schema({
 	status: {		// Post status: 1 - published, 2 - draft, 3 - trashed
 		type: String,
 		enum: ['1', '2', '3'],
-		required: true
+		required: true,
+		default: '2'
 	},
 	isTop: {		// If the post is always on the top
 		type: Boolean,
@@ -27,7 +28,7 @@ const PostSchema = new mongoose.Schema({
 	},
 	createdAt: {		// When the post is created
 		type: Number,
-		required: true
+		required: true,
 	},
 	updatedAt: {	// When the post is updated
 		type: Number,
@@ -45,11 +46,13 @@ const PostSchema = new mongoose.Schema({
 	},
 	tags: {
 		type: [mongoose.Schema.Types.ObjectId],
-		ref: 'Tag'
+		ref: 'Tag',
+		default: []
 	},
 	comments: {
 		type: [mongoose.Schema.Types.ObjectId],
-		ref: 'Comment'
+		ref: 'Comment',
+		default: []
 	}
 });
 

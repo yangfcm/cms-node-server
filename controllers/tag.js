@@ -39,7 +39,7 @@ const readTags = async (req, res) => {
 };
 
 const readOneTag = async (req, res) => {
-	const { id } = req.params.id;
+	const { id } = req.params;
 	if(!ObjectID.isValid(id)) {
 		return res.status(404).send(tag404)
 	}
@@ -73,7 +73,7 @@ const deleteTag = async (req, res) => {
 };
 
 const updateTag = async (req, res) => {
-	const { id } = req.params.id;
+	const { id } = req.params;
 	const newTag = {
 		name: req.body.name,
 		updatedAt: moment().unix()

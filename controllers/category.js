@@ -40,7 +40,7 @@ const readCategories = async (req, res) => {
 };
 
 const readOneCategory = async (req, res) => {
-	const {id} = req.params.id;
+	const {id} = req.params;
 	if(!ObjectID.isValid(id)) {
 		return res.status(404).send(category404);
 	}
@@ -57,7 +57,7 @@ const readOneCategory = async (req, res) => {
 };
 
 const deleteCategory = async (req, res) => {
-	const {id} = req.params.id;
+	const {id} = req.params;
 	if(!ObjectID.isValid(id)) {
 		return res.status(404).send(category404);
 	}
@@ -74,7 +74,7 @@ const deleteCategory = async (req, res) => {
 };
 
 const updateCategory = async (req, res) => {
-	const {id} = req.params.id;
+	const {id} = req.params;
 	const newCategory = {
 		name: req.body.name,
 		description: req.body.description,
