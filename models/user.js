@@ -17,13 +17,15 @@ const UserSchema = new mongoose.Schema({
 		type: String,
 		required: [true, 'First name is required'],
 		trim: true,
-		maxlength: [50, 'First name is too long']
+		maxlength: [50, 'First name is too long'],
+		default: ''
 	},
 	lastname: {
 		type: String,
 		required: [true, 'Last name is required'],
 		trim: true,
-		maxlength: [50, 'Last name is too long']
+		maxlength: [50, 'Last name is too long'],
+		default: ''
 	},
 	username: {		// username - can be used for login
 		type: String,
@@ -52,7 +54,7 @@ const UserSchema = new mongoose.Schema({
 	status: {		// 0 - inactive, 1 - active 
 		type: Number,
 		required: true,
-		default: 1
+		default: 1	// For normal user, set active by default
 	},
 	createdAt: {
 		type: Number,

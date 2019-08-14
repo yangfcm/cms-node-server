@@ -1,6 +1,7 @@
 /**
- * CRUD operations for tag
+ * CRUD operations for Tag model
  */
+const _ = require('lodash');
 const Tag = require('../models/tag');
 const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
@@ -61,7 +62,7 @@ const deleteTag = async (req, res) => {
 		return res.status(404).send(tag404)
 	}
 	try {
-		const tag = await Tag.findByIdAndRemote(id);
+		const tag = await Tag.findByIdAndRemove(id);
 		if(tag) {
 			res.send({ data: tag });
 		} else {
@@ -74,14 +75,14 @@ const deleteTag = async (req, res) => {
 
 const updateTag = async (req, res) => {
 	const { id } = req.params;
-	const newTag = {
-		name: req.body.name,
-		updatedAt: moment().unix()
-	};
 
 	if(!ObjectID.isValid(id)) {
 		return res.status(404).send(tag404)
 	}
+
+	const newTag = _.pick(req.body, ['name']);
+	newTag.updatedAt = moment().unix();
+
 	try {
 		const tag = await Tag.findByIdAndUpdate(
 			id, 

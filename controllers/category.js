@@ -1,6 +1,7 @@
 /**
- * CRUD operations for category
+ * CRUD operations for Category model
  */
+const _ = require('lodash');
 const Category = require('../models/category');
 const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
@@ -62,7 +63,7 @@ const deleteCategory = async (req, res) => {
 		return res.status(404).send(category404);
 	}
 	try {
-		const category = await Category.findByIdAndRemote(id);
+		const category = await Category.findByIdAndRemove(id);
 		if(category) {
 			res.send({ data: category });
 		} else {
@@ -75,14 +76,13 @@ const deleteCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
 	const {id} = req.params;
-	const newCategory = {
-		name: req.body.name,
-		description: req.body.description,
-		updatedAt: moment().unix()
-	}
+	// const body = _.pick(req.body, ['task', 'description', 'completed', 'completedAt']);
 	if(!ObjectID.isValid(id)) {
 		return res.status(404).send(category404);
 	}
+	const newCategory = _.pick(req.body, ['name', 'description']);
+	newCategory.updatedAt = moment().unix();
+	
 	try {
 		const category = await Category.findByIdAndUpdate(
 			id,

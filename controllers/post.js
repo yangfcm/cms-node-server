@@ -1,3 +1,7 @@
+/**
+ * CRUD operations for Post model
+ */
+const _ = require('lodash');
 const Post = require('../models/post');
 const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
@@ -78,10 +82,10 @@ const readOnePost = async(req, res) => {
 const deletePost = async(req, res) => {
 	const { id } = req.params;
 	if(!ObjectID.isValid(id)) {
-		return res.status(404).send(category404);
+		return res.status(404).send(post404);
 	}
 	try {
-		const post = await Category.findByIdAndRemove(id);
+		const post = await Post.findByIdAndRemove(id);
 		if(post) {
 			res.send({
 				data: post
@@ -97,19 +101,19 @@ const deletePost = async(req, res) => {
 const updatePost = async(req, res) => {
 	const { id } = req.params;
 	if(!ObjectID.isValid(id)) {
-		return res.status(404).send(category404);
+		return res.status(404).send(post404);
 	}
-	const newPost = {
-		title: req.body.title,
-		content: req.body.content,
-		featuredImage: req.body.featuredImage,
-		status: req.body.status,
-		isTop: req.body.isTop,
-		updatedAt: moment().unix(),
-		author: req.body.author,
-		category: req.body.category,
-		tags: req.body.tags
-	}
+	const newPost = _.pick(req.body, [
+		'title',
+		'content',
+		'featuredImage',
+		'status',
+		'isTop',
+		'author',
+		'category',
+		'tags'
+	]);
+	newPost.updatedAt = moment().unix(); 
 
 	try {
 		const post = await Post.findByIdAndUpdate(

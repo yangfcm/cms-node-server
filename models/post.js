@@ -44,11 +44,13 @@ const PostSchema = new mongoose.Schema({
 		required: true,
     ref: 'Category'
 	},
-	tags: {
-		type: [mongoose.Schema.Types.ObjectId],
-		ref: 'Tag',
-		default: []
-	},
+	tags: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Tag',
+			default: []
+		}
+	],
 	comments: {
 		type: [mongoose.Schema.Types.ObjectId],
 		ref: 'Comment',
