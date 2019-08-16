@@ -9,5 +9,6 @@ router.get('/users', userController.readUsers);
 router.get('/users/:id', userController.readOneUser);
 router.delete('/users/:id', userController.deleteUser);
 router.patch('/users/:id', userController.updateUser);
+router.post('/users/login', userController.loginUser),
 
 module.exports = router;

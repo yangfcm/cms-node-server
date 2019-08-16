@@ -18,7 +18,7 @@ const user404 = {
 
 
 /**
- * Create a new user
+ * Create a new user, user sign up
  */
 const createUser = async(req, res) => {
 	const user = new User({
@@ -32,9 +32,10 @@ const createUser = async(req, res) => {
 	});
 	try {
 		await user.save();
-		res.send(user);
+		const token = await user.generateAuthToken();
+		res.header('x-auth', token).send(user);
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
 	}
 };
 
@@ -48,7 +49,7 @@ const readUsers = async(req, res) => {
 			data: users
 		});
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
 	}
 };
 
@@ -70,7 +71,7 @@ const readOneUser = async(req, res) => {
 			res.status(404).send(user404);
 		}
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
 	}
 };
 
@@ -92,7 +93,7 @@ const deleteUser = async(req, res) => {
 			res.status(404).send(user404);
 		}
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
 	}
 };
 
@@ -131,7 +132,21 @@ const updateUser = async(req, res) => {
 		await user.save();
 		res.status(200).send(user);
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
+	}
+};
+
+/**
+ * User Login
+ */
+const loginUser = async(req, res) => {
+	const { email, password } = req.body;
+	try {
+		const user = await User.findByCredentials(email, password);
+		const token = await user.generateAuthToken();
+		res.header('x-auth', token).send(user);
+	}catch(e) { 
+		res.status(400).send(e.message);
 	}
 };
 
@@ -142,5 +157,6 @@ module.exports = {
 	readUsers,
 	readOneUser,
 	deleteUser,
-	updateUser
+	updateUser,
+	loginUser
 };

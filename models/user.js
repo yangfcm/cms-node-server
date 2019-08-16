@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
 	email: {		// Email - can be used for login
@@ -40,10 +41,10 @@ const UserSchema = new mongoose.Schema({
 		required: true
 	},
 	tokens: [{
-    access: {
-      type: String,
-      required: true
-    },
+    // access: {
+    //   type: String,
+    //   required: true
+    // },
     token: {
       type: String,
       required: true
@@ -67,6 +68,9 @@ const UserSchema = new mongoose.Schema({
 	}
 });
 
+/**
+ * Hash password
+ */
 UserSchema.pre('save', async function(next) {
   const user =this;
 
@@ -74,6 +78,42 @@ UserSchema.pre('save', async function(next) {
 		user.password = await bcrypt.hash(user.password, 8); 
 	}
 });
+
+/**
+ * Validate user's email and password
+ */
+UserSchema.statics.findByCredentials = async function(email, password) {
+	const User = this;
+  const user = await User.findOne({ email });
+
+  if(!user) {
+    throw new Error('Bad credntials: Fail to login');
+  }
+  const isMatch = await bcrypt.compare(password, user.password);
+  if(!isMatch) {
+    throw new Error('Bad credntials: Fail to login');
+  }
+  return user; 
+}
+
+/**
+ * Generate JWT auth token
+ */
+UserSchema.methods.generateAuthToken = async function() {
+	const user = this;  // 'this' refers to user instance 
+  const token = jwt.sign(
+    { _id: user._id.toString() }, 
+    process.env.JWT_SECRET,
+    // { expiresIn: '7 days'}
+  ).toString();
+
+  user.tokens = user.tokens.concat([{
+    token
+  }]);
+
+  await user.save();
+  return token;
+}
 
 
 const User = mongoose.model('User', UserSchema);

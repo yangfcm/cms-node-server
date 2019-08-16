@@ -34,7 +34,7 @@ const createAdmin = async(req, res) => {
 		await admin.save();
 		res.send(admin);
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
 	}
 };
 
@@ -48,7 +48,7 @@ const readAdmins = async(req, res) => {
 			data: admins
 		});
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
 	}
 };
 
@@ -70,7 +70,7 @@ const readOneAdmin = async(req, res) => {
 			res.status(404).send(admin404);
 		}
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
 	}
 };
 
@@ -92,7 +92,7 @@ const deleteAdmin = async(req, res) => {
 			res.status(404).send(admin404);
 		}
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
 	}
 };
 
@@ -132,7 +132,21 @@ const updateAdmin = async(req, res) => {
 		await admin.save();
 		res.status(200).send(admin);
 	} catch(e) {
-		res.status(400).send(e);
+		res.status(400).send(e.message);
+	}
+};
+
+/**
+ * Admin Login
+ */
+const loginAdmin = async(req, res) => {
+	const { email, password } = req.body;
+	try {
+		const admin = await Admin.findByCredentials(email, password);
+		const token = await admin.generateAuthToken();
+		res.header('x-auth', token).send(admin);
+	}catch(e) {
+		res.status(400).send(e.message);
 	}
 };
 
@@ -142,5 +156,6 @@ module.exports = {
 	readAdmins,
 	readOneAdmin,
 	deleteAdmin,
-	updateAdmin
+	updateAdmin,
+	loginAdmin
 }
