@@ -157,6 +157,17 @@ const loginUser = async(req, res) => {
 	}
 };
 
+/**
+ * User logout
+ */
+const logoutUser = async(req, res) => {
+	try {
+		await req.user.removeToken(req.token);
+		res.status(200).send();
+	}catch(e) {
+		res.status(400).send(e.message);
+	}
+}
 
 module.exports = { 
 	testUser,
@@ -167,4 +178,5 @@ module.exports = {
 	deleteUser,
 	updateUser,
 	loginUser,
+	logoutUser
 };

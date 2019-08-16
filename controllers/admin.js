@@ -157,6 +157,18 @@ const loginAdmin = async(req, res) => {
 	}
 };
 
+/**
+ * Admin logout
+ */
+const logoutAdmin = async(req, res) => {
+	try {
+		await req.admin.removeToken();
+		res.status(200).send();
+	}catch(e) {
+		res.status(400).send(e.message);
+	}
+}
+
 module.exports = {
 	testAdmin,
 	createAdmin,
@@ -165,5 +177,6 @@ module.exports = {
 	readCurrentAdmin,
 	deleteAdmin,
 	updateAdmin,
-	loginAdmin
+	loginAdmin,
+	logoutAdmin
 }

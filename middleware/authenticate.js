@@ -4,6 +4,9 @@ const Admin = require('../models/admin');
 
 const requireUserLogin = async(req, res, next) => {
 	try {
+		if(!req.header('x-auth')) {
+			throw new Error('Invalid credential'); 
+		}
 		const token = req.header('x-auth').replace('Bearer ', '');
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
 		const user = await User.findOne({
@@ -26,6 +29,9 @@ const requireUserLogin = async(req, res, next) => {
 
 const requireAdminLogin = async(req, res, next) => {
 	try {
+		if(!req.header('x-auth')) {
+			throw new Error('Invalid credential'); 
+		}
 		const token = req.header('x-auth').replace('Bearer ', '');
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
 		const admin = await Admin.findOne({

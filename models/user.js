@@ -80,6 +80,32 @@ UserSchema.pre('save', async function(next) {
 });
 
 /**
+ * Hide sensitive data, like password and tokens in API
+ */
+UserSchema.methods.toJSON = function() {
+	const user = this;
+	const userObject = user.toObject();
+	delete userObject.password;
+	delete userObject.tokens;
+	return userObject;
+}
+
+/**
+ * Remove token
+ */
+UserSchema.methods.removeToken = async function(token) {
+	const user = this;
+	if(!token) {
+		user.tokens = [];
+	} else {
+		user.tokens = user.tokens.filter((item) => {
+			return item.token !== token;
+		});
+	}
+	await user.save();
+}
+
+/**
  * Validate user's email and password
  */
 UserSchema.statics.findByCredentials = async function(email, password) {
