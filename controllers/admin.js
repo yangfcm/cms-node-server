@@ -105,6 +105,8 @@ const updateAdmin = async(req, res) => {
 	if(!ObjectID.isValid(id)) {
 		return res.status(404).send(admin404);
 	}
+
+	const updateFields = Object.keys(req.body);
 	const newAdmin = _.pick(req.body, 
 		['email', 
 		'firstname', 
@@ -115,21 +117,20 @@ const updateAdmin = async(req, res) => {
 		'status',
 		'role'
 		]);
-	newAdmin.updatedAt = moment().unix();
 
 	try {
-		const admin = await Admin.findByIdAndUpdate(
-			id,
-			newAdmin,
-			{new: true, runValidators: true}
-		);
-		if(admin) {
-			res.send({
-				data: admin
-			});
-		} else {
-			res.status(404).send(admin404);
+		const admin = await Admin.findById(id);
+		if(!admin) {
+			return res.status(404).send(admin404);
 		}
+
+		updateFields.forEach((field) => {
+			if(newAdmin[field])	admin[field] = newAdmin[field];
+		});
+		admin.updatedAt = moment().unix();
+
+		await admin.save();
+		res.status(200).send(admin);
 	} catch(e) {
 		res.status(400).send(e);
 	}

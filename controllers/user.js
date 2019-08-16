@@ -105,6 +105,8 @@ const updateUser = async(req, res) => {
 	if(!ObjectID.isValid(id)) {
 		return res.status(404).send(user404);
 	}
+
+	const updateFields = Object.keys(req.body);
 	const newUser = _.pick(req.body, 
 		['email', 
 		'firstname', 
@@ -114,21 +116,20 @@ const updateUser = async(req, res) => {
 		'avatar',
 		'status'
 		]);
-	newUser.updatedAt = moment().unix();
 
 	try {
-		const user = await User.findByIdAndUpdate(
-			id,
-			newUser,
-			{new: true, runValidators: true}
-		);
-		if(user) {
-			res.send({
-				data: user
-			});
-		} else {
-			res.status(404).send(user404);
-		}
+		const user = await User.findById(id);
+
+		if(!user) {
+			return res.status(404).send(user404);
+		} 
+		updateFields.forEach((field) => {
+			if(newUser[field]) user[field] = newUser[field];
+		});
+		user.updatedAt = moment().unix();
+
+		await user.save();
+		res.status(200).send(user);
 	} catch(e) {
 		res.status(400).send(e);
 	}
