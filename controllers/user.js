@@ -76,6 +76,13 @@ const readOneUser = async(req, res) => {
 };
 
 /**
+ * Read current login user
+ */
+const readCurrentUser = async(req, res) => {
+	res.send(req.user);
+};
+
+/**
  * Delete a user permanently by id
  */
 const deleteUser = async(req, res) => {
@@ -156,7 +163,8 @@ module.exports = {
 	createUser,
 	readUsers,
 	readOneUser,
+	readCurrentUser,
 	deleteUser,
 	updateUser,
-	loginUser
+	loginUser,
 };

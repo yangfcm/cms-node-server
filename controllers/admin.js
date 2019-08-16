@@ -75,6 +75,13 @@ const readOneAdmin = async(req, res) => {
 };
 
 /**
+ * Read current login admin
+ */
+const readCurrentAdmin = (req, res) => {
+	res.send(req.admin);
+}
+
+/**
  * Delete an admin permanently by id
  */
 const deleteAdmin = async(req, res) => {
@@ -155,6 +162,7 @@ module.exports = {
 	createAdmin,
 	readAdmins,
 	readOneAdmin,
+	readCurrentAdmin,
 	deleteAdmin,
 	updateAdmin,
 	loginAdmin

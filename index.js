@@ -10,7 +10,8 @@ const postRouter = require('./routers/api/post');
 const tagRouter = require('./routers/api/tag');
 
 const app = express();
-app.use('/api', bodyParser.json());
+
+app.use(bodyParser.json());
 app.use('/api', adminRouter);
 app.use('/api', userRouter);
 app.use('/api', categoryRouter);
