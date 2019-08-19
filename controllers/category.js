@@ -25,7 +25,7 @@ const createCategory = async (req, res) => {
 	});
 	try {
 		await category.save();
-		res.send(category);
+		res.send({data: category});
 	} catch(e) {
 		res.status(400).send(e);
 	}

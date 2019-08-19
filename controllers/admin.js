@@ -32,7 +32,7 @@ const createAdmin = async(req, res) => {
 	});
 	try {
 		await admin.save();
-		res.send(admin);
+		res.send({data: admin});
 	} catch(e) {
 		res.status(400).send(e.message);
 	}
@@ -78,7 +78,7 @@ const readOneAdmin = async(req, res) => {
  * Read current login admin
  */
 const readCurrentAdmin = (req, res) => {
-	res.send(req.admin);
+	res.send({data: req.admin});
 }
 
 /**
@@ -137,7 +137,7 @@ const updateAdmin = async(req, res) => {
 		admin.updatedAt = moment().unix();
 
 		await admin.save();
-		res.status(200).send(admin);
+		res.status(200).send({data: admin});
 	} catch(e) {
 		res.status(400).send(e.message);
 	}
@@ -151,7 +151,11 @@ const loginAdmin = async(req, res) => {
 	try {
 		const admin = await Admin.findByCredentials(email, password);
 		const token = await admin.generateAuthToken();
-		res.header('x-auth', token).send(admin);
+		res.header('x-auth', token).send({
+			data: {
+				admin
+			}
+		});
 	}catch(e) {
 		res.status(400).send(e.message);
 	}

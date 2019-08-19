@@ -33,7 +33,7 @@ const createUser = async(req, res) => {
 	try {
 		await user.save();
 		const token = await user.generateAuthToken();
-		res.header('x-auth', token).send(user);
+		res.header('x-auth', token).send({data: user});
 	} catch(e) {
 		res.status(400).send(e.message);
 	}
@@ -79,7 +79,7 @@ const readOneUser = async(req, res) => {
  * Read current login user
  */
 const readCurrentUser = async(req, res) => {
-	res.send(req.user);
+	res.send({data: req.user});
 };
 
 /**
@@ -137,7 +137,7 @@ const updateUser = async(req, res) => {
 		user.updatedAt = moment().unix();
 
 		await user.save();
-		res.status(200).send(user);
+		res.status(200).send({data: user});
 	} catch(e) {
 		res.status(400).send(e.message);
 	}
