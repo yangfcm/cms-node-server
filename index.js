@@ -2,6 +2,8 @@ require('./db/mongoose');	// Connect to MongoDB.
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
 const adminRouter = require('./routers/api/admin');
 const userRouter = require('./routers/api/user');
 const categoryRouter = require('./routers/api/category');
@@ -12,6 +14,7 @@ const tagRouter = require('./routers/api/tag');
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use('/api', adminRouter);
 app.use('/api', userRouter);
 app.use('/api', categoryRouter);

@@ -33,7 +33,7 @@ const createUser = async(req, res) => {
 	try {
 		await user.save();
 		const token = await user.generateAuthToken();
-		res.header('x-auth', token).send({data: user});
+		res.header('x-auth', token).send({data: {user, token}});
 	} catch(e) {
 		res.status(400).send(e.message);
 	}
@@ -151,7 +151,7 @@ const loginUser = async(req, res) => {
 	try {
 		const user = await User.findByCredentials(email, password);
 		const token = await user.generateAuthToken();
-		res.header('x-auth', token).send(user);
+		res.header('x-auth', token).send({ data: {user, token} });
 	}catch(e) { 
 		res.status(400).send(e.message);
 	}

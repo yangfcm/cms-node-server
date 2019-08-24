@@ -32,7 +32,7 @@ const createAdmin = async(req, res) => {
 	});
 	try {
 		await admin.save();
-		res.send({data: admin});
+		res.send({data: {admin, token}});
 	} catch(e) {
 		res.status(400).send(e.message);
 	}
@@ -153,7 +153,8 @@ const loginAdmin = async(req, res) => {
 		const token = await admin.generateAuthToken();
 		res.header('x-auth', token).send({
 			data: {
-				admin
+				admin,
+				token
 			}
 		});
 	}catch(e) {
