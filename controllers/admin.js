@@ -78,7 +78,9 @@ const readOneAdmin = async(req, res) => {
  * Read current login admin
  */
 const readCurrentAdmin = (req, res) => {
-	res.send({data: req.admin});
+	res.send({
+		data: { admin: req.admin }
+	});
 }
 
 /**
