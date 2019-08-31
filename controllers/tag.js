@@ -24,7 +24,7 @@ const createTag = async (req, res) => {
 	});
 	try {
 		await tag.save();
-		res.send(tag);
+		res.send({data: tag});
 	} catch(e) {
 		res.status(400).send(e);
 	}
