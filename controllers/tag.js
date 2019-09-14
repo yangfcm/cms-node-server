@@ -104,7 +104,7 @@ const updateTag = async (req, res) => {
 			delete newTag.name;
 		} else {
 			// Otherwise check if new tag's name exists in other tags
-			const count = await Tag.countDocuments({name: tag.name});
+			const count = await Tag.countDocuments({name: newTag.name});
 			if(count >= 1) {
 				return res.status(400).send({message: 'Tag name already exists'});
 			}
