@@ -70,7 +70,7 @@ const deleteCategory = async (req, res) => {
 	try {
 		const count = await Post.countDocuments({ category: id });
 		if(count >= 1) {
-			return res.status(400).send({message: 'Post exists under there category'});
+			return res.status(400).send({message: 'There is one or more post existing under there category'});
 		}
 		const category = await Category.findByIdAndRemove(id);
 		if(category) {
@@ -93,10 +93,20 @@ const updateCategory = async (req, res) => {
 	newCategory.updatedAt = moment().unix();
 	
 	try {
-		const count = await Category.countDocuments({ name: newCategory.name });
-		if(count >= 1) {
-			return res.status(400).send({message: 'Category name already exists'});
+		const oldCategory = await Category.findById(id);
+		if(!oldCategory) {
+			return res.status(404).send(category404);
 		}
+		if(oldCategory.name === newCategory.name.trim().toLowerCase()) {
+			// If old category's name equals to new category's name, delete name property
+			delete newCategory.name;
+		} else {
+			// Otherwise check if new category's name equals to other categories
+			const count = await Category.countDocuments({ name: newCategory.name });
+			if(count >= 1) {
+				return res.status(400).send({message: 'Category name already exists'});
+			} 
+		}		
 		const category = await Category.findByIdAndUpdate(
 			id,
 			newCategory,

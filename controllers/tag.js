@@ -3,6 +3,7 @@
  */
 const _ = require('lodash');
 const Tag = require('../models/tag');
+const Post = require('../models/post');
 const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
 
@@ -23,6 +24,10 @@ const createTag = async (req, res) => {
 		updatedAt: moment().unix()
 	});
 	try {
+		const count = await Tag.countDocuments({name: tag.name});
+		if(count >= 1) {
+			return res.status(400).send({message: 'Tag name already exists'});
+		}
 		await tag.save();
 		res.send({data: tag});
 	} catch(e) {
@@ -62,6 +67,12 @@ const deleteTag = async (req, res) => {
 		return res.status(404).send(tag404)
 	}
 	try {
+		const postFound = await Post.findOne({
+			tags: { $in: [id] }
+		})
+		if(postFound) {
+			return res.status(400).send({message: 'There is one or more posts existing under the tag name'})
+		}
 		const tag = await Tag.findByIdAndRemove(id);
 		if(tag) {
 			res.send({ data: tag });
@@ -84,6 +95,20 @@ const updateTag = async (req, res) => {
 	newTag.updatedAt = moment().unix();
 
 	try {
+		const oldTag = await Tag.findById(id);
+		if(!oldTag) {
+			return res.status(404).send(tag404);
+		}
+		if(oldTag.name === newTag.name.trim().toLowerCase()) {
+			// If old tag's name equals to new tag's name, delete name from newTag
+			delete newTag.name;
+		} else {
+			// Otherwise check if new tag's name exists in other tags
+			const count = await Tag.countDocuments({name: tag.name});
+			if(count >= 1) {
+				return res.status(400).send({message: 'Tag name already exists'});
+			}
+		}
 		const tag = await Tag.findByIdAndUpdate(
 			id, 
 			newTag, 
