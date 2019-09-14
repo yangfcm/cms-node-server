@@ -10,6 +10,7 @@ const TagSchema = new mongoose.Schema({
 		type: String,
 		unique: true,
 		trim: true,
+		lowercase: true,
 		required: [true, 'Tag name is required'],
 		maxlength: [20, 'Tag is too long'] 
 	},

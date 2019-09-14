@@ -3,6 +3,7 @@
  */
 const _ = require('lodash');
 const Category = require('../models/category');
+const Post = require('../models/post');
 const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
 
@@ -24,6 +25,10 @@ const createCategory = async (req, res) => {
 		updatedAt: moment().unix()
 	});
 	try {
+		const count = await Category.countDocuments({ name: category.name });
+		if(count >= 1) {
+			return res.status(400).send({message: 'Category name already exists'});
+		}
 		await category.save();
 		res.send({data: category});
 	} catch(e) {
@@ -63,6 +68,10 @@ const deleteCategory = async (req, res) => {
 		return res.status(404).send(category404);
 	}
 	try {
+		const count = await Post.countDocuments({ category: id });
+		if(count >= 1) {
+			return res.status(400).send({message: 'Post exists under there category'});
+		}
 		const category = await Category.findByIdAndRemove(id);
 		if(category) {
 			res.send({ data: category });
@@ -84,6 +93,10 @@ const updateCategory = async (req, res) => {
 	newCategory.updatedAt = moment().unix();
 	
 	try {
+		const count = await Category.countDocuments({ name: newCategory.name });
+		if(count >= 1) {
+			return res.status(400).send({message: 'Category name already exists'});
+		}
 		const category = await Category.findByIdAndUpdate(
 			id,
 			newCategory,
