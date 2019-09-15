@@ -25,7 +25,9 @@ const createPost = async(req, res) => {
 		updatedAt: moment().unix(),
 		author: req.body.author,
 		category: req.body.category,
-		tags: req.body.tags
+		tags: req.body.tags,
+		isTop: req.body.isTop,
+		status: req.body.status
 	});
 
 	try {
@@ -120,7 +122,10 @@ const updatePost = async(req, res) => {
 			id,
 			newPost,
 			{new: true, runValidators: true}
-		);
+		).populate('author', '_id email firstname lastname username avatar')
+		.populate('category', '_id name description')
+		.populate('tags', '_id name')
+		.exec();;
 		if(post) {
 			res.send({ data: post });
 		} else {
