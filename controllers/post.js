@@ -41,7 +41,7 @@ const createPost = async(req, res) => {
 const readPosts = async(req, res) => {
 	try {
 		const posts = 
-			await Post.find({})
+			await Post.find({}, 'title featuredImage status isTop createdAt updatedAt category tags author')
 								.populate('author', '_id email firstname lastname username avatar')
 								.populate('category', '_id name description')
 								.populate('tags', '_id name')
