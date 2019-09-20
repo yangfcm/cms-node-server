@@ -18,6 +18,18 @@ const post404 = {
   message: "The post doesn't exist"
 };
 
+const category404 = {
+  name: "404",
+  code: 404,
+  message: "Invalid category"
+};
+
+const tag404 = {
+  name: "404",
+  code: 404,
+  message: "Invalid Tag"
+};
+
 const createPost = async (req, res) => {
   const newPost = new Post({
     title: req.body.title,
@@ -45,8 +57,8 @@ const createPost = async (req, res) => {
 const readPosts = async (req, res) => {
   // page - currrent page 1 by default
   // sort -
-  console.log(req.query);
-  const { all, status, page } = req.query;
+  // console.log(req.query);
+  const { all, status, page, category, tag } = req.query;
   /** all - 'all' | null, if all='all' No pagination, return all posts at once */
   /** page - number, return the posts at the specified page, if not specified, return the posts on first page */
   /** status - number, 0 or other value, return all posts regardless of its status, 1, only returns published posts  */
@@ -54,8 +66,21 @@ const readPosts = async (req, res) => {
   const options = {};
   const sort = { isTop: -1, updatedAt: -1, createdAt: -1 };
 
+  if (category && !ObjectID.isValid(category)) {
+    return res.status(404).send(category404);
+  }
+  if (tag && !ObjectID.isValid(tag)) {
+    return res.status(404).send(tag404);
+  }
+
   if (status == 1) {
     filter.status = "1";
+  }
+  if (category) {
+    filter.category = category;
+  }
+  if (tag) {
+    filter.tags = { $in: [tag] };
   }
 
   try {
@@ -77,11 +102,11 @@ const readPosts = async (req, res) => {
 
     // Now consider pagination.
     const postTotalCounts = await Post.countDocuments(filter); // Total number of posts
-    console.log(postTotalCounts);
+    // console.log(postTotalCounts);
     const currentPage = Number(page) || 1;
-    console.log(currentPage);
+    // console.log(currentPage);
     const totalPages = Math.ceil(postTotalCounts / POSTS_PER_PAGE);
-    console.log(totalPages);
+    // console.log(totalPages);
 
     const meta = {
       // The information about pagination
