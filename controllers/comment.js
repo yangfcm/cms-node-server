@@ -60,6 +60,7 @@ const readComments = async (req, res) => {
   try {
     const comments = await Comment.find()
       .populate("post", "_id, title")
+      .sort({ isRead: 1, isTop: -1, updatedAt: -1, createdAt: -1 })
       .exec();
     res.send({ data: comments });
   } catch (e) {
