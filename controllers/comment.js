@@ -2,6 +2,7 @@ const Comment = require("../models/comment");
 const Post = require("../models/post");
 const ObjectID = require("mongodb").ObjectID;
 const moment = require("moment");
+const _ = require("lodash");
 const { COMMENTS_PER_PAGE } = require("../config/settings");
 
 const testComment = (req, res) => {
@@ -176,14 +177,16 @@ const updateComment = async (req, res) => {
     const comment = await Comment.findByIdAndUpdate(id, newComment, {
       new: true,
       runValidators: true
-    });
+    })
+      .populate("post", "_id, title")
+      .exec();
     if (comment) {
       res.send({ data: comment });
     } else {
       res.status(404).send(comment404);
     }
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send(e.message);
   }
 };
 
