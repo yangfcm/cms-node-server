@@ -61,7 +61,7 @@ const readComments = async (req, res) => {
   try {
     const comments = await Comment.find()
       .populate("post", "_id, title")
-      .sort({ isRead: 1, isTop: -1, updatedAt: -1, createdAt: -1 })
+      .sort({ isRead: 1, isTop: -1, createdAt: -1, updatedAt: -1 })
       .exec();
     res.send({ data: comments });
   } catch (e) {
@@ -78,7 +78,7 @@ const readCommentsByPost = async (req, res) => {
 
   const { page } = req.query;
   const filter = { status: "1", post: id };
-  const sort = { isTop: -1, updatedAt: -1, createdAt: -1 };
+  const sort = { isTop: -1, createdAt: -1, updatedAt: -1 };
   const options = {};
   try {
     if (!page) {
