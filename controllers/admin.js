@@ -34,7 +34,7 @@ const createAdmin = async (req, res) => {
     await admin.save();
     res.send({ data: { admin, token } });
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e);
   }
 };
 
@@ -48,7 +48,7 @@ const readAdmins = async (req, res) => {
       data: admins
     });
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e);
   }
 };
 
@@ -70,7 +70,7 @@ const readOneAdmin = async (req, res) => {
       res.status(404).send(admin404);
     }
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e);
   }
 };
 
@@ -101,7 +101,7 @@ const deleteAdmin = async (req, res) => {
       res.status(404).send(admin404);
     }
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e);
   }
 };
 
@@ -140,7 +140,7 @@ const updateAdmin = async (req, res) => {
     await admin.save();
     res.status(200).send({ data: admin });
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send(e);
   }
 };
 
@@ -159,7 +159,8 @@ const loginAdmin = async (req, res) => {
       }
     });
   } catch (e) {
-    res.status(400).send(e.message);
+    // console.log(e.message);
+    res.status(400).send({ message: e.message });
   }
 };
 
@@ -175,6 +176,7 @@ const logoutAdmin = async (req, res) => {
   }
 };
 
+/** Change password */
 const changePassword = async (req, res) => {
   const { email, oldPassword, newPassword } = req.body;
   try {
@@ -184,7 +186,7 @@ const changePassword = async (req, res) => {
     await admin.save();
     res.status(200).send({ data: admin });
   } catch (e) {
-    res.status(400).send(e.message);
+    res.status(400).send({ message: e.message });
   }
 };
 
