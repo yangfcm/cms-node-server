@@ -45,6 +45,9 @@ const requireAdminLogin = async (req, res, next) => {
     if (!admin) {
       throw new Error("Invalid credential");
     }
+    if (admin.status === 0) {
+      throw new Error("User is inactive");
+    }
     req.admin = admin;
     next();
   } catch (e) {

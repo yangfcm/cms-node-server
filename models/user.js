@@ -113,9 +113,11 @@ UserSchema.methods.removeToken = async function(token) {
 /**
  * Validate user's email and password
  */
-UserSchema.statics.findByCredentials = async function(email, password) {
+UserSchema.statics.findByCredentials = async function(loginId, password) {
   const User = this;
-  const user = await User.findOne({ email });
+  const user = await User.findOne({
+    $or: [{ email: loginId }, { username: loginId }]
+  });
 
   if (!user) {
     throw new Error("Bad credentials");

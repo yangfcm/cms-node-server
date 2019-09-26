@@ -148,9 +148,9 @@ const updateAdmin = async (req, res) => {
  * Admin Login
  */
 const loginAdmin = async (req, res) => {
-  const { email, password } = req.body;
+  const { loginId, password } = req.body;
   try {
-    const admin = await Admin.findByCredentials(email, password);
+    const admin = await Admin.findByCredentials(loginId, password);
     const token = await admin.generateAuthToken();
     res.header("x-auth", token).send({
       data: {
