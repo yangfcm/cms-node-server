@@ -120,6 +120,9 @@ UserSchema.statics.findByCredentials = async function(email, password) {
   if (!user) {
     throw new Error("Bad credentials");
   }
+  if (user.status === 0) {
+    throw new Error("User is inactive");
+  }
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new Error("Bad credentials");
