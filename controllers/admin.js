@@ -27,12 +27,32 @@ const createAdmin = async (req, res) => {
     username: req.body.username,
     password: req.body.password,
     role: req.body.role,
+    status: req.body.status,
     createdAt: moment().unix(),
     updatedAt: moment().unix()
   });
   try {
+    // Validate if there's duplicate username
+    const countUsername = await Admin.countDocuments({
+      username: admin.username
+    });
+    if (countUsername >= 1) {
+      return res
+        .status(400)
+        .send({ message: `Username ${admin.username} is already taken` });
+    }
+
+    // Validate if there's duplicate email
+    const countEmail = await Admin.countDocuments({
+      email: admin.email
+    });
+    if (countEmail >= 1) {
+      return res
+        .status(400)
+        .send({ message: `Email ${admin.email} is already taken` });
+    }
     await admin.save();
-    res.send({ data: { admin, token } });
+    res.send({ data: admin });
   } catch (e) {
     res.status(400).send(e);
   }
