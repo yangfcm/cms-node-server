@@ -152,6 +152,33 @@ const updateAdmin = async (req, res) => {
       return res.status(404).send(admin404);
     }
 
+    const countUsername = await Admin.countDocuments({
+      username: newAdmin.username
+    });
+    if (
+      admin.username.trim().toLowerCase() !==
+        newAdmin.username.trim().toLowerCase() &&
+      countUsername >= 1
+    ) {
+      return res
+        .status(400)
+        .send({ message: `Username ${newAdmin.username} is already taken` });
+    }
+
+    // Validate if there's duplicate email
+    const countEmail = await Admin.countDocuments({
+      email: newAdmin.email
+    });
+    if (
+      admin.email.trim().toLowerCase() !==
+        newAdmin.email.trim().toLowerCase() &&
+      countEmail >= 1
+    ) {
+      return res
+        .status(400)
+        .send({ message: `Email ${newAdmin.email} is already taken` });
+    }
+
     updateFields.forEach(field => {
       if (newAdmin[field]) admin[field] = newAdmin[field];
     });
