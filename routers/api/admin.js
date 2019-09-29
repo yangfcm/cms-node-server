@@ -1,6 +1,7 @@
 const express = require("express");
 const adminController = require("../../controllers/admin");
 const authenticate = require("../../middleware/authenticate");
+const { requireSuperAdmin } = require("../../middleware/role");
 
 const router = new express.Router();
 
@@ -12,12 +13,12 @@ router.get(
 );
 router.post(
   "/admins",
-  authenticate.requireAdminLogin,
+  [authenticate.requireAdminLogin, requireSuperAdmin],
   adminController.createAdmin
 );
 router.get(
   "/admins",
-  authenticate.requireAdminLogin,
+  [authenticate.requireAdminLogin, requireSuperAdmin],
   adminController.readAdmins
 );
 router.get(
@@ -27,12 +28,12 @@ router.get(
 );
 router.delete(
   "/admins/:id",
-  authenticate.requireAdminLogin,
+  [authenticate.requireAdminLogin, requireSuperAdmin],
   adminController.deleteAdmin
 );
 router.patch(
   "/admins/:id",
-  authenticate.requireAdminLogin,
+  [authenticate.requireAdminLogin, requireSuperAdmin],
   adminController.updateAdmin
 );
 router.post("/admins/login", adminController.loginAdmin);

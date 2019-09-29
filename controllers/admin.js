@@ -105,11 +105,18 @@ const readCurrentAdmin = (req, res) => {
 
 /**
  * Delete an admin permanently by id
+ * Deleting yourself is not allowed
  */
 const deleteAdmin = async (req, res) => {
   const { id } = req.params;
   if (!ObjectID.isValid(id)) {
     return res.status(404).send(admin404);
+  }
+
+  if (req.admin._id == id) {
+    return res
+      .status(400)
+      .send({ message: "Operation failed: You cannot delete yourself" });
   }
   try {
     const admin = await Admin.findByIdAndRemove(id);
@@ -127,12 +134,19 @@ const deleteAdmin = async (req, res) => {
 
 /**
  * Update an admin with id
+ * Updating yourself is not allowed
  */
 const updateAdmin = async (req, res) => {
   const { id } = req.params;
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send(admin404);
+  }
+
+  if (req.admin._id == id) {
+    return res
+      .status(400)
+      .send({ message: "Operation failed: You cannot update yourself" });
   }
 
   const updateFields = Object.keys(req.body);
