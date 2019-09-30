@@ -3,6 +3,7 @@
  */
 const _ = require("lodash");
 const Admin = require("../models/admin");
+const Post = require("../models/post");
 const ObjectID = require("mongodb").ObjectID;
 const moment = require("moment");
 
@@ -105,7 +106,7 @@ const readCurrentAdmin = (req, res) => {
 
 /**
  * Delete an admin permanently by id
- * Deleting yourself is not allowed
+ * Self-deletion is not allowed
  */
 const deleteAdmin = async (req, res) => {
   const { id } = req.params;
@@ -119,6 +120,12 @@ const deleteAdmin = async (req, res) => {
       .send({ message: "Operation failed: You cannot delete yourself" });
   }
   try {
+    const count = await Post.countDocuments({ author: id });
+    if (count >= 1) {
+      return res.status(400).send({
+        message: "There is one or more post written by the admin"
+      });
+    }
     const admin = await Admin.findByIdAndRemove(id);
     if (admin) {
       res.send({
@@ -134,7 +141,7 @@ const deleteAdmin = async (req, res) => {
 
 /**
  * Update an admin with id
- * Updating yourself is not allowed
+ * Self-updating is not allowed
  */
 const updateAdmin = async (req, res) => {
   const { id } = req.params;
