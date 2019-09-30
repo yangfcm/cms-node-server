@@ -22,6 +22,11 @@ router.get(
   adminController.readAdmins
 );
 router.get(
+  "/admins/find",
+  authenticate.requireAdminLogin,
+  adminController.findAdmin
+);
+router.get(
   "/admins/:id",
   authenticate.requireAdminLogin,
   adminController.readOneAdmin
@@ -46,6 +51,12 @@ router.post(
   "/admins/changePassword",
   authenticate.requireAdminLogin,
   adminController.changePassword
+);
+
+router.post(
+  "/admins/resetPassword",
+  [authenticate.requireAdminLogin, requireSuperAdmin],
+  adminController.resetPassword
 );
 
 module.exports = router;

@@ -251,6 +251,47 @@ const changePassword = async (req, res) => {
   }
 };
 
+/** Reset password */
+const resetPassword = async (req, res) => {
+  const { id, password } = req.body;
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send(admin404);
+  }
+
+  try {
+    const admin = await Admin.findById(id);
+    if (!admin) {
+      return res.status(404).send(admin404);
+    }
+    admin.password = password;
+    admin.updatedAt = moment().unix();
+    await admin.save();
+    res.status(200).send({ data: admin });
+  } catch (e) {
+    res.status(400).send({ message: e.message });
+  }
+};
+
+/** Find admin by email or username */
+const findAdmin = async (req, res) => {
+  const { email, username } = req.query;
+  try {
+    let admin;
+    if (email) {
+      // Find by email
+      admin = await Admin.findOne({ email });
+    }
+    if (username) {
+      // Find by username
+      admin = await Admin.findOne({ username });
+    }
+    // No matter find it or not, always return 200.
+    res.status(200).send({ data: admin });
+  } catch (e) {
+    res.status(400).send({ message: e.message });
+  }
+};
+
 module.exports = {
   testAdmin,
   createAdmin,
@@ -261,5 +302,7 @@ module.exports = {
   updateAdmin,
   loginAdmin,
   logoutAdmin,
-  changePassword
+  changePassword,
+  resetPassword,
+  findAdmin
 };
