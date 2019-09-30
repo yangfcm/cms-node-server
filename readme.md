@@ -2,12 +2,32 @@
 
 ## Intro
 
-API for CMS system
+CMS project is made up of three parts:
+
+- API
+- Admin system
+- Client
+
+This project is the API part. It is developed upon Node.js/Express and MongoDB.
 
 ## Run on development mode
 
+- MongoDB should be installed locally
 - Start MongoDB: `./mongod.exe --dbpath="c:\mongo-data"`<br> _The command is to be run under mongodb's directory and --dbpath parameter can be varied from computer to computer_
 - Start Node Server: `npm run dev`
+- You need to create a super admin in database:
+
+```
+{
+  email: 'your@email.com',
+  firstname: 'your firstname',
+  lastname: 'your lastname',
+  username: 'sa',
+  password: 'YourPassword',
+  status: 1,
+  role: 1
+}
+```
 
 ## API Documents
 
@@ -16,6 +36,15 @@ API for CMS system
 - **POST** `URL/api/admins/login` - Admin login management system
 - **POST** `URL/api/admins/logout` - Admin logout management system
 - **GET** `URL/api/admins/me` - Get the admin's profile, auth token if he/she successfully logs in
+- **POST** `URL/api/admins` - Create an admin, ONLY for super admin
+- **GET** `URL/api/admins` - Get all admins, ONLY for super admin
+- **GET** `URL/api/admins/find` - Find admin by email or username. It accepts below query parameters:
+  - email, Find the admin with given email
+  - username, Find the admin with given username
+- **DELETE** `URL/api/admins/:id` - Delte an admin by id, ONLY for super admin
+- **PATCH** `URL/api/admins/:id` - Update an admin by id - ONLY for super admin
+- **POST** `URL/api/admins/changePassword` - Change password
+- ** POST** `URL/api/admins/resetPassword` - Reset password, ONLY for super admin
 
 ### Category
 
