@@ -12,10 +12,10 @@ This project is the API part. It is developed upon Node.js/Express and MongoDB.
 
 ## Run on development mode
 
-- MongoDB should be installed locally
-- Start MongoDB: `./mongod.exe --dbpath="c:\mongo-data"`<br> _The command is to be run under mongodb's directory and --dbpath parameter can be varied from computer to computer_
-- Start Node Server: `npm run dev`
-- You need to create a super admin in database:
+- Environment requirements: Node.js, NPM, MongoDB
+- Start MongoDB: `./mongod.exe --dbpath="c:\mongo-data"`<br> \_The command is to be run under mongodb's installation directory and --dbpath parameter specifies data directory. In my case, I put it in `c:\mongo-data`.
+- The app uses `config.json` as configuration file. Make sure change `config.sample.json` to `config.json` and specify `MongoDB URI`, `port` and `JWT_secret`.
+- Create a super admin in database:
 
 ```
 {
@@ -28,6 +28,9 @@ This project is the API part. It is developed upon Node.js/Express and MongoDB.
   role: 1
 }
 ```
+
+- Under project directory, install dependencies `npm install`
+- Start on development mode: `npm run dev`.
 
 ## API Documents
 
@@ -44,7 +47,7 @@ This project is the API part. It is developed upon Node.js/Express and MongoDB.
 - **DELETE** `URL/api/admins/:id` - Delte an admin by id, ONLY for super admin
 - **PATCH** `URL/api/admins/:id` - Update an admin by id - ONLY for super admin
 - **POST** `URL/api/admins/changePassword` - Change password
-- ** POST** `URL/api/admins/resetPassword` - Reset password, ONLY for super admin
+- **POST** `URL/api/admins/resetPassword` - Reset password, ONLY for super admin
 
 ### Category
 
@@ -62,8 +65,8 @@ This project is the API part. It is developed upon Node.js/Express and MongoDB.
   - all, if `all='all'` return all posts without pagination.
   - status, if `status=1` only return the posts with status = 1(published) otherwise returns all posts no matter what status is
   - page, return the page specified. If no value is specified, one page is set by default.
-  - category, return posts under the category with the specified id
-  - tag, return posts under the tag with the specified id.
+  - category, return posts under the category with the specified category id
+  - tag, return posts under the tag with the specified tag id.
 - **GET** `URL/api/posts/:id` - Get a post by id
 - **DELETE** `URL/api/posts/:id` - Delete a post by id.
 - **PATCH** `URL/api/posts/:id` - Update a post by id
