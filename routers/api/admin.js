@@ -16,6 +16,7 @@ router.post(
   [authenticate.requireAdminLogin, requireSuperAdmin],
   adminController.createAdmin
 );
+router.post("/admins/iniSet", adminController.createAdmin);
 router.get(
   "/admins",
   [authenticate.requireAdminLogin, requireSuperAdmin],
