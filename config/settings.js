@@ -1,6 +1,6 @@
 const settings = {
-  POSTS_PER_PAGE: 2,
-  COMMENTS_PER_PAGE: 3
+  POSTS_PER_PAGE: 5,
+  COMMENTS_PER_PAGE: 5
 };
 
 module.exports = {
