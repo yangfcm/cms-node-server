@@ -146,8 +146,14 @@ const readOnePost = async (req, res) => {
     return res.status(404).send(post404);
   }
 
+  const { status } = req.query;
+  const filter = { _id: id };
+  if (status) {
+    filter.status = status;
+  }
+
   try {
-    const post = await Post.findById(id)
+    const post = await Post.findOne(filter)
       .populate("author", "_id email firstname lastname username avatar")
       .populate("category", "_id name description")
       .populate("tags", "_id name")
