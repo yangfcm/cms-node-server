@@ -16,6 +16,7 @@ export type UserSigninData = {
 
 export type UserData = {
   id: IUser["_id"];
+  email: IUser["email"];
   username: IUser["username"];
   nickname?: IUser["nickname"];
   biography?: IUser["biography"];
