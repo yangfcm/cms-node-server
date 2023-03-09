@@ -1,8 +1,8 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
-import { isValidCharacters, isValidEmail } from "src/utils/validators";
-import { USER } from "src/settings/constants";
-import { UserData } from "src/dtos/user";
+import { isValidCharacters, isValidEmail } from "../utils/validators";
+import { USER } from "../settings/constants";
+import { UserData } from "../dtos/user";
 
 // A user is a person who owns a blog platform and he/she can access the functions like commenting, following, being followed etcs.
 export interface IUser extends Document {
