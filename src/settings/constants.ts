@@ -5,3 +5,14 @@ export const CATEGORY = {
   MAX_DESCRIPTION_LENGTH: 100,
   DESCRIPTION_TOO_LONG: "Category description is too long.",
 };
+
+export const USER = {
+  EMAIL_REQUIRED: "Email is required.",
+  INVALID_EMAIL: "The given email is invalid.",
+  USERNAME_REQUIRED: "Username is required",
+  INVALID_USERNAME: "Username contains invalid characters",
+  MAX_USERNAME_LENGTH: 20,
+  USERNAME_TOO_LONG: "Username is too long",
+  MAX_NICKNAME_LENGTH: 50,
+  NICKNAME_TOO_LONG: "Nickname is too long",
+};

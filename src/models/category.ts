@@ -8,7 +8,7 @@ interface ICategory extends Document {
   updatedAt: Date;
 }
 
-const categorySchema = new mongoose.Schema<ICategory>(
+const categorySchema = new Schema<ICategory>(
   {
     name: {
       type: String,
