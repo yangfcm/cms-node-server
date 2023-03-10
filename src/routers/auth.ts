@@ -4,6 +4,7 @@ import { UserSignupData, UserSigninData, UserData } from "../dtos/user";
 import { createUser, findUserByCredentials } from "../repositories/user";
 import parseError, { APIError } from "../utils/parseError";
 import generateAuthToken from "../utils/generateAuthToken";
+import { AUTH } from "../settings/constants";
 
 const router = Router();
 
@@ -36,7 +37,7 @@ router.post(
     try {
       const user = await findUserByCredentials(req.body);
       if (!user) {
-        return res.status(403).json({ message: "Bad credentials" });
+        return res.status(403).json({ message: AUTH.BAD_CREDENTIALS });
       }
       const token = generateAuthToken(user);
       res.header("x-auth", token).json(user);

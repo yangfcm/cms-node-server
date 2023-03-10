@@ -24,3 +24,10 @@ export const USER = {
   MAX_NICKNAME_LENGTH: 50,
   NICKNAME_TOO_LONG: "Nickname is too long",
 };
+
+export const AUTH = {
+  BAD_CREDENTIALS: "Bad credentials",
+  INVALID_TOKEN: "Invalid token",
+  MISSING_TOKEN: "Missing token",
+  EXPIRED_TOKEN: "Expired token",
+};
