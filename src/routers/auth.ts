@@ -20,7 +20,7 @@ router.post(
     try {
       const user = await createUser(req.body);
       const token = generateAuthToken(user);
-      res.header("X-Auth", token).json(user);
+      res.header("x-auth", token).json(user);
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
@@ -39,7 +39,7 @@ router.post(
         return res.status(403).json({ message: "Bad credentials" });
       }
       const token = generateAuthToken(user);
-      res.header("X-Auth", token).json(user);
+      res.header("x-auth", token).json(user);
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
