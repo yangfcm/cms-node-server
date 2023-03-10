@@ -31,3 +31,12 @@ export const AUTH = {
   MISSING_TOKEN: "Missing token",
   EXPIRED_TOKEN: "Expired token",
 };
+
+export const BLOG = {
+  MAX_TITLE_LENGTH: 50,
+  TITLE_TOO_LONG: "Blog title is too long.",
+  TITLE_REQUIRED: "Title is required.",
+  ADDRESS_REQUIRED: "Address is required.",
+  INVALID_ADDRESS: "Address contains invalid characters.",
+  ADDRESS_IN_USE: "Address is already in use.",
+};

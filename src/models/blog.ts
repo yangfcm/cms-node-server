@@ -1,10 +1,71 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
+import { isValidCharacters } from "../utils/validators";
+
+import { BLOG } from "../settings/constants";
+import { BlogData } from "../dtos/blog";
 
 // Space is also known as 'blog', has one-to-one relationship to user.
-export interface ISpace extends Document {
+export interface IBlog extends Document {
   title: string;
-  bannerImage: string;
+  address: string;
   createdAt: Date;
   updatedAt: Date;
   userId: string; // Reference to user.
+  mapToBlogData: () => BlogData;
 }
+
+const blogSchema = new Schema<IBlog>(
+  {
+    title: {
+      type: String,
+      trim: true,
+      required: [true, BLOG.TITLE_REQUIRED],
+      maxlength: [BLOG.MAX_TITLE_LENGTH, BLOG.TITLE_TOO_LONG],
+    },
+    address: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      unique: true,
+      required: [true, BLOG.ADDRESS_REQUIRED],
+      validate: [
+        {
+          validator: (value: string) => isValidCharacters(value),
+          message: BLOG.INVALID_ADDRESS,
+        },
+        {
+          async validator(value: string): Promise<boolean> {
+            const model = this.constructor as Model<Document>;
+            const existingAddress = await model.findOne({ address: value });
+            return !existingAddress;
+          },
+          message: BLOG.ADDRESS_IN_USE,
+        },
+      ],
+    },
+    userId: {
+      type: String,
+      required: true,
+      ref: "User",
+    },
+  },
+  {
+    timestamps: {
+      createdAt: "createdAt",
+      updatedAt: "updatedAt",
+    },
+  }
+);
+
+blogSchema.methods.mapToBlogData = function (): BlogData {
+  const blog = this;
+  return {
+    id: blog._id,
+    title: blog.title,
+    address: blog.address,
+  };
+};
+
+const Blog = mongoose.model<IBlog>("Blog", blogSchema);
+
+export default Blog;
