@@ -6,6 +6,7 @@ interface ICategory extends Document {
   description: string;
   createdAt: Date;
   updatedAt: Date;
+  blogId: string; // Reference to blog.
 }
 
 const categorySchema = new Schema<ICategory>(
