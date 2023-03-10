@@ -9,10 +9,12 @@ export const CATEGORY = {
 export const USER = {
   EMAIL_REQUIRED: "Email is required.",
   INVALID_EMAIL: "The given email is invalid.",
+  EMAIL_IN_USE: "The email is already in use",
   USERNAME_REQUIRED: "Username is required",
   INVALID_USERNAME: "Username contains invalid characters",
   MAX_USERNAME_LENGTH: 20,
   USERNAME_TOO_LONG: "Username is too long",
+  USERNAME_IN_USE: "The username is already in use",
   MAX_NICKNAME_LENGTH: 50,
   NICKNAME_TOO_LONG: "Nickname is too long",
 };

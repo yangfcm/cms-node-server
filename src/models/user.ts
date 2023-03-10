@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import { isValidCharacters, isValidEmail } from "../utils/validators";
 import { USER } from "../settings/constants";
@@ -26,10 +26,20 @@ const userSchema = new Schema<IUser>(
       unique: true,
       required: [true, USER.EMAIL_REQUIRED],
       minlength: [0, USER.EMAIL_REQUIRED],
-      validate: {
-        validator: (value: string) => isValidEmail(value),
-        message: USER.INVALID_EMAIL,
-      },
+      validate: [
+        {
+          validator: (value: string) => isValidEmail(value),
+          message: USER.INVALID_EMAIL,
+        },
+        {
+          async validator(value: string): Promise<boolean> {
+            const model = this.constructor as Model<Document>;
+            const existingUser = await model.findOne({ email: value });
+            return !existingUser;
+          },
+          message: USER.EMAIL_IN_USE,
+        },
+      ],
     },
     username: {
       type: String,
@@ -38,10 +48,20 @@ const userSchema = new Schema<IUser>(
       required: [true, USER.USERNAME_REQUIRED],
       minlength: [0, USER.USERNAME_REQUIRED],
       maxlength: [USER.MAX_USERNAME_LENGTH, USER.USERNAME_TOO_LONG],
-      validate: {
-        validator: (value: string) => isValidCharacters(value),
-        message: USER.INVALID_USERNAME,
-      },
+      validate: [
+        {
+          validator: (value: string) => isValidCharacters(value),
+          message: USER.INVALID_USERNAME,
+        },
+        {
+          async validator(value: string): Promise<boolean> {
+            const model = this.constructor as Model<Document>;
+            const existingUser = await model.findOne({ username: value });
+            return !existingUser;
+          },
+          message: USER.USERNAME_IN_USE,
+        },
+      ],
     },
     nickname: {
       type: String,
