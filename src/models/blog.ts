@@ -63,6 +63,7 @@ blogSchema.methods.mapToBlogData = function (): BlogData {
     id: blog._id,
     title: blog.title,
     address: blog.address,
+    userId: blog.userId,
   };
 };
 
