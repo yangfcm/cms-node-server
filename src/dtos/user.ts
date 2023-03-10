@@ -10,7 +10,7 @@ export type UserSignupData = {
 };
 
 export type UserSigninData = {
-  email: IUser["email"];
+  identity: IUser["email"] | IUser["username"];
   password: IUser["password"];
 };
 

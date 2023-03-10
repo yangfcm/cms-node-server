@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 
-import { UserSignupData, UserData } from "../dtos/user";
-import { createUser } from "../repositories/user";
+import { UserSignupData, UserSigninData, UserData } from "../dtos/user";
+import { createUser, findUserByCredentials } from "../repositories/user";
 import parseError, { APIError } from "../utils/parseError";
 import generateAuthToken from "../utils/generateAuthToken";
 
@@ -19,6 +19,25 @@ router.post(
   ) => {
     try {
       const user = await createUser(req.body);
+      const token = generateAuthToken(user);
+      res.header("X-Auth", token).json(user);
+    } catch (err: any) {
+      res.status(400).json(parseError(err));
+    }
+  }
+);
+
+router.post(
+  "/signin",
+  async (
+    req: Request<any, any, UserSigninData>,
+    res: Response<UserData | APIError>
+  ) => {
+    try {
+      const user = await findUserByCredentials(req.body);
+      if (!user) {
+        return res.status(403).json({ message: "Bad credentials" });
+      }
       const token = generateAuthToken(user);
       res.header("X-Auth", token).json(user);
     } catch (err: any) {

@@ -25,7 +25,6 @@ const userSchema = new Schema<IUser>(
       lowercase: true,
       unique: true,
       required: [true, USER.EMAIL_REQUIRED],
-      minlength: [0, USER.EMAIL_REQUIRED],
       validate: [
         {
           validator: (value: string) => isValidEmail(value),
@@ -46,7 +45,6 @@ const userSchema = new Schema<IUser>(
       trim: true,
       unique: true,
       required: [true, USER.USERNAME_REQUIRED],
-      minlength: [0, USER.USERNAME_REQUIRED],
       maxlength: [USER.MAX_USERNAME_LENGTH, USER.USERNAME_TOO_LONG],
       validate: [
         {

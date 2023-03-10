@@ -1,6 +1,6 @@
 export type APIError = {
   message: string;
-  errors: {
+  errors?: {
     name: string;
     message: string;
     kind: string;
@@ -12,7 +12,7 @@ export type APIError = {
 function parseError(error: any): APIError {
   return {
     message: error.message || "Error!",
-    errors: Object.values(error.errors || {}),
+    errors: error.errors && Object.values(error.errors),
   };
 }
 
