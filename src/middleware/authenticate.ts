@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import User from "src/models/user";
-import { AUTH, JWT_SECRET } from "src/settings/constants";
-import parseError from "src/utils/parseError";
+import User from "../models/user";
+import { AUTH, JWT_SECRET } from "../settings/constants";
+import parseError from "../utils/parseError";
 
 const authenticate = async (
   req: Request,
