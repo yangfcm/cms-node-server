@@ -2,12 +2,12 @@ import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 
+dotenv.config();
 import connectDatabase from "./settings/connectDatabase";
 import authRouter from "./routers/auth";
 import userRouter from "./routers/user";
+import { DATABASE_CONNECTION_URI } from "./settings/constants";
 
-dotenv.config();
-const DATABASE_CONNECTION_URI = process.env.MONGODB_CONNECTION_URI || "";
 connectDatabase(DATABASE_CONNECTION_URI);
 
 const app = express();

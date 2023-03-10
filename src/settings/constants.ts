@@ -1,3 +1,9 @@
+// Config constants from environment variables.
+export const DATABASE_CONNECTION_URI = process.env.MONGODB_CONNECTION_URI || "";
+export const JWT_SECRET =
+  process.env.JWT_SECRET || "default_jwt_secret_do_not_use_it_in_production";
+
+// Constants for schemas.
 export const CATEGORY = {
   NAME_REQUIRED: "Category name is required.",
   MAX_NAME_LENGTH: 20,
