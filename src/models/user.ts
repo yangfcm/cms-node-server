@@ -67,6 +67,13 @@ const userSchema = new Schema<IUser>(
   }
 );
 
+userSchema.pre("save", async function () {
+  const user = this;
+  if (user.isModified("password")) {
+    user.password = await bcrypt.hash(user.password, 8);
+  }
+});
+
 userSchema.methods.mapToUserData = function (): UserData {
   const user = this;
   return {
