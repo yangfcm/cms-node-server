@@ -25,14 +25,28 @@ export const updateBlog = async (
   id: string,
   blog: Partial<BlogPostData>
 ): Promise<BlogData | null> => {
-  const blogToUpdate = await Blog.findById(id);
-  if (!blogToUpdate) return null;
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    id,
+    {
+      $set: {
+        ...blog,
+      },
+    },
+    {
+      runValidators: true,
+      returnDocument: "after",
+    }
+  );
+  if (!updatedBlog) return null;
+  return updatedBlog.mapToBlogData();
 
-  const { title, address } = blog;
-  if (title && blogToUpdate.title !== title) blogToUpdate.title = title;
-  if (address && blogToUpdate.address !== address)
-    blogToUpdate.address = address;
-  await blogToUpdate.save();
+  // const blogToUpdate = await Blog.findById(id);
+  // if (!blogToUpdate) return null;
 
-  return blogToUpdate.mapToBlogData();
+  // const { title, address } = blog;
+  // if (title) blogToUpdate.title = title;
+  // if (address) blogToUpdate.address = address;
+  // await blogToUpdate.save();
+
+  // return blogToUpdate.mapToBlogData();
 };

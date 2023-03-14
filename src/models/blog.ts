@@ -35,8 +35,15 @@ const blogSchema = new Schema<IBlog>(
         },
         {
           async validator(value: string): Promise<boolean> {
-            const model = this.constructor as Model<Document>;
-            const existingAddress = await model.findOne({ address: value });
+            let existingAddress;
+            const { model } = this as any;
+            // console.log(this.constructor);
+            if (this instanceof Model) {
+              const model = this.constructor as Model<Document>;
+              existingAddress = await model.findOne({ address: value });
+            } else if (model) {
+              existingAddress = await model.findOne({ address: value });
+            }
             return !existingAddress;
           },
           message: BLOG.ADDRESS_IN_USE,
