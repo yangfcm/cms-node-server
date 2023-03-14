@@ -28,9 +28,7 @@ export const updateBlog = async (
   const updatedBlog = await Blog.findByIdAndUpdate(
     id,
     {
-      $set: {
-        ...blog,
-      },
+      $set: blog,
     },
     {
       runValidators: true,
@@ -39,14 +37,4 @@ export const updateBlog = async (
   );
   if (!updatedBlog) return null;
   return updatedBlog.mapToBlogData();
-
-  // const blogToUpdate = await Blog.findById(id);
-  // if (!blogToUpdate) return null;
-
-  // const { title, address } = blog;
-  // if (title) blogToUpdate.title = title;
-  // if (address) blogToUpdate.address = address;
-  // await blogToUpdate.save();
-
-  // return blogToUpdate.mapToBlogData();
 };

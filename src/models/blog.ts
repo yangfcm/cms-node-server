@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Document, Model, Query, Schema } from "mongoose";
 import { isValidCharacters } from "../utils/validators";
 
 import { BLOG } from "../settings/constants";
@@ -36,13 +36,12 @@ const blogSchema = new Schema<IBlog>(
         {
           async validator(value: string): Promise<boolean> {
             let existingAddress;
-            const { model } = this as any;
-            // console.log(this.constructor);
             if (this instanceof Model) {
-              const model = this.constructor as Model<Document>;
-              existingAddress = await model.findOne({ address: value });
-            } else if (model) {
-              existingAddress = await model.findOne({ address: value });
+              existingAddress = await (
+                this.constructor as Model<Document>
+              ).findOne({ address: value });
+            } else if (this instanceof Query) {
+              existingAddress = await this.model.findOne({ address: value });
             }
             return !existingAddress;
           },
