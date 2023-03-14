@@ -10,6 +10,7 @@ export const CATEGORY = {
   NAME_TOO_LONG: "Category name is too long.",
   MAX_DESCRIPTION_LENGTH: 100,
   DESCRIPTION_TOO_LONG: "Category description is too long.",
+  NAME_IN_USE: "The category already exists.",
 };
 
 export const USER = {

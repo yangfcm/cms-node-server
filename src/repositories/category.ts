@@ -5,6 +5,17 @@ import {
 } from "../dtos/category";
 import Category from "../models/category";
 
+export const categoryNameExistsInBlog = async (
+  categoryName: string,
+  blogId: string
+): Promise<boolean> => {
+  const existingCategory = await Category.findOne({
+    name: categoryName,
+    blogId,
+  });
+  return !!existingCategory;
+};
+
 export const createCategory = async (
   category: CategoryNewData
 ): Promise<CategoryData> => {
