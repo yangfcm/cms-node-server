@@ -29,9 +29,10 @@ export const updateBlog = async (
   if (!blogToUpdate) return null;
 
   const { title, address } = blog;
-  if (title) blogToUpdate.title = title;
-  if (address) blogToUpdate.address = address;
+  if (title && blogToUpdate.title !== title) blogToUpdate.title = title;
+  if (address && blogToUpdate.address !== address)
+    blogToUpdate.address = address;
   await blogToUpdate.save();
 
-  return blogToUpdate?.mapToBlogData();
+  return blogToUpdate.mapToBlogData();
 };

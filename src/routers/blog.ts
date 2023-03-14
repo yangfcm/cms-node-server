@@ -2,7 +2,12 @@ import { Router, Request, Response } from "express";
 import { BlogData, BlogPostData, BlogNewData } from "../dtos/blog";
 import { UserData } from "../dtos/user";
 import authenticate from "../middleware/authenticate";
-import { readBlogsByUserId, readBlog, createBlog } from "../repositories/blog";
+import {
+  readBlogsByUserId,
+  readBlog,
+  createBlog,
+  updateBlog,
+} from "../repositories/blog";
 import parseError, { APIError } from "../utils/parseError";
 
 const router = Router();
@@ -55,6 +60,27 @@ router.get(
   }
 );
 
-router.post("/blogs", async () => {});
+router.put(
+  "/:id",
+  authenticate,
+  async (
+    req: Request<
+      { id: string },
+      any,
+      { authUser: UserData; blog: Partial<BlogPostData> }
+    >,
+    res: Response<BlogData | APIError>
+  ) => {
+    try {
+      const { id } = req.params;
+      const { authUser, blog } = req.body;
+      const updatedBlog = await updateBlog(id, blog);
+      if (!updatedBlog) return res.status(404).send();
+      res.json(updatedBlog);
+    } catch (err) {
+      res.status(400).json(parseError(err));
+    }
+  }
+);
 
 export default router;
