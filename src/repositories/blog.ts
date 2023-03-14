@@ -1,7 +1,7 @@
-import { BlogPostData, BlogData } from "../dtos/blog";
+import { BlogPostData, BlogData, BlogNewData } from "../dtos/blog";
 import Blog from "../models/blog";
 
-export const createBlog = async (blog: BlogPostData): Promise<BlogData> => {
+export const createBlog = async (blog: BlogNewData): Promise<BlogData> => {
   const newBlog = new Blog(blog);
   await newBlog.save();
   return newBlog.mapToBlogData();
@@ -28,10 +28,9 @@ export const updateBlog = async (
   const blogToUpdate = await Blog.findById(id);
   if (!blogToUpdate) return null;
 
-  const { title, address, userId } = blog;
+  const { title, address } = blog;
   if (title) blogToUpdate.title = title;
   if (address) blogToUpdate.address = address;
-  if (userId) blogToUpdate.userId = userId;
   await blogToUpdate.save();
 
   return blogToUpdate?.mapToBlogData();

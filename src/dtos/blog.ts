@@ -4,6 +4,9 @@ import { IUser } from "../models/user";
 export type BlogPostData = {
   title: IBlog["title"];
   address: IBlog["address"];
+};
+
+export type BlogNewData = BlogPostData & {
   userId: IUser["_id"];
 };
 
