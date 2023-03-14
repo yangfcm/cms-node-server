@@ -1,12 +1,14 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { CategoryData } from "../dtos/category";
 import { CATEGORY } from "../settings/constants";
 
-interface ICategory extends Document {
+export interface ICategory extends Document {
   name: string;
   description: string;
   createdAt: Date;
   updatedAt: Date;
   blogId: string; // Reference to blog.
+  mapToCategoryData: () => CategoryData;
 }
 
 const categorySchema = new Schema<ICategory>(
@@ -17,7 +19,6 @@ const categorySchema = new Schema<ICategory>(
       required: [true, CATEGORY.NAME_REQUIRED],
       minlength: [0, CATEGORY.NAME_REQUIRED],
       maxlength: [CATEGORY.MAX_NAME_LENGTH, CATEGORY.NAME_TOO_LONG],
-      unique: true,
     },
     description: {
       type: String,
@@ -35,6 +36,16 @@ const categorySchema = new Schema<ICategory>(
     },
   }
 );
+
+categorySchema.methods.mapToCategoryData = function (): CategoryData {
+  const category = this;
+  return {
+    id: category._id.toString(),
+    name: category.name,
+    description: category.description,
+    blogId: category.blogId,
+  };
+};
 
 const Category = mongoose.model<ICategory>("Category", categorySchema);
 
