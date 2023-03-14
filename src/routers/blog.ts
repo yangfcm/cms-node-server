@@ -5,7 +5,7 @@ import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
 import {
   readBlogsByUserId,
-  readBlog,
+  readBlogByAddress,
   createBlog,
   updateBlog,
 } from "../repositories/blog";
@@ -48,11 +48,14 @@ router.get(
 );
 
 router.get(
-  "/:id",
-  async (req: Request<{ id: string }>, res: Response<BlogData | APIError>) => {
+  "/:address",
+  async (
+    req: Request<{ address: string }>,
+    res: Response<BlogData | APIError>
+  ) => {
     try {
-      const { id } = req.params;
-      const blog = await readBlog(id);
+      const { address } = req.params;
+      const blog = await readBlogByAddress(address);
       if (!blog) return res.status(404).send();
       res.json(blog);
     } catch (err) {

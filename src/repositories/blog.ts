@@ -21,6 +21,15 @@ export const readBlog = async (id: string): Promise<BlogData | null> => {
   return blog ? blog.mapToBlogData() : null;
 };
 
+export const readBlogByAddress = async (
+  address: string
+): Promise<BlogData | null> => {
+  const blog = await Blog.findOne({
+    address,
+  });
+  return blog ? blog.mapToBlogData() : null;
+};
+
 export const updateBlog = async (
   id: string,
   blog: Partial<BlogPostData>
