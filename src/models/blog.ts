@@ -66,7 +66,7 @@ const blogSchema = new Schema<IBlog>(
 blogSchema.methods.mapToBlogData = function (): BlogData {
   const blog = this;
   return {
-    id: blog._id,
+    id: blog._id.toString(),
     title: blog.title,
     address: blog.address,
     userId: blog.userId,

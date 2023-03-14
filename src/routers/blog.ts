@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { BlogData, BlogPostData, BlogNewData } from "../dtos/blog";
 import { UserData } from "../dtos/user";
 import authenticate from "../middleware/authenticate";
+import userOwnsBlog from "../middleware/userOwnsBlog";
 import {
   readBlogsByUserId,
   readBlog,
@@ -62,19 +63,13 @@ router.get(
 
 router.put(
   "/:id",
-  authenticate,
+  [authenticate, userOwnsBlog],
   async (
-    req: Request<
-      { id: string },
-      any,
-      { authUser: UserData; blog: Partial<BlogPostData> }
-    >,
+    req: Request<{ id: string }, any, { blog: Partial<BlogPostData> }>,
     res: Response<BlogData | APIError>
   ) => {
     try {
-      const { id } = req.params;
-      const { authUser, blog } = req.body;
-      const updatedBlog = await updateBlog(id, blog);
+      const updatedBlog = await updateBlog(req.params.id, req.body.blog);
       if (!updatedBlog) return res.status(404).send();
       res.json(updatedBlog);
     } catch (err) {

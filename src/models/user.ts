@@ -95,7 +95,7 @@ userSchema.pre("save", async function () {
 userSchema.methods.mapToUserData = function (): UserData {
   const user = this;
   return {
-    id: user._id,
+    id: user._id.toString(),
     email: user.email,
     username: user.username,
     nickname: user.nickname,

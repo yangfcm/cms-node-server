@@ -39,4 +39,5 @@ export const BLOG = {
   ADDRESS_REQUIRED: "Address is required.",
   INVALID_ADDRESS: "Address contains invalid characters.",
   ADDRESS_IN_USE: "Address is already in use.",
+  NO_ACCESS_TO_BLOG: "You cannot access the blog",
 };
