@@ -70,10 +70,7 @@ router.put(
     res: Response<BlogData | APIError>
   ) => {
     try {
-      const updatedBlog = await updateBlog(
-        req.params.blogId || "",
-        req.body.blog
-      );
+      const updatedBlog = await updateBlog(req.params.blogId!, req.body.blog);
       if (!updatedBlog) return res.status(404).send();
       res.json(updatedBlog);
     } catch (err) {

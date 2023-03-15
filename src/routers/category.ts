@@ -8,6 +8,8 @@ import {
 import parseError, { APIError } from "../utils/parseError";
 import getBlogByAddress from "../middleware/getBlogByAddress";
 import { CATEGORY } from "../settings/constants";
+import authenticate from "../middleware/authenticate";
+import userOwnsBlog from "../middleware/userOwnsBlog";
 
 const router = Router();
 
@@ -31,9 +33,9 @@ router.get(
 
 router.post(
   "/blogs/:address/categories",
-  getBlogByAddress,
+  [authenticate, getBlogByAddress, userOwnsBlog],
   async (
-    req: Request<{ address: string }, any, { category: CategoryPostData }>,
+    req: Request<{ address?: string }, any, { category: CategoryPostData }>,
     res: Response<CategoryData | APIError>
   ) => {
     try {
