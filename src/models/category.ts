@@ -7,7 +7,7 @@ export interface ICategory extends Document {
   description: string;
   createdAt: Date;
   updatedAt: Date;
-  blogAddress: string; // Reference to blog.
+  blogId: string; // Reference to blog.
   mapToCategoryData: () => CategoryData;
 }
 
@@ -28,8 +28,9 @@ const categorySchema = new Schema<ICategory>(
         CATEGORY.DESCRIPTION_TOO_LONG,
       ],
     },
-    blogAddress: {
+    blogId: {
       type: String,
+      required: true,
       ref: "Blog",
     },
   },
@@ -47,7 +48,7 @@ categorySchema.methods.mapToCategoryData = function (): CategoryData {
     id: category._id.toString(),
     name: category.name,
     description: category.description,
-    blogAddress: category.blogAddress,
+    blogId: category.blogId,
   };
 };
 
