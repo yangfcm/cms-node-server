@@ -7,11 +7,11 @@ import Category from "../models/category";
 
 export const categoryNameExistsInBlog = async (
   categoryName: string,
-  blogAddress: string
+  blogId: string
 ): Promise<boolean> => {
   const existingCategory = await Category.findOne({
     name: categoryName,
-    blogAddress,
+    blogId,
   });
   return !!existingCategory;
 };
@@ -22,13 +22,6 @@ export const createCategory = async (
   const newCategory = new Category(category);
   await newCategory.save();
   return newCategory.mapToCategoryData();
-};
-
-export const readCategoriesByBlogAddress = async (
-  blogAddress: string
-): Promise<CategoryData[]> => {
-  const categories = await Category.find({ blogAddress });
-  return categories.map((c) => c.mapToCategoryData());
 };
 
 export const readCategoriesByBlogId = async (

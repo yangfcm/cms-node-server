@@ -41,4 +41,5 @@ export const BLOG = {
   INVALID_ADDRESS: "Address contains invalid characters.",
   ADDRESS_IN_USE: "Address is already in use.",
   NO_ACCESS_TO_BLOG: "You cannot access the blog",
+  NOT_FOUND: "Blog not found",
 };
