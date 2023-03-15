@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 import User from "../models/user";
+import { readUserById } from "../repositories/user";
 import { AUTH, JWT_SECRET } from "../settings/constants";
 import parseError from "../utils/parseError";
 
@@ -19,10 +20,10 @@ const authenticate = async (
       throw new Error(AUTH.EXPIRED_TOKEN);
     }
 
-    const user = await User.findById(decoded.id);
+    const user = await readUserById(decoded.id);
     if (!user) throw new Error(AUTH.INVALID_TOKEN);
 
-    req.body.authUser = user.mapToUserData();
+    req.user = user;
     next();
   } catch (err: any) {
     res.status(403).json(parseError(err));

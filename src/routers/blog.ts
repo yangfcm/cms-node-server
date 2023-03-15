@@ -21,8 +21,9 @@ router.post(
     res: Response<BlogData | APIError>
   ) => {
     try {
-      const { authUser, blog } = req.body;
-      const newBlog = await createBlog({ ...blog, userId: authUser.id });
+      const { user } = req;
+      const { blog } = req.body;
+      const newBlog = await createBlog({ ...blog, userId: user!.id });
       return res.json(newBlog);
     } catch (err: any) {
       res.status(400).json(parseError(err));

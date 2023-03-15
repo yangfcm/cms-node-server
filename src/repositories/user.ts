@@ -27,3 +27,8 @@ export const findUserByCredentials = async (
 
   return foundUser.mapToUserData();
 };
+
+export const readUserById = async (id: string): Promise<UserData | null> => {
+  const user = await User.findById(id);
+  return user ? user.mapToUserData() : null;
+};
