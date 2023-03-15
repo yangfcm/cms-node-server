@@ -17,11 +17,11 @@ router.post(
   "/",
   authenticate,
   async (
-    req: Request<any, any, { authUser: UserData; blog: BlogPostData }>,
+    req: Request<any, any, { blog: BlogPostData }, any, { user: UserData }>,
     res: Response<BlogData | APIError>
   ) => {
     try {
-      const { user } = req;
+      const user = req.user;
       const { blog } = req.body;
       const newBlog = await createBlog({ ...blog, userId: user!.id });
       return res.json(newBlog);
