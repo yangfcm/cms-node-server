@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from "express";
+import { readBlogByAddress } from "../repositories/blog";
 
 const getBlogByAddress = async (
   req: Request<{ address: string }>,
   res: Response,
   next: NextFunction
 ) => {
-  console.log(req.params.address);
+  const blog = await readBlogByAddress(req.params.address);
+  if (blog) {
+    req.body.blog = blog;
+  }
   next();
 };
 
