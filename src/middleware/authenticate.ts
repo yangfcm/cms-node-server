@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import User from "../models/user";
 import { readUserById } from "../repositories/user";
 import { AUTH, JWT_SECRET } from "../settings/constants";
 import parseError from "../utils/parseError";

@@ -7,7 +7,6 @@ import {
 } from "../repositories/category";
 import parseError, { APIError } from "../utils/parseError";
 import getBlogByAddress from "../middleware/getBlogByAddress";
-import { BlogData } from "../dtos/blog";
 import { CATEGORY } from "../settings/constants";
 
 const router = Router();
@@ -16,10 +15,10 @@ router.get(
   "/blogs/:address/categories",
   getBlogByAddress,
   async (
-    req: Request<{ address: string }, any, { blog?: BlogData }>,
+    req: Request<{ address: string }>,
     res: Response<CategoryData[] | APIError>
   ) => {
-    const { blog } = req.body;
+    const { blog } = req;
     try {
       if (!blog) return res.json([]);
       const categories = await readCategoriesByBlogId(blog.id);
@@ -34,23 +33,20 @@ router.post(
   "/blogs/:address/categories",
   getBlogByAddress,
   async (
-    req: Request<
-      { address: string },
-      any,
-      { blog: BlogData; category: CategoryPostData }
-    >,
+    req: Request<{ address: string }, any, { category: CategoryPostData }>,
     res: Response<CategoryData | APIError>
   ) => {
     try {
-      const { blog, category } = req.body;
+      const { blog } = req;
+      const { category } = req.body;
       const existingCategory = await categoryNameExistsInBlog(
         category.name,
-        blog.id
+        blog!.id
       );
       if (existingCategory) throw new Error(CATEGORY.NAME_IN_USE);
       const newCategory = await createCategory({
         ...category,
-        blogId: blog.id,
+        blogId: blog!.id,
       });
       res.json(newCategory);
     } catch (err: any) {

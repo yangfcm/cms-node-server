@@ -13,7 +13,7 @@ const getBlogByAddress = async (
   const blog = await readBlogByAddress(address);
   if (!blog) return res.status(404).send({ message: BLOG.NOT_FOUND });
 
-  req.body.blog = blog;
+  req.blog = blog;
   next();
 };
 
