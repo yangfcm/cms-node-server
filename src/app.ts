@@ -8,6 +8,7 @@ import connectDatabase from "./settings/connectDatabase";
 import authRouter from "./routers/auth";
 import userRouter from "./routers/user";
 import blogRouter from "./routers/blog";
+import categoryRouter from "./routers/category";
 
 connectDatabase(DATABASE_CONNECTION_URI);
 
@@ -17,5 +18,6 @@ app.use(bodyParser.json());
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/blogs", blogRouter);
+app.use("/api", categoryRouter);
 
 export default app;

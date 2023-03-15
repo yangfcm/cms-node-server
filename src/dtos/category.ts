@@ -6,12 +6,12 @@ export type CategoryPostData = {
 };
 
 export type CategoryNewData = CategoryPostData & {
-  blogId: ICategory["blogId"];
+  blogAddress: ICategory["blogAddress"];
 };
 
 export type CategoryData = {
   id: ICategory["_id"];
   name: ICategory["name"];
   description: ICategory["description"];
-  blogId: ICategory["blogId"];
+  blogAddress: ICategory["blogAddress"];
 };

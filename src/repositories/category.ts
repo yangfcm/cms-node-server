@@ -7,11 +7,11 @@ import Category from "../models/category";
 
 export const categoryNameExistsInBlog = async (
   categoryName: string,
-  blogId: string
+  blogAddress: string
 ): Promise<boolean> => {
   const existingCategory = await Category.findOne({
     name: categoryName,
-    blogId,
+    blogAddress,
   });
   return !!existingCategory;
 };
@@ -24,10 +24,10 @@ export const createCategory = async (
   return newCategory.mapToCategoryData();
 };
 
-export const readCategoriesByBlogId = async (
-  blogId: string
+export const readCategoriesByBlogAddress = async (
+  blogAddress: string
 ): Promise<CategoryData[]> => {
-  const categories = await Category.find({ blogId });
+  const categories = await Category.find({ blogAddress });
   return categories.map((c) => c.mapToCategoryData());
 };
 
