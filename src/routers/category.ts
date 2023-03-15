@@ -7,7 +7,6 @@ import {
   updateCategory,
 } from "../repositories/category";
 import parseError, { APIError } from "../utils/parseError";
-import getBlogByAddress from "../middleware/getBlogByAddress";
 import { CATEGORY } from "../settings/constants";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
@@ -15,8 +14,7 @@ import userOwnsBlog from "../middleware/userOwnsBlog";
 const router = Router();
 
 router.get(
-  "/blogs/:address/categories",
-  getBlogByAddress,
+  "/",
   async (
     req: Request<{ address: string }>,
     res: Response<CategoryData[] | APIError>
@@ -33,8 +31,8 @@ router.get(
 );
 
 router.post(
-  "/blogs/:address/categories",
-  [authenticate, getBlogByAddress, userOwnsBlog],
+  "/",
+  [authenticate, userOwnsBlog],
   async (
     req: Request<{ address?: string }, any, { category: CategoryPostData }>,
     res: Response<CategoryData | APIError>
@@ -59,8 +57,8 @@ router.post(
 );
 
 router.put(
-  "/blogs/:address/categories/:categoryId",
-  [authenticate, getBlogByAddress, userOwnsBlog],
+  "/:categoryId",
+  [authenticate, userOwnsBlog],
   async (
     req: Request<
       { address?: string; blogId?: string; categoryId: string },
