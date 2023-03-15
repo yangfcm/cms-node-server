@@ -17,13 +17,13 @@ router.post(
   "/",
   authenticate,
   async (
-    req: Request<any, any, { blog: BlogPostData }, any, { user: UserData }>,
+    req: Request<any, any, { blog: BlogPostData }>,
     res: Response<BlogData | APIError>
   ) => {
     try {
-      const user = req.user;
+      const { user } = req;
       const { blog } = req.body;
-      const newBlog = await createBlog({ ...blog, userId: user!.id });
+      const newBlog = await createBlog({ ...blog, userId: user?.id });
       return res.json(newBlog);
     } catch (err: any) {
       res.status(400).json(parseError(err));
@@ -34,13 +34,10 @@ router.post(
 router.get(
   "/",
   authenticate,
-  async (
-    req: Request<any, any, { authUser: UserData }>,
-    res: Response<BlogData[] | APIError>
-  ) => {
+  async (req: Request, res: Response<BlogData[] | APIError>) => {
     try {
-      const { authUser } = req.body;
-      const blogs = await readBlogsByUserId(authUser.id);
+      const { user } = req;
+      const blogs = await readBlogsByUserId(user?.id);
       res.json(blogs);
     } catch (err) {
       res.status(400).json(parseError(err));
@@ -66,14 +63,17 @@ router.get(
 );
 
 router.put(
-  "/:id",
+  "/:blogId",
   [authenticate, userOwnsBlog],
   async (
-    req: Request<{ id: string }, any, { blog: Partial<BlogPostData> }>,
+    req: Request<{ blogId?: string }, any, { blog: Partial<BlogPostData> }>,
     res: Response<BlogData | APIError>
   ) => {
     try {
-      const updatedBlog = await updateBlog(req.params.id, req.body.blog);
+      const updatedBlog = await updateBlog(
+        req.params.blogId || "",
+        req.body.blog
+      );
       if (!updatedBlog) return res.status(404).send();
       res.json(updatedBlog);
     } catch (err) {
