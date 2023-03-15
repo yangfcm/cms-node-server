@@ -31,12 +31,23 @@ export const readCategoriesByBlogId = async (
   return categories.map((c) => c.mapToCategoryData());
 };
 
+/**
+ * Update a category by given id.
+ * If blogId exists, it restricts to updating the category with the id under the blog.
+ * @param id
+ * @param category
+ * @param blogId
+ * @returns updated category or null if category not found.
+ */
 export const updateCategory = async (
   id: string,
-  category: Partial<CategoryPostData>
+  category: Partial<CategoryPostData>,
+  blogId?: string
 ): Promise<CategoryData | null> => {
-  const updatedCategory = await Category.findByIdAndUpdate(
-    id,
+  const filter: { _id: string; blogId?: string } = { _id: id };
+  if (blogId) filter.blogId = blogId;
+  const updatedCategory = await Category.findOneAndUpdate(
+    filter,
     {
       $set: category,
     },

@@ -4,6 +4,7 @@ import {
   categoryNameExistsInBlog,
   createCategory,
   readCategoriesByBlogId,
+  updateCategory,
 } from "../repositories/category";
 import parseError, { APIError } from "../utils/parseError";
 import getBlogByAddress from "../middleware/getBlogByAddress";
@@ -51,6 +52,31 @@ router.post(
         blogId: blog!.id,
       });
       res.json(newCategory);
+    } catch (err: any) {
+      res.status(400).json(parseError(err));
+    }
+  }
+);
+
+router.put(
+  "/blogs/:address/categories/:categoryId",
+  [authenticate, getBlogByAddress, userOwnsBlog],
+  async (
+    req: Request<
+      { address?: string; blogId?: string; categoryId: string },
+      any,
+      { category: Partial<CategoryPostData> }
+    >,
+    res: Response<CategoryData | APIError>
+  ) => {
+    try {
+      const updatedCategory = await updateCategory(
+        req.params.categoryId,
+        req.body.category,
+        req.blog?.id
+      );
+      if (!updatedCategory) return res.status(404).send();
+      res.json(updatedCategory);
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }

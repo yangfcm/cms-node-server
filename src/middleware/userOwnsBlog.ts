@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { BlogData } from "../dtos/blog";
-import { UserData } from "../dtos/user";
 import { readBlog, readBlogByAddress } from "../repositories/blog";
 import { BLOG } from "../settings/constants";
 import parseError from "../utils/parseError";
