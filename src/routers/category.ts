@@ -2,11 +2,13 @@ import { Router, Request, Response } from "express";
 import { CategoryData } from "../dtos/category";
 import { readCategoriesByBlogAddress } from "../repositories/category";
 import parseError, { APIError } from "../utils/parseError";
+import getBlogByAddress from "../middleware/getBlogByAddress";
 
 const router = Router();
 
 router.get(
   "/blogs/:address/categories",
+  getBlogByAddress,
   async (
     req: Request<{ address: string }>,
     res: Response<CategoryData[] | APIError>

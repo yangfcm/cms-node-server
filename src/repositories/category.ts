@@ -31,6 +31,13 @@ export const readCategoriesByBlogAddress = async (
   return categories.map((c) => c.mapToCategoryData());
 };
 
+export const readCategoriesByBlogId = async (
+  blogId: string
+): Promise<CategoryData[]> => {
+  const categories = await Category.find({ blogId });
+  return categories.map((c) => c.mapToCategoryData());
+};
+
 export const updateCategory = async (
   id: string,
   category: Partial<CategoryPostData>
