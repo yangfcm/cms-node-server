@@ -6,7 +6,6 @@ const appConfig = () => {
   if (env === "development" || env === "test") {
     const envConfig: Record<string, string> = config[env];
     Object.keys(envConfig).forEach((key) => {
-      console.log(key);
       process.env[key] = envConfig[key];
     });
   }
