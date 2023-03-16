@@ -43,3 +43,9 @@ export const BLOG = {
   NO_ACCESS_TO_BLOG: "You cannot access the blog",
   NOT_FOUND: "Blog not found",
 };
+
+export const ARTICLE = {
+  TITLE_REQUIRED: "Article title is required.",
+  TITLE_TOO_LONG: "Article title is too long",
+  MAX_TITLE_LENGTH: 200,
+};

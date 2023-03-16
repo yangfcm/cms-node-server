@@ -1,0 +1,76 @@
+import mongoose, { Document, Schema } from "mongoose";
+import { ARTICLE } from "../settings/constants";
+
+export enum ArticleStatus {
+  DRAFT = "draft",
+  PUBLISHED = "published",
+  TRASH = "trash",
+}
+
+export interface IArticle extends Document {
+  title: string;
+  content: string;
+  featuredImage: string;
+  status: ArticleStatus;
+  isTop: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  // publishedAt: Date;
+  blogId: string; // Reference to blog.
+  userId: string; // Reference to User.
+  categoryId: string; // Reference to category.
+  // tagIds: string[]; // Reference to tag.
+}
+
+const articleSchema = new mongoose.Schema<IArticle>(
+  {
+    title: {
+      type: String,
+      trim: true,
+      required: [true, ARTICLE.TITLE_REQUIRED],
+      maxlength: [ARTICLE.MAX_TITLE_LENGTH, ARTICLE.TITLE_TOO_LONG],
+    },
+    content: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    featuredImage: String,
+    status: {
+      type: String,
+      enum: [ArticleStatus.DRAFT, ArticleStatus.PUBLISHED, ArticleStatus.TRASH],
+      required: true,
+      default: ArticleStatus.DRAFT,
+    },
+    isTop: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    blogId: {
+      type: String,
+      required: true,
+      ref: "Blog",
+    },
+    userId: {
+      type: String,
+      required: true,
+      ref: "User",
+    },
+    categoryId: {
+      type: String,
+      required: true,
+      ref: "Category",
+    },
+  },
+  {
+    timestamps: {
+      createdAt: "createdAt",
+      updatedAt: "updatedAt",
+    },
+  }
+);
+
+const Post = mongoose.model<IArticle>("Post", articleSchema);
+
+export default Post;
