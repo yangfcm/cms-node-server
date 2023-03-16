@@ -1,7 +1,4 @@
-import dotenv from "dotenv";
-
-dotenv.config();
-
+import "./config";
 // Config constants from environment variables.
 export const DATABASE_CONNECTION_URI = process.env.MONGODB_CONNECTION_URI || "";
 export const JWT_SECRET =
