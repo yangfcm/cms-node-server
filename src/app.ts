@@ -1,8 +1,6 @@
 import express from "express";
-import dotenv from "dotenv";
 import bodyParser from "body-parser";
 
-dotenv.config();
 import { DATABASE_CONNECTION_URI } from "./settings/constants";
 import connectDatabase from "./settings/connectDatabase";
 import authRouter from "./routers/auth";
