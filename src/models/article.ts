@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { ArticleData } from "../dtos/article";
 import { ARTICLE } from "../settings/constants";
 
 export enum ArticleStatus {
@@ -20,6 +21,7 @@ export interface IArticle extends Document {
   userId: string; // Reference to User.
   categoryId: string; // Reference to category.
   // tagIds: string[]; // Reference to tag.
+  mapToArticleData: () => ArticleData;
 }
 
 const articleSchema = new mongoose.Schema<IArticle>(
@@ -70,6 +72,21 @@ const articleSchema = new mongoose.Schema<IArticle>(
     },
   }
 );
+
+articleSchema.methods.mapToArticleData = function (): ArticleData {
+  const article = this;
+  return {
+    id: article._id.toString(),
+    title: article.title,
+    content: article.content,
+    featuredImage: article.featuredImage,
+    status: article.status,
+    isTop: article.isTop,
+    blogId: article.blogId,
+    userId: article.userId,
+    categoryId: article.categoryId,
+  };
+};
 
 const Post = mongoose.model<IArticle>("Post", articleSchema);
 

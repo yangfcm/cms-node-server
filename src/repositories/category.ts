@@ -56,6 +56,5 @@ export const updateCategory = async (
       returnDocument: "after",
     }
   );
-  if (!updatedCategory) return null;
-  return updatedCategory.mapToCategoryData();
+  return updatedCategory ? updatedCategory.mapToCategoryData() : null;
 };
