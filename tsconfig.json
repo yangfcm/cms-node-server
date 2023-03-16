@@ -72,8 +72,6 @@
   "include": ["."],
   "exclude": [
     "node_modules",
-    "**/*.test.ts",
-    "**/*.spec.ts"
   ],
   "files": ["src/index.d.ts"]
 }
