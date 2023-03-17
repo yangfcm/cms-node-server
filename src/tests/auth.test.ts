@@ -16,8 +16,7 @@ describe("Test auth routers", () => {
     expect(token).toBeDefined();
 
     // Assert created user is the user to sign up.
-    // const { user: createdUser } = response.body as AuthUserResponse;
-    expect(createdUser).not.toBeNull();
+    expect(createdUser.id).toBeDefined();
     expect(createdUser.username).toBe(newUserMary.username);
     expect(createdUser.nickname).toBe(newUserMary.nickname);
     expect(createdUser.email).toBe(newUserMary.email);
@@ -66,7 +65,7 @@ describe("Test auth routers", () => {
 
     const token = header["x-auth"];
     expect(token).toBeDefined();
-
+    expect(user.id).toBeDefined();
     expect(user.username).toBe(userJohn.username);
     expect(user.email).toBe(userJohn.email);
   });
@@ -82,7 +81,7 @@ describe("Test auth routers", () => {
 
     const token = header["x-auth"];
     expect(token).toBeDefined();
-
+    expect(user.id).toBeDefined();
     expect(user.username).toBe(userJohn.username);
     expect(user.email).toBe(userJohn.email);
   });

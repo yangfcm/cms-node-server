@@ -4,7 +4,7 @@ import { johnBlog } from "./fixtures/blog";
 
 describe("Test blog routers", () => {
   test("User creates a blog", async () => {
-    const { userJohnToken } = globalThis.__TESTDATA__;
+    const { userJohnToken, userJohnId } = globalThis.__TESTDATA__;
 
     const {
       body: { blog: createdBlog },
@@ -15,6 +15,9 @@ describe("Test blog routers", () => {
         blog: johnBlog,
       });
 
-    expect(createdBlog).toBeDefined();
+    expect(createdBlog.id).toBeDefined();
+    expect(createdBlog.title).toBe(johnBlog.title);
+    expect(createdBlog.address).toBe(johnBlog.address);
+    expect(createdBlog.userId).toBe(userJohnId);
   });
 });

@@ -11,6 +11,8 @@ export const seedData = async () => {
   const newUserMike = await createUser(userMike);
   globalThis.__TESTDATA__ = {
     // Put the user token in global variable so that they can be accessed by test cases.
+    userJohnId: newUserJohn.id,
+    userMikeId: newUserMike.id,
     userJohnToken: generateAuthToken({
       id: newUserJohn.id,
       email: newUserJohn.email,
