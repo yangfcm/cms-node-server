@@ -73,5 +73,5 @@
   "exclude": [
     "node_modules",
   ],
-  "files": ["src/index.d.ts"]
+  "files": ["src/index.d.ts", "src/global.d.ts"]
 }
