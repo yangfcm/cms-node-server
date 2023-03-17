@@ -1,22 +1,10 @@
 import request from "supertest";
 import app from "../app";
-import User from "../models/user";
 import { readUserById } from "../repositories/user";
 import { newUserMary, userJohn } from "./fixtures/user";
-import seedUsers from "./fixtures/seedUsers";
 import { AUTH, USER } from "../settings/constants";
 
 describe("Test auth routers", () => {
-  beforeAll(async () => {
-    const count = await User.countDocuments();
-    if (count > 0) await User.deleteMany();
-    await seedUsers();
-  });
-
-  afterAll(async () => {
-    await User.deleteMany();
-  });
-
   test("sign up new user successfully.", async () => {
     const {
       header,
