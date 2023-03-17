@@ -6,6 +6,8 @@ export type UserSignupData = {
   email: IUser["email"];
   username: IUser["username"];
   nickname?: IUser["nickname"];
+  biography?: IUser["biography"];
+  avatar?: IUser["avatar"];
   password: IUser["password"];
 };
 

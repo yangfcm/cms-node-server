@@ -4,10 +4,12 @@ import User from "../models/user";
 import { readUserById } from "../repositories/user";
 import { AuthUserResponse } from "../routers/auth";
 import { userMary } from "./fixtures/user";
+import seedUsers from "./fixtures/seedUsers";
 
 describe("Test auth functions", () => {
   beforeAll(async () => {
     await User.deleteMany();
+    await seedUsers();
   });
 
   test("sign up new user.", async () => {
@@ -28,5 +30,9 @@ describe("Test auth functions", () => {
     const user = await readUserById(createdUser.id);
     expect(user).not.toBeNull();
     expect(user).toEqual(createdUser);
+  });
+
+  afterAll(async () => {
+    await User.deleteMany();
   });
 });
