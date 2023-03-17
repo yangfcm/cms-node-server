@@ -1,5 +1,5 @@
-import { cleanUsers } from "./fixtures/seedUsers";
+import { cleanData } from "./fixtures/seedData";
 
 export default async () => {
-  await cleanUsers();
+  await cleanData();
 };

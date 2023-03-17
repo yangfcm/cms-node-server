@@ -1,9 +1,9 @@
 import { DATABASE_CONNECTION_URI } from "../settings/constants";
 import connectDatabase from "../settings/connectDatabase";
-import { seedUsers, cleanUsers } from "./fixtures/seedUsers";
+import { seedData, cleanData } from "./fixtures/seedData";
 
 export default async () => {
   await connectDatabase(DATABASE_CONNECTION_URI);
-  // await cleanUsers();
-  await seedUsers();
+  await cleanData();
+  await seedData();
 };
