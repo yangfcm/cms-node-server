@@ -98,9 +98,9 @@ userSchema.methods.mapToUserData = function (): UserData {
     id: user._id.toString(),
     email: user.email,
     username: user.username,
-    nickname: user.nickname,
-    biography: user.biography,
-    avatar: user.avatar,
+    nickname: user.nickname || "",
+    biography: user.biography || "",
+    avatar: user.avatar || "",
   };
 };
 

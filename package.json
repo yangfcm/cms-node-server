@@ -4,7 +4,7 @@
   "description": "## Intro",
   "main": "index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test jest src/tests",
+    "test": "cross-env NODE_ENV=test jest src/tests --runInBand --detectOpenHandles",
     "dev": "nodemon --watch \"./**\" --ext \"ts,json\" --ignore \"./**/*.spec.ts\" --exec \"ts-node ./index.ts\"",
     "build": "tsc",
     "start": "node dist/index.js"
