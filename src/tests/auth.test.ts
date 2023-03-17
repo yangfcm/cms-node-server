@@ -24,7 +24,6 @@ describe("Test auth routers", () => {
 
     // Assert user is persisted in db.
     const user = await readUserById(createdUser.id);
-    expect(user).not.toBeNull();
     expect(user).toEqual(createdUser);
   });
 
@@ -68,7 +67,6 @@ describe("Test auth routers", () => {
     const token = header["x-auth"];
     expect(token).toBeDefined();
 
-    expect(user).not.toBeNull();
     expect(user.username).toBe(userJohn.username);
     expect(user.email).toBe(userJohn.email);
   });
@@ -85,7 +83,6 @@ describe("Test auth routers", () => {
     const token = header["x-auth"];
     expect(token).toBeDefined();
 
-    expect(user).not.toBeNull();
     expect(user.username).toBe(userJohn.username);
     expect(user.email).toBe(userJohn.email);
   });
