@@ -2,29 +2,37 @@ import request from "supertest";
 import app from "../app";
 import User from "../models/user";
 import { readUserById } from "../repositories/user";
-import { AuthUserResponse } from "../routers/auth";
-import { userMary } from "./fixtures/user";
+import { newUserMary, userJohn } from "./fixtures/user";
 import seedUsers from "./fixtures/seedUsers";
+import { AUTH, USER } from "../settings/constants";
 
-describe("Test auth functions", () => {
+describe("Test auth routers", () => {
   beforeAll(async () => {
-    await User.deleteMany();
+    const count = await User.countDocuments();
+    if (count > 0) await User.deleteMany();
     await seedUsers();
   });
 
-  test("sign up new user.", async () => {
-    const response = await request(app).post("/api/auth/signup").send(userMary);
+  afterAll(async () => {
+    await User.deleteMany();
+  });
+
+  test("sign up new user successfully.", async () => {
+    const {
+      header,
+      body: { user: createdUser },
+    } = await request(app).post("/api/auth/signup").send(newUserMary);
 
     // Assert token is available.
-    const token = response.header["x-auth"];
+    const token = header["x-auth"];
     expect(token).toBeDefined();
 
     // Assert created user is the user to sign up.
-    const { user: createdUser } = response.body as AuthUserResponse;
+    // const { user: createdUser } = response.body as AuthUserResponse;
     expect(createdUser).not.toBeNull();
-    expect(createdUser.username).toBe(userMary.username);
-    expect(createdUser.nickname).toBe(userMary.nickname);
-    expect(createdUser.email).toBe(userMary.email);
+    expect(createdUser.username).toBe(newUserMary.username);
+    expect(createdUser.nickname).toBe(newUserMary.nickname);
+    expect(createdUser.email).toBe(newUserMary.email);
 
     // Assert user is persisted in db.
     const user = await readUserById(createdUser.id);
@@ -32,7 +40,93 @@ describe("Test auth functions", () => {
     expect(user).toEqual(createdUser);
   });
 
-  afterAll(async () => {
-    await User.deleteMany();
+  test("Sign up with existing email and username", async () => {
+    {
+      const {
+        body: { message },
+        status,
+      } = await request(app).post("/api/auth/signup").send({
+        email: userJohn.email, // Existing email.
+        username: "Josh",
+        password: "abcd1234",
+      });
+      expect(status).toBe(400);
+      expect(message).toMatch(USER.EMAIL_IN_USE);
+    }
+
+    {
+      const {
+        body: { message },
+        status,
+      } = await request(app).post("/api/auth/signup").send({
+        email: "josh@test.com",
+        username: userJohn.username, // Existing username.
+        password: "abcd1234",
+      });
+      expect(status).toBe(400);
+      expect(message).toMatch(USER.USERNAME_IN_USE);
+    }
+  });
+
+  test("sign in user with email successfully", async () => {
+    const {
+      header,
+      body: { user },
+    } = await request(app).post("/api/auth/signin").send({
+      identity: userJohn.email,
+      password: userJohn.password,
+    });
+
+    const token = header["x-auth"];
+    expect(token).toBeDefined();
+
+    expect(user).not.toBeNull();
+    expect(user.username).toBe(userJohn.username);
+    expect(user.email).toBe(userJohn.email);
+  });
+
+  test("sign in user with username successfully", async () => {
+    const {
+      header,
+      body: { user },
+    } = await request(app).post("/api/auth/signin").send({
+      identity: userJohn.username,
+      password: userJohn.password,
+    });
+
+    const token = header["x-auth"];
+    expect(token).toBeDefined();
+
+    expect(user).not.toBeNull();
+    expect(user.username).toBe(userJohn.username);
+    expect(user.email).toBe(userJohn.email);
+  });
+
+  test("sign in user with bad credentials", async () => {
+    // Sign in with bad password.
+    {
+      const {
+        body: { message },
+        status: status,
+      } = await request(app).post("/api/auth/signin").send({
+        identity: userJohn.email,
+        password: "bad",
+      });
+      expect(status).toBe(403);
+      expect(message).toMatch(AUTH.BAD_CREDENTIALS);
+    }
+
+    // Sign in with non existing email.
+    {
+      const {
+        body: { message },
+        status,
+      } = await request(app).post("/api/auth/signin").send({
+        identity: "not_exist@test.com",
+        password: userJohn.password,
+      });
+      expect(status).toBe(403);
+      expect(message).toMatch(AUTH.BAD_CREDENTIALS);
+    }
   });
 });

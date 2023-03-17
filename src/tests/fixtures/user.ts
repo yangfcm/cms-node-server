@@ -11,7 +11,7 @@ export const userMike = {
   password: "abcd1234",
 };
 
-export const userMary = {
+export const newUserMary = {
   email: "mary@test.com",
   username: "mary",
   nickname: "best_mary",
