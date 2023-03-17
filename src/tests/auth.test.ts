@@ -1,8 +1,8 @@
 import request from "supertest";
 import app from "../app";
-import { UserData } from "../dtos/user";
 import User from "../models/user";
 import { readUserById } from "../repositories/user";
+import { AuthUserResponse } from "../routers/auth";
 import { userMary } from "./fixtures/user";
 
 describe("Test auth functions", () => {
@@ -18,7 +18,7 @@ describe("Test auth functions", () => {
     expect(token).toBeDefined();
 
     // Assert created user is the user to sign up.
-    const createdUser: UserData = response.body;
+    const { user: createdUser } = response.body as AuthUserResponse;
     expect(createdUser).not.toBeNull();
     expect(createdUser.username).toBe(userMary.username);
     expect(createdUser.nickname).toBe(userMary.nickname);

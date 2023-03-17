@@ -6,6 +6,10 @@ import parseError, { APIError } from "../utils/parseError";
 import generateAuthToken from "../utils/generateAuthToken";
 import { AUTH } from "../settings/constants";
 
+export type AuthUserResponse = {
+  user: UserData;
+};
+
 const router = Router();
 
 router.get("/check", (req, res) => {
@@ -16,12 +20,12 @@ router.post(
   "/signup",
   async (
     req: Request<any, any, UserSignupData>,
-    res: Response<UserData | APIError>
+    res: Response<AuthUserResponse | APIError>
   ) => {
     try {
       const user = await createUser(req.body);
       const token = generateAuthToken(user);
-      res.header("x-auth", token).json(user);
+      res.header("x-auth", token).json({ user });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
@@ -32,7 +36,7 @@ router.post(
   "/signin",
   async (
     req: Request<any, any, UserSigninData>,
-    res: Response<UserData | APIError>
+    res: Response<AuthUserResponse | APIError>
   ) => {
     try {
       const user = await findUserByCredentials(req.body);
@@ -40,7 +44,7 @@ router.post(
         return res.status(403).json({ message: AUTH.BAD_CREDENTIALS });
       }
       const token = generateAuthToken(user);
-      res.header("x-auth", token).json(user);
+      res.header("x-auth", token).json({ user });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
