@@ -7,12 +7,10 @@ import { AUTH, USER } from "../settings/constants";
 describe("Test auth routers", () => {
   test("sign up new user successfully.", async () => {
     const {
-      header,
-      body: { user: createdUser },
+      body: { user: createdUser, token },
     } = await request(app).post("/api/auth/signup").send(newUserMary);
 
     // Assert token is available.
-    const token = header["x-auth"];
     expect(token).toBeDefined();
 
     // Assert created user is the user to sign up.
@@ -56,14 +54,12 @@ describe("Test auth routers", () => {
 
   test("sign in user with email successfully", async () => {
     const {
-      header,
-      body: { user },
+      body: { user, token },
     } = await request(app).post("/api/auth/signin").send({
       identity: userJohn.email,
       password: userJohn.password,
     });
 
-    const token = header["x-auth"];
     expect(token).toBeDefined();
     expect(user.id).toBeDefined();
     expect(user.username).toBe(userJohn.username);
@@ -72,14 +68,12 @@ describe("Test auth routers", () => {
 
   test("sign in user with username successfully", async () => {
     const {
-      header,
-      body: { user },
+      body: { user, token },
     } = await request(app).post("/api/auth/signin").send({
       identity: userJohn.username,
       password: userJohn.password,
     });
 
-    const token = header["x-auth"];
     expect(token).toBeDefined();
     expect(user.id).toBeDefined();
     expect(user.username).toBe(userJohn.username);

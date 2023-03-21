@@ -8,6 +8,7 @@ import { AUTH } from "../settings/constants";
 
 export type AuthUserResponse = {
   user: UserData;
+  token: string;
 };
 
 const router = Router();
@@ -25,7 +26,7 @@ router.post(
     try {
       const user = await createUser(req.body);
       const token = generateAuthToken(user);
-      res.header("x-auth", token).json({ user });
+      res.json({ user, token });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
@@ -44,7 +45,7 @@ router.post(
         return res.status(403).json({ message: AUTH.BAD_CREDENTIALS });
       }
       const token = generateAuthToken(user);
-      res.header("x-auth", token).json({ user });
+      res.json({ user, token });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
