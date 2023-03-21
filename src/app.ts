@@ -1,5 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 import { DATABASE_CONNECTION_URI } from "./settings/constants";
 import connectDatabase from "./settings/connectDatabase";
@@ -15,6 +16,7 @@ connectDatabase(DATABASE_CONNECTION_URI);
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/blogs", blogRouter);
