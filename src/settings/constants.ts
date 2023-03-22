@@ -51,3 +51,5 @@ export const ARTICLE = {
   TITLE_TOO_LONG: "Article title is too long",
   MAX_TITLE_LENGTH: 200,
 };
+
+export const ONE_DAY_IN_SECONDS = 24 * 60 * 60;

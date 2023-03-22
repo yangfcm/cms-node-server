@@ -16,11 +16,11 @@ export const seedData = async () => {
     userJohnToken: generateAuthToken({
       id: newUserJohn.id,
       email: newUserJohn.email,
-    }),
+    }).token,
     userMikeToken: generateAuthToken({
       id: newUserMike.id,
       email: newUserMike.email,
-    }),
+    }).token,
   };
 
   // const newJohnBlog = await createBlog({ ...johnBlog, userId: newUserJohn.id });
