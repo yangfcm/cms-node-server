@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 
 import { UserSignupData, UserSigninData, UserData } from "../dtos/user";
 import { createUser, findUserByCredentials } from "../repositories/user";
+import authenticate from "../middleware/authenticate";
 import parseError, { APIError } from "../utils/parseError";
 import generateAuthToken from "../utils/generateAuthToken";
 import { AUTH } from "../settings/constants";
@@ -11,6 +12,10 @@ export type AuthUserResponse = {
   token: string;
   expiresAt: number;
 };
+
+export type UserResponse = {
+  user: UserData;
+}
 
 const router = Router();
 
@@ -52,5 +57,15 @@ router.post(
     }
   }
 );
+
+router.get('/token', authenticate, async (req, res: Response<UserResponse | APIError>) => {
+  try {
+    const { user } = req;
+    if (!user) return res.status(403).json({ message: AUTH.INVALID_TOKEN });
+    res.json({ user });
+  } catch (err: any) {
+    res.status(403).json(parseError(err));
+  }
+});
 
 export default router;
