@@ -23,4 +23,9 @@ export type UserData = {
   nickname?: IUser["nickname"];
   biography?: IUser["biography"];
   avatar?: IUser["avatar"];
+  blogs?: {
+    id: string;
+    title: string;
+    address: string;
+  }[]
 };

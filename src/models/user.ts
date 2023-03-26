@@ -14,6 +14,7 @@ export interface IUser extends Document {
   password: string;
   createdAt: Date;
   updatedAt: Date;
+  blogs: string[]; // Reference to the user's blog(s).
   mapToUserData: () => UserData;
 }
 
@@ -76,6 +77,13 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
     },
+    blogs: [
+      {
+        type: String,
+        required: true,
+        ref: "Blog",
+      }
+    ]
   },
   {
     timestamps: {
@@ -101,6 +109,10 @@ userSchema.methods.mapToUserData = function (): UserData {
     nickname: user.nickname || "",
     biography: user.biography || "",
     avatar: user.avatar || "",
+    blogs: user.blogs ? user.blogs.map((blog: any) => {
+      if (typeof blog === 'string') return blog;
+      return { id: blog._id?.toString(), title: blog.title, address: blog.address };
+    }) : [],
   };
 };
 

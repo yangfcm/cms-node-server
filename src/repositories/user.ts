@@ -29,6 +29,7 @@ export const findUserByCredentials = async (
 };
 
 export const readUserById = async (id: string): Promise<UserData | null> => {
-  const user = await User.findById(id);
+  const user = await User.findById(id).populate('blogs');
+  console.log(user);
   return user ? user.mapToUserData() : null;
 };
