@@ -8,12 +8,13 @@ import {
   createBlog,
   updateBlog,
 } from "../repositories/blog";
+import { updateUser } from "../repositories/user";
 import parseError, { APIError } from "../utils/parseError";
 
 type BlogResponse =
   | {
-      blog: BlogData;
-    }
+    blog: BlogData;
+  }
   | { blogs: BlogData[] };
 
 const router = Router();
@@ -29,6 +30,9 @@ router.post(
       const { user } = req;
       const { blog } = req.body;
       const newBlog = await createBlog({ ...blog, userId: user?.id });
+      await updateUser(user?.id, {
+        blogs: [...(user?.blogs || []), newBlog.id]
+      })
       return res.json({ blog: newBlog });
     } catch (err: any) {
       res.status(400).json(parseError(err));

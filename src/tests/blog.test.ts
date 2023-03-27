@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../app";
+import { readUserById } from "../repositories/user";
 import { johnBlog } from "./fixtures/blog";
 
 describe("Test blog routers", () => {
@@ -19,5 +20,9 @@ describe("Test blog routers", () => {
     expect(createdBlog.title).toBe(johnBlog.title);
     expect(createdBlog.address).toBe(johnBlog.address);
     expect(createdBlog.userId).toBe(userJohnId);
+
+    const userJohn = await readUserById(userJohnId);
+    expect(userJohn?.blogs).toBeDefined();
+    expect((userJohn?.blogs || [])[0].id).toBe(createdBlog.id);
   });
 });

@@ -1,6 +1,6 @@
 import { userJohn, userMike } from "./user";
 import { mikeBlog1, mikeBlog2 } from "./blog";
-import { createUser } from "../../repositories/user";
+import { createUser, updateUser } from "../../repositories/user";
 import { createBlog } from "../../repositories/blog";
 import User from "../../models/user";
 import Blog from "../../models/blog";
@@ -31,6 +31,9 @@ export const seedData = async () => {
   const newMikeBlog2 = await createBlog({
     ...mikeBlog2,
     userId: newUserMike.id,
+  });
+  await updateUser(newUserMike.id, {
+    blogs: [newMikeBlog1.id, newMikeBlog2.id]
   });
 };
 

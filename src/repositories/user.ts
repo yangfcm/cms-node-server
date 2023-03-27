@@ -30,6 +30,20 @@ export const findUserByCredentials = async (
 
 export const readUserById = async (id: string): Promise<UserData | null> => {
   const user = await User.findById(id).populate('blogs');
-  console.log(user);
   return user ? user.mapToUserData() : null;
 };
+
+export const updateUser = async (id: string, user: Partial<UserData>): Promise<UserData | null> => {
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      $set: user,
+    },
+    {
+      runValidators: true,
+      returnDocument: "after",
+    }
+  );
+  if (!updatedUser) return null;
+  return updatedUser.mapToUserData();
+}
