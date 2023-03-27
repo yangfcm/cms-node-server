@@ -15,10 +15,10 @@ export const findUserByCredentials = async (
   const { identity, password } = user;
   let foundUser: IUser | null = null;
   if (isValidEmail(identity)) {
-    foundUser = await User.findOne({ email: identity });
+    foundUser = await User.findOne({ email: identity }).populate('blogs');
   }
   if (isValidCharacters(identity)) {
-    foundUser = await User.findOne({ username: identity });
+    foundUser = await User.findOne({ username: identity }).populate('blogs');
   }
   if (!foundUser) return null;
 
