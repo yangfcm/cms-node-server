@@ -31,7 +31,7 @@ router.post(
       const { blog } = req.body;
       const newBlog = await createBlog({ ...blog, userId: user?.id });
       await updateUser(user?.id, {
-        blogs: [...(user?.blogs || []), newBlog.id]
+        blogs: [...((user?.blogs || []).map(b => b.id)), newBlog.id]
       })
       return res.json({ blog: newBlog });
     } catch (err: any) {
