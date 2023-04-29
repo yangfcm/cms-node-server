@@ -43,7 +43,6 @@ router.post(
       res.status(400).json(parseError(err));
     } finally {
       session.endSession();
-      mongoose.connection.close();
     }
   }
 );
