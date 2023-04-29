@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import mongoose from "mongoose";
 import { BlogData, BlogPostData } from "../dtos/blog";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
@@ -26,6 +27,8 @@ router.post(
     req: Request<any, any, { blog: BlogPostData }>,
     res: Response<BlogResponse | APIError>
   ) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
     try {
       const { user } = req;
       const { blog } = req.body;
@@ -33,9 +36,14 @@ router.post(
       await updateUser(user?.id, {
         blogs: [...((user?.blogs || []).map(b => b.id)), newBlog.id]
       })
+      await session.commitTransaction();
       return res.json({ blog: newBlog });
     } catch (err: any) {
+      await session.abortTransaction();
       res.status(400).json(parseError(err));
+    } finally {
+      session.endSession();
+      mongoose.connection.close();
     }
   }
 );
