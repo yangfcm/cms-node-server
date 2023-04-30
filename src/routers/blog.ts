@@ -8,6 +8,7 @@ import {
   readBlogByAddress,
   createBlog,
   updateBlog,
+  deleteBlog,
 } from "../repositories/blog";
 import { updateUser } from "../repositories/user";
 import parseError, { APIError } from "../utils/parseError";
@@ -86,7 +87,7 @@ router.put(
     res: Response<BlogResponse | APIError>
   ) => {
     try {
-      const updatedBlog = await updateBlog(req.params.blogId!, req.body.blog);
+      const updatedBlog = await updateBlog(req.params.blogId || '', req.body.blog);
       if (!updatedBlog) return res.status(404).send();
       res.json({ blog: updatedBlog });
     } catch (err) {
@@ -94,5 +95,33 @@ router.put(
     }
   }
 );
+
+router.delete(
+  '/:blogId',
+  [authenticate, userOwnsBlog],
+  async (
+    req: Request<{ blogId?: string }>,
+    res: Response<BlogResponse | APIError>
+  ) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+      const { user } = req;
+      // @TODO: Delete other resources, like articles, tags, categories etc. under the blog.
+      const deletedBlog = await deleteBlog(req.params.blogId || '');
+      if (!deletedBlog) return res.status(404).send();
+      await updateUser(user?.id, {
+        blogs: (user?.blogs || []).filter(b => b.id !== deletedBlog.id).map(b => b.id),
+      })
+      await session.commitTransaction();
+      res.json({ blog: deletedBlog });
+    } catch (err) {
+      await session.abortTransaction();
+      res.status(400).json(parseError(err));
+    } finally {
+      session.endSession();
+    }
+  }
+)
 
 export default router;

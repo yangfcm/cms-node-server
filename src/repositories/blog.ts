@@ -47,3 +47,10 @@ export const updateBlog = async (
   if (!updatedBlog) return null;
   return updatedBlog.mapToBlogData();
 };
+
+export const deleteBlog = async (id: string): Promise<BlogData | null> => {
+  const blog = await Blog.findById(id);
+  if (!blog) return null;
+  await blog.deleteOne();
+  return blog.mapToBlogData();
+}

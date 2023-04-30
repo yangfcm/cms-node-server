@@ -33,7 +33,7 @@ export const readUserById = async (id: string): Promise<UserData | null> => {
   return user ? user.mapToUserData() : null;
 };
 
-export const updateUser = async (id: string, user: Partial<UserData>): Promise<UserData | null> => {
+export const updateUser = async (id: string, user: Partial<IUser>): Promise<UserData | null> => {
   const updatedUser = await User.findByIdAndUpdate(
     id,
     {
