@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { isValidCharacters, isValidEmail } from "../utils/validators";
 import { USER } from "../settings/constants";
 import { UserData } from "../dtos/user";
+import { IBlog } from "./blog";
 
 // A user is a person who owns a blog platform and he/she can access the functions like commenting, following, being followed etcs.
 export interface IUser extends Document {
@@ -109,7 +110,7 @@ userSchema.methods.mapToUserData = function (): UserData {
     nickname: user.nickname || "",
     biography: user.biography || "",
     avatar: user.avatar || "",
-    blogs: user.blogs ? user.blogs.map((blog: any) => {
+    blogs: user.blogs ? user.blogs.map((blog: string | IBlog) => {
       if (typeof blog === 'string') return blog;
       return { id: blog._id?.toString(), title: blog.title, address: blog.address };
     }) : [],
