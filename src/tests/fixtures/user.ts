@@ -8,7 +8,9 @@ export const userJohn = {
 export const userMike = {
   email: "mike@test.com",
   username: "mike",
+  nickname: "best_mike",
   password: "abcd1234",
+  biography: "This guy is lazy."
 };
 
 export const newUserMary = {

@@ -1,8 +1,9 @@
 import request from "supertest";
 import app from "../app";
 import { readUserById } from "../repositories/user";
-import { newUserMary, userJohn } from "./fixtures/user";
+import { newUserMary, userJohn, userMike } from "./fixtures/user";
 import { AUTH, USER } from "../settings/constants";
+import { mikeBlog1, mikeBlog2 } from "./fixtures/blog";
 
 describe("Test auth routers", () => {
   test("sign up new user successfully.", async () => {
@@ -106,5 +107,21 @@ describe("Test auth routers", () => {
       expect(status).toBe(403);
       expect(message).toMatch(AUTH.BAD_CREDENTIALS);
     }
+  });
+
+  test('exchange user data with token', async () => {
+    const { userMikeToken } = globalThis.__TESTDATA__;
+
+    const { body: { user } } = await request(app).get('/api/auth/token')
+      .set("x-auth", userMikeToken);
+    console.log(user.blogs);
+    expect(user.id).toBeDefined();
+    expect(user.email).toBe(userMike.email);
+    expect(user.username).toBe(userMike.username);
+    expect(user.nickname).toBe(userMike.nickname);
+    expect(user.biography).toBe(userMike.biography);
+    expect(user.blogs.length).toBe(2);
+    expect(user.blogs[0]).toMatchObject(mikeBlog1);
+    expect(user.blogs[1]).toMatchObject(mikeBlog2);
   });
 });

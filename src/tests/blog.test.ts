@@ -25,4 +25,20 @@ describe("Test blog routers", () => {
     expect(userJohn?.blogs).toBeDefined();
     expect((userJohn?.blogs || [])[0].id).toBe(createdBlog.id);
   });
+
+  // test("User updates a blog", async() => {
+  //   const { userMikeId, userMikeToken } = globalThis.__TESTDATA__;
+  //   const {
+  //     body: { user }
+  //   }
+
+  //   const { 
+  //     body: { blog: updatedBlog },
+  //   } = await request(app).put(`/api/blogs/${}`)
+
+  // });
+
+  // test("User delete a blog", async() => {
+
+  // });
 });
