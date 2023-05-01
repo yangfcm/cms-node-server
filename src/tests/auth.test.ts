@@ -114,7 +114,6 @@ describe("Test auth routers", () => {
 
     const { body: { user } } = await request(app).get('/api/auth/token')
       .set("x-auth", userMikeToken);
-    console.log(user.blogs);
     expect(user.id).toBeDefined();
     expect(user.email).toBe(userMike.email);
     expect(user.username).toBe(userMike.username);
