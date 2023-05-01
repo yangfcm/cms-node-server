@@ -3,6 +3,7 @@ import { CategoryData, CategoryPostData } from "../dtos/category";
 import {
   categoryNameExistsInBlog,
   createCategory,
+  deleteCategory,
   readCategoriesByBlogId,
   updateCategory,
 } from "../repositories/category";
@@ -11,19 +12,27 @@ import { CATEGORY } from "../settings/constants";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
 
+type CategoryResponse = {
+  category: CategoryData
+} | {
+  categories: CategoryData[]
+}
+
 const router = Router();
 
 router.get(
   "/",
   async (
     req: Request<{ address: string }>,
-    res: Response<CategoryData[] | APIError>
+    res: Response<CategoryResponse | APIError>
   ) => {
     const { blog } = req;
     try {
-      if (!blog) return res.json([]);
+      if (!blog) return res.json({
+        categories: []
+      });
       const categories = await readCategoriesByBlogId(blog.id);
-      res.json(categories);
+      res.json({ categories });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
@@ -35,7 +44,7 @@ router.post(
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ address?: string }, any, { category: CategoryPostData }>,
-    res: Response<CategoryData | APIError>
+    res: Response<CategoryResponse | APIError>
   ) => {
     try {
       const { blog } = req;
@@ -49,7 +58,7 @@ router.post(
         ...category,
         blogId: blog!.id,
       });
-      res.json(newCategory);
+      res.json({ category: newCategory });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
@@ -65,7 +74,7 @@ router.put(
       any,
       { category: Partial<CategoryPostData> }
     >,
-    res: Response<CategoryData | APIError>
+    res: Response<CategoryResponse | APIError>
   ) => {
     try {
       const updatedCategory = await updateCategory(
@@ -74,11 +83,28 @@ router.put(
         req.blog?.id
       );
       if (!updatedCategory) return res.status(404).send();
-      res.json(updatedCategory);
+      res.json({ category: updatedCategory });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
   }
 );
+
+router.delete(
+  '/:categoryId',
+  [authenticate, userOwnsBlog],
+  async (
+    req: Request<{ address?: string; blogId?: string; categoryId: string }>,
+    res: Response<CategoryResponse | APIError>
+  ) => {
+    try {
+      const deletedCategory = await deleteCategory(req.params.categoryId);
+      if (!deletedCategory) return res.status(404).send();
+      res.json({ category: deletedCategory });
+    } catch (err: any) {
+      res.status(400).json(parseError(err));
+    }
+  }
+)
 
 export default router;
