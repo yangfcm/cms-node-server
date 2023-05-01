@@ -5,6 +5,12 @@ import {
 } from "../dtos/category";
 import Category from "../models/category";
 
+/**
+ * Given blog id and a category name, check if the name exists in the blog.
+ * @param categoryName 
+ * @param blogId 
+ * @returns true - The given blog name exists in the blog with given id; false - otherwise.
+ */
 export const categoryNameExistsInBlog = async (
   categoryName: string,
   blogId: string
@@ -16,6 +22,11 @@ export const categoryNameExistsInBlog = async (
   return !!existingCategory;
 };
 
+/**
+ * Create a category.
+ * @param category 
+ * @returns The category data created
+ */
 export const createCategory = async (
   category: CategoryNewData
 ): Promise<CategoryData> => {
@@ -24,6 +35,11 @@ export const createCategory = async (
   return newCategory.mapToCategoryData();
 };
 
+/**
+ * Get the categories for a blog.
+ * @param blogId 
+ * @returns The categories under the blog with given blog id.
+ */
 export const readCategoriesByBlogId = async (
   blogId: string
 ): Promise<CategoryData[]> => {
@@ -58,3 +74,15 @@ export const updateCategory = async (
   );
   return updatedCategory ? updatedCategory.mapToCategoryData() : null;
 };
+
+/**
+ * Delete a category by id
+ * @param id 
+ * @returns  The deleted category or null if category not found.
+ */
+export const deleteCategory = async (id: string): Promise<CategoryData | null> => {
+  const category = await Category.findById(id);
+  if (!category) return null;
+  await category.deleteOne();
+  return category.mapToCategoryData();
+}
