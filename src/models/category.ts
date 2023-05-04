@@ -49,6 +49,8 @@ categorySchema.methods.mapToCategoryData = function (): CategoryData {
     name: category.name,
     description: category.description,
     blogId: category.blogId,
+    createdAt: category.createdAt,
+    updatedAt: category.updatedAt,
   };
 };
 
