@@ -6,20 +6,20 @@ import {
 import Category from "../models/category";
 
 /**
- * Given blog id and a category name, check if the name exists in the blog.
+ * Given blog id and a category name, find out the category by name in the given blog.
  * @param categoryName 
  * @param blogId 
- * @returns true - The given blog name exists in the blog with given id; false - otherwise.
+ * @returns The category found or null if not found.
  */
-export const categoryNameExistsInBlog = async (
+export const findCategoryByNameInBlog = async (
   categoryName: string,
   blogId: string
-): Promise<boolean> => {
-  const existingCategory = await Category.findOne({
+): Promise<CategoryData | null> => {
+  const category = await Category.findOne({
     name: categoryName,
     blogId,
   });
-  return !!existingCategory;
+  return category ? category.mapToCategoryData() : null;
 };
 
 /**

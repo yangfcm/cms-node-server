@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { CategoryData, CategoryPostData } from "../dtos/category";
 import {
-  categoryNameExistsInBlog,
+  findCategoryByNameInBlog,
   createCategory,
   deleteCategory,
   readCategoriesByBlogId,
@@ -49,11 +49,11 @@ router.post(
     try {
       const { blog } = req;
       const { category } = req.body;
-      const existingCategory = await categoryNameExistsInBlog(
+      const foundCategory = await findCategoryByNameInBlog(
         category.name,
         blog!.id
       );
-      if (existingCategory) throw new Error(CATEGORY.NAME_IN_USE);
+      if (foundCategory) throw new Error(CATEGORY.NAME_IN_USE);
       const newCategory = await createCategory({
         ...category,
         blogId: blog!.id,
@@ -77,10 +77,19 @@ router.put(
     res: Response<CategoryResponse | APIError>
   ) => {
     try {
+      const { blog } = req;
+      const { categoryId } = req.params;
+      const { category } = req.body;
+      if (category.name && blog?.id) {
+        const foundCategory = await findCategoryByNameInBlog(category.name, blog.id);
+        if (foundCategory && foundCategory.id !== categoryId) {
+          throw new Error(CATEGORY.NAME_IN_USE);
+        }
+      }
       const updatedCategory = await updateCategory(
-        req.params.categoryId,
-        req.body.category,
-        req.blog?.id
+        categoryId,
+        category,
+        blog?.id
       );
       if (!updatedCategory) return res.status(404).send();
       res.json({ category: updatedCategory });
