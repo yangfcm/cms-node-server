@@ -2,7 +2,7 @@ import { ICategory } from "../models/category";
 
 export type CategoryPostData = {
   name: ICategory["name"];
-  description: ICategory["description"];
+  description?: ICategory["description"];
 };
 
 export type CategoryNewData = CategoryPostData & {
