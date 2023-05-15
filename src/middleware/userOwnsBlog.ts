@@ -10,10 +10,11 @@ const userOwnsBlog = async (
   next: NextFunction
 ) => {
   try {
-    const { blog, user } = req; // The blog data is already attached to req, which is from 'getBlogByAddress' middleware.
+    const { blogId, address } = req.params; // Read blog id or address from request url's params.
+    const { blog, user } = req; // The blog data is already attached to req, which is from 'getBlogByAddress' middleware, 
+    // and user data is attached to req, which is from 'authenticate' middleware.
     if (blog && user && blog.userId === user.id) return next();
 
-    const { blogId, address } = req.params; // Blog id or address is provided in url.
     let foundBlog: BlogData | null = null;
     if (blogId) {
       foundBlog = await readBlog(blogId);
