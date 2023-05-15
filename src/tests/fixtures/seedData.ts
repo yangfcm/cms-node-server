@@ -20,21 +20,6 @@ export const seedData = async () => {
   const newUserJohn = await createUser(userJohn);
   const newUserMike = await createUser(userMike);
 
-  // Attach user ids and tokens to global so that test cases can read them.
-  globalThis.__TESTDATA__ = {
-    // Put the user token in global variable so that they can be accessed by test cases.
-    userJohnId: newUserJohn.id,
-    userMikeId: newUserMike.id,
-    userJohnToken: generateAuthToken({
-      id: newUserJohn.id,
-      email: newUserJohn.email,
-    }).token,
-    userMikeToken: generateAuthToken({
-      id: newUserMike.id,
-      email: newUserMike.email,
-    }).token,
-  };
-
   // Create blogs for user Mike
   const newMikeBlog1 = await createBlog({
     ...mikeBlog1,
@@ -58,6 +43,21 @@ export const seedData = async () => {
     blogId: newMikeBlog1.id,
   });
 
+  // Attach user ids and tokens to global so that test cases can read them.
+  globalThis.__TESTDATA__ = {
+    // Put the user token in global variable so that they can be accessed by test cases.
+    userJohnId: newUserJohn.id,
+    userMikeId: newUserMike.id,
+    userJohnToken: generateAuthToken({
+      id: newUserJohn.id,
+      email: newUserJohn.email,
+    }).token,
+    userMikeToken: generateAuthToken({
+      id: newUserMike.id,
+      email: newUserMike.email,
+    }).token,
+    mikeBlog1Address: newMikeBlog1.address,
+  };
 };
 
 export const cleanData = async () => {
