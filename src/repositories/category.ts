@@ -8,17 +8,16 @@ import Category from "../models/category";
 /**
  * Given blog id and a category name, find out the category by name in the given blog.
  * @param categoryName 
- * @param blogId 
+ * @param blogId Optional. If blogId is given, find the category in this blog.
  * @returns The category found or null if not found.
  */
-export const findCategoryByNameInBlog = async (
+export const findCategoryByName = async (
   categoryName: string,
-  blogId: string
+  blogId?: string
 ): Promise<CategoryData | null> => {
-  const category = await Category.findOne({
-    name: categoryName,
-    blogId,
-  });
+  const filter: { name: string, blogId?: string } = { name: categoryName };
+  if (blogId) filter.blogId = blogId;
+  const category = await Category.findOne(filter);
   return category ? category.mapToCategoryData() : null;
 };
 
@@ -34,6 +33,16 @@ export const createCategory = async (
   await newCategory.save();
   return newCategory.mapToCategoryData();
 };
+
+/**
+ * Get a category by id
+ * @param categoryId 
+ * @returns The category found or null if not found.
+ */
+export const readCategoryById = async (categoryId: string): Promise<CategoryData | null> => {
+  const category = await Category.findById(categoryId);
+  return category ? category.mapToCategoryData() : null;
+}
 
 /**
  * Get the categories for a blog.

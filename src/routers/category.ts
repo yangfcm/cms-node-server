@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { CategoryData, CategoryPostData } from "../dtos/category";
 import {
-  findCategoryByNameInBlog,
+  findCategoryByName,
   createCategory,
   deleteCategory,
   readCategoriesByBlogId,
@@ -49,7 +49,7 @@ router.post(
     try {
       const { blog } = req;
       const { category } = req.body;
-      const foundCategory = await findCategoryByNameInBlog(
+      const foundCategory = await findCategoryByName(
         category.name,
         blog!.id
       );
@@ -81,7 +81,7 @@ router.put(
       const { categoryId } = req.params;
       const { category } = req.body;
       if (category.name && blog?.id) {
-        const foundCategory = await findCategoryByNameInBlog(category.name, blog.id);
+        const foundCategory = await findCategoryByName(category.name, blog.id);
         if (foundCategory && foundCategory.id !== categoryId) {
           throw new Error(CATEGORY.NAME_IN_USE);
         }
