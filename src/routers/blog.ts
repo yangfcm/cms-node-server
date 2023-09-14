@@ -45,7 +45,7 @@ router.post(
       return res.json({ blog: newBlog });
     } catch (err: any) {
       await session.abortTransaction();
-      res.status(400).json(parseError(err));
+      res.status(500).json(parseError(err));
     } finally {
       session.endSession();
     }
@@ -61,7 +61,7 @@ router.get(
       const blogs = await readBlogsByUserId(user?.id);
       res.json({ blogs });
     } catch (err) {
-      res.status(400).json(parseError(err));
+      res.status(500).json(parseError(err));
     }
   }
 );
@@ -78,7 +78,7 @@ router.get(
       if (!blog) return res.status(404).send();
       res.json({ blog });
     } catch (err) {
-      res.status(400).json(parseError(err));
+      res.status(500).json(parseError(err));
     }
   }
 );
@@ -98,7 +98,7 @@ router.put(
       if (!updatedBlog) return res.status(404).send();
       res.json({ blog: updatedBlog });
     } catch (err) {
-      res.status(400).json(parseError(err));
+      res.status(500).json(parseError(err));
     }
   }
 );
@@ -126,7 +126,7 @@ router.delete(
       res.json({ blog: deletedBlog });
     } catch (err) {
       await session.abortTransaction();
-      res.status(400).json(parseError(err));
+      res.status(500).json(parseError(err));
     } finally {
       session.endSession();
     }
