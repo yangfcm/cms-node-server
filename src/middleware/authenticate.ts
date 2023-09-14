@@ -5,6 +5,12 @@ import { readUserById } from "../repositories/user";
 import { AUTH, JWT_SECRET } from "../settings/constants";
 import parseError from "../utils/parseError";
 
+/**
+ * authenticate: read token from request header and pass the user data to next handler.
+ * @param req
+ * @param res
+ * @param next
+ */
 const authenticate = async (
   req: Request,
   res: Response,
