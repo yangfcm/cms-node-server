@@ -52,4 +52,11 @@ export const ARTICLE = {
   MAX_TITLE_LENGTH: 200,
 };
 
+export const TAG = {
+  NAME_REQUIRED: "Tag name is required.",
+  MAX_NAME_LENGTH: 20,
+  NAME_TOO_LONG: "Tag name is too long.",
+  NAME_IN_USE: "The tag already exists.",
+};
+
 export const ONE_DAY_IN_SECONDS = 24 * 60 * 60;
