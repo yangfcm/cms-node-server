@@ -33,7 +33,10 @@ router.post(
     try {
       const { user } = req;
       const { blog } = req.body;
-      const newBlog = await createBlog({ ...blog, userId: user?.id });
+      const newBlog = await createBlog(
+        { ...blog, userId: user?.id },
+        { session }
+      );
       await updateUser(
         user?.id,
         {

@@ -1,9 +1,12 @@
 import { BlogPostData, BlogData, BlogNewData } from "../dtos/blog";
 import Blog from "../models/blog";
 
-export const createBlog = async (blog: BlogNewData): Promise<BlogData> => {
+export const createBlog = async (
+  blog: BlogNewData,
+  options: Object = {}
+): Promise<BlogData> => {
   const newBlog = new Blog(blog);
-  await newBlog.save();
+  await newBlog.save(options);
   return newBlog.mapToBlogData();
 };
 
@@ -53,4 +56,4 @@ export const deleteBlog = async (id: string): Promise<BlogData | null> => {
   if (!blog) return null;
   await blog.deleteOne();
   return blog.mapToBlogData();
-}
+};
