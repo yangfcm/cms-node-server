@@ -118,7 +118,9 @@ router.delete(
     try {
       const { user } = req;
       // @TODO: Delete other resources, like articles, tags, categories etc. under the blog.
-      const deletedBlog = await deleteBlog(req.params.blogId || "");
+      const deletedBlog = await deleteBlog(req.params.blogId || "", {
+        session,
+      });
       if (!deletedBlog) return res.status(404).send();
       await updateUser(
         user?.id,
