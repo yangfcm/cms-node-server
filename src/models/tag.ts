@@ -7,6 +7,7 @@ export interface ITag extends Document {
   createdAt: Date;
   updatedAt: Date;
   blogId: string; // Reference to blog.
+  mapToTagData: () => TagData;
 }
 
 const tagSchema = new Schema<ITag>(
