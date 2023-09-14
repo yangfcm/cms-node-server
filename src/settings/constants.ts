@@ -59,4 +59,10 @@ export const TAG = {
   NAME_IN_USE: "The tag already exists.",
 };
 
+export const COMMENT = {
+  CONTENT_REQUIRED: "Comment content is required.",
+  MAX_CONTENT_LENGTH: 500,
+  CONTENT_TOO_LONG: "Comment content is too long.",
+};
+
 export const ONE_DAY_IN_SECONDS = 24 * 60 * 60;
