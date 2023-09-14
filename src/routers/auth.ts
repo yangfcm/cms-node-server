@@ -15,7 +15,7 @@ export type AuthUserResponse = {
 
 export type UserResponse = {
   user: UserData;
-}
+};
 
 const router = Router();
 
@@ -58,14 +58,18 @@ router.post(
   }
 );
 
-router.get('/token', authenticate, async (req, res: Response<UserResponse | APIError>) => {
-  try {
-    const { user } = req;
-    if (!user) return res.status(403).json({ message: AUTH.INVALID_TOKEN });
-    res.json({ user });
-  } catch (err: any) {
-    res.status(403).json(parseError(err));
+router.get(
+  "/token",
+  authenticate,
+  async (req: Request, res: Response<UserResponse | APIError>) => {
+    try {
+      const { user } = req;
+      if (!user) return res.status(403).json({ message: AUTH.INVALID_TOKEN });
+      res.json({ user });
+    } catch (err: any) {
+      res.status(403).json(parseError(err));
+    }
   }
-});
+);
 
 export default router;
