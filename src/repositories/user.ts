@@ -15,10 +15,10 @@ export const findUserByCredentials = async (
   const { identity, password } = user;
   let foundUser: IUser | null = null;
   if (isValidEmail(identity)) {
-    foundUser = await User.findOne({ email: identity }).populate('blogs');
+    foundUser = await User.findOne({ email: identity }).populate("blogs");
   }
   if (isValidCharacters(identity)) {
-    foundUser = await User.findOne({ username: identity }).populate('blogs');
+    foundUser = await User.findOne({ username: identity }).populate("blogs");
   }
   if (!foundUser) return null;
 
@@ -29,11 +29,15 @@ export const findUserByCredentials = async (
 };
 
 export const readUserById = async (id: string): Promise<UserData | null> => {
-  const user = await User.findById(id).populate('blogs');
+  const user = await User.findById(id).populate("blogs");
   return user ? user.mapToUserData() : null;
 };
 
-export const updateUser = async (id: string, user: Partial<IUser>): Promise<UserData | null> => {
+export const updateUser = async (
+  id: string,
+  user: Partial<IUser>,
+  options: Object = {}
+): Promise<UserData | null> => {
   const updatedUser = await User.findByIdAndUpdate(
     id,
     {
@@ -42,8 +46,9 @@ export const updateUser = async (id: string, user: Partial<IUser>): Promise<User
     {
       runValidators: true,
       returnDocument: "after",
+      ...options,
     }
   );
   if (!updatedUser) return null;
   return updatedUser.mapToUserData();
-}
+};

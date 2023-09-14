@@ -15,8 +15,8 @@ import parseError, { APIError } from "../utils/parseError";
 
 type BlogResponse =
   | {
-    blog: BlogData;
-  }
+      blog: BlogData;
+    }
   | { blogs: BlogData[] };
 
 const router = Router();
@@ -34,9 +34,13 @@ router.post(
       const { user } = req;
       const { blog } = req.body;
       const newBlog = await createBlog({ ...blog, userId: user?.id });
-      await updateUser(user?.id, {
-        blogs: [...((user?.blogs || []).map(b => b.id)), newBlog.id]
-      })
+      await updateUser(
+        user?.id,
+        {
+          blogs: [...(user?.blogs || []).map((b) => b.id), newBlog.id],
+        },
+        { session }
+      );
       await session.commitTransaction();
       return res.json({ blog: newBlog });
     } catch (err: any) {
@@ -87,7 +91,10 @@ router.put(
     res: Response<BlogResponse | APIError>
   ) => {
     try {
-      const updatedBlog = await updateBlog(req.params.blogId || '', req.body.blog);
+      const updatedBlog = await updateBlog(
+        req.params.blogId || "",
+        req.body.blog
+      );
       if (!updatedBlog) return res.status(404).send();
       res.json({ blog: updatedBlog });
     } catch (err) {
@@ -97,7 +104,7 @@ router.put(
 );
 
 router.delete(
-  '/:blogId',
+  "/:blogId",
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ blogId?: string }>,
@@ -108,11 +115,13 @@ router.delete(
     try {
       const { user } = req;
       // @TODO: Delete other resources, like articles, tags, categories etc. under the blog.
-      const deletedBlog = await deleteBlog(req.params.blogId || '');
+      const deletedBlog = await deleteBlog(req.params.blogId || "");
       if (!deletedBlog) return res.status(404).send();
       await updateUser(user?.id, {
-        blogs: (user?.blogs || []).filter(b => b.id !== deletedBlog.id).map(b => b.id),
-      })
+        blogs: (user?.blogs || [])
+          .filter((b) => b.id !== deletedBlog.id)
+          .map((b) => b.id),
+      });
       await session.commitTransaction();
       res.json({ blog: deletedBlog });
     } catch (err) {
@@ -122,6 +131,6 @@ router.delete(
       session.endSession();
     }
   }
-)
+);
 
 export default router;
