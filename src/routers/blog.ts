@@ -117,11 +117,17 @@ router.delete(
       // @TODO: Delete other resources, like articles, tags, categories etc. under the blog.
       const deletedBlog = await deleteBlog(req.params.blogId || "");
       if (!deletedBlog) return res.status(404).send();
-      await updateUser(user?.id, {
-        blogs: (user?.blogs || [])
-          .filter((b) => b.id !== deletedBlog.id)
-          .map((b) => b.id),
-      });
+      await updateUser(
+        user?.id,
+        {
+          blogs: (user?.blogs || [])
+            .filter((b) => b.id !== deletedBlog.id)
+            .map((b) => b.id),
+        },
+        {
+          session,
+        }
+      );
       await session.commitTransaction();
       res.json({ blog: deletedBlog });
     } catch (err) {
