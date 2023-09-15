@@ -2,8 +2,17 @@ import mongoose, { Document, Schema } from "mongoose";
 import { COMMENT } from "../settings/constants";
 import { CommentData } from "../dtos/comment";
 
+export enum CommentStatus {
+  PENDING = "pending", // Some user may want the comment to be published before they review it.
+  // So, pending is the status that user leaves the comment and awaiting author to approve it.
+  PUBLIC = "public", // Can be viewed by every one.
+  CENSORED = "censored", // Not displayed, only can be viewed by blog owner.
+}
+
 export interface IComment extends Document {
   content: string;
+  status: CommentStatus;
+  isTop: boolean;
   createdAt: Date;
   updatedAt: Date;
   userId: string; // Reference to user.
@@ -19,6 +28,16 @@ const commentSchema = new Schema<IComment>(
       required: [true, COMMENT.CONTENT_REQUIRED],
       minlength: [0, COMMENT.CONTENT_REQUIRED],
       maxlength: [COMMENT.MAX_CONTENT_LENGTH, COMMENT.CONTENT_TOO_LONG],
+    },
+    status: {
+      type: String,
+      enum: CommentStatus,
+      required: true,
+    },
+    isTop: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     userId: {
       type: String,
@@ -45,6 +64,7 @@ commentSchema.methods.mapToCommentData = function (): CommentData {
     id: comment._id.toString(),
     content: comment.content,
     userId: comment.userId,
+
     articleId: comment.articleId,
     createdAt: comment.createdAt,
     updatedAt: comment.updatedAt,
