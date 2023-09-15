@@ -31,8 +31,13 @@ const commentSchema = new Schema<IComment>(
     },
     status: {
       type: String,
-      enum: CommentStatus,
+      enum: [
+        CommentStatus.CENSORED,
+        CommentStatus.PUBLIC,
+        CommentStatus.PENDING,
+      ],
       required: true,
+      default: CommentStatus.PUBLIC,
     },
     isTop: {
       type: Boolean,
@@ -63,8 +68,9 @@ commentSchema.methods.mapToCommentData = function (): CommentData {
   return {
     id: comment._id.toString(),
     content: comment.content,
+    status: comment.status,
+    isTop: comment.isTop,
     userId: comment.userId,
-
     articleId: comment.articleId,
     createdAt: comment.createdAt,
     updatedAt: comment.updatedAt,

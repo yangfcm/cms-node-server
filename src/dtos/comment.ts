@@ -2,6 +2,8 @@ import { IComment } from "../models/comment";
 
 export type CommentPostData = {
   content: IComment["content"];
+  status?: IComment["status"];
+  isTop?: IComment["isTop"];
 };
 
 export type CommentNewData = CommentPostData & {
@@ -12,6 +14,8 @@ export type CommentNewData = CommentPostData & {
 export type CommentData = {
   id: IComment["_id"];
   content: IComment["content"];
+  status: IComment["status"];
+  isTop: IComment["isTop"];
   articleId: IComment["articleId"];
   userId: IComment["userId"];
   createdAt: IComment["createdAt"];
