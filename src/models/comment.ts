@@ -18,6 +18,7 @@ export interface IComment extends Document {
   userId: string; // Reference to user.
   articleId: string; // Reference to posts
   // blogId: string; // Reference to blog. Comments can be made to either post or blog. For now, not consider blog comments.
+  mapToCommentData: () => CommentData;
 }
 
 const commentSchema = new Schema<IComment>(
