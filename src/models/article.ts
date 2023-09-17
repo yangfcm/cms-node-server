@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import { ArticleData } from "../dtos/article";
 import { ARTICLE } from "../settings/constants";
 
@@ -20,7 +20,7 @@ export interface IArticle extends Document {
   blogId: string; // Reference to blog.
   userId: string; // Reference to User.
   categoryId: string; // Reference to category.
-  // tagIds: string[]; // Reference to tag.
+  tagIds: string[]; // Reference to tag.
   mapToArticleData: () => ArticleData;
 }
 
@@ -63,6 +63,12 @@ const articleSchema = new mongoose.Schema<IArticle>(
       type: String,
       required: true,
       ref: "Category",
+    },
+    tagIds: {
+      type: [String],
+      ref: "Tag",
+      required: true,
+      default: [],
     },
   },
   {
