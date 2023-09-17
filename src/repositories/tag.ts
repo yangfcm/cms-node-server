@@ -69,3 +69,19 @@ export const deleteTag = async (id: string): Promise<TagData | null> => {
   const deletedTag = await Tag.findByIdAndDelete(id);
   return deletedTag ? deletedTag.mapToTagData() : null;
 };
+
+/**
+ * Given blog id and a tag name, find out the tag by name in the given blog.
+ * @param tagName,
+ * @param blogId Optional. If blogId is given, find the tag in the blog.
+ * @returns The tag found or null if not found
+ */
+export const findTagByName = async (
+  tagName: string,
+  blogId?: string
+): Promise<TagData | null> => {
+  const filter: { name: string; blogId?: string } = { name: tagName };
+  if (blogId) filter.blogId = blogId;
+  const tag = await Tag.findOne(filter);
+  return tag?.mapToTagData() || null;
+};
