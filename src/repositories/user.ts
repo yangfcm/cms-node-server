@@ -30,7 +30,7 @@ export const findUserByCredentials = async (
 
 export const readUserById = async (id: string): Promise<UserData | null> => {
   const user = await User.findById(id).populate("blogs");
-  return user ? user.mapToUserData() : null;
+  return user?.mapToUserData() || null;
 };
 
 export const updateUser = async (
@@ -49,6 +49,5 @@ export const updateUser = async (
       ...options,
     }
   );
-  if (!updatedUser) return null;
-  return updatedUser.mapToUserData();
+  return updatedUser?.mapToUserData() || null;
 };

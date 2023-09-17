@@ -21,7 +21,7 @@ export const readBlogsByUserId = async (
 // Get one blog by blog id.
 export const readBlog = async (id: string): Promise<BlogData | null> => {
   const blog = await Blog.findById(id);
-  return blog ? blog.mapToBlogData() : null;
+  return blog?.mapToBlogData() || null;
 };
 
 export const readBlogByAddress = async (
@@ -30,7 +30,7 @@ export const readBlogByAddress = async (
   const blog = await Blog.findOne({
     address,
   });
-  return blog ? blog.mapToBlogData() : null;
+  return blog?.mapToBlogData() || null;
 };
 
 export const updateBlog = async (
@@ -47,8 +47,7 @@ export const updateBlog = async (
       returnDocument: "after",
     }
   );
-  if (!updatedBlog) return null;
-  return updatedBlog.mapToBlogData();
+  return updatedBlog?.mapToBlogData() || null;
 };
 
 export const deleteBlog = async (
@@ -56,6 +55,5 @@ export const deleteBlog = async (
   options: Object = {}
 ): Promise<BlogData | null> => {
   const deletedBlog = await Blog.findByIdAndDelete(id, options);
-  if (!deletedBlog) return null;
-  return deletedBlog.mapToBlogData();
+  return deletedBlog?.mapToBlogData() || null;
 };

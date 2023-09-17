@@ -19,7 +19,7 @@ export const createTag = async (tag: TagNewData): Promise<TagData> => {
  */
 export const readTagById = async (tagId: string): Promise<TagData | null> => {
   const tag = await Tag.findById(tagId);
-  return tag ? tag.mapToTagData() : null;
+  return tag?.mapToTagData() || null;
 };
 
 /**
@@ -57,7 +57,7 @@ export const updateTag = async (
       returnDocument: "after",
     }
   );
-  return updatedTag ? updatedTag.mapToTagData() : null;
+  return updatedTag?.mapToTagData() || null;
 };
 
 /**
@@ -67,7 +67,7 @@ export const updateTag = async (
  */
 export const deleteTag = async (id: string): Promise<TagData | null> => {
   const deletedTag = await Tag.findByIdAndDelete(id);
-  return deletedTag ? deletedTag.mapToTagData() : null;
+  return deletedTag?.mapToTagData() || null;
 };
 
 /**

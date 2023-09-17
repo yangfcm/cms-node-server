@@ -7,7 +7,7 @@ import Category from "../models/category";
 
 /**
  * Given blog id and a category name, find out the category by name in the given blog.
- * @param categoryName 
+ * @param categoryName
  * @param blogId Optional. If blogId is given, find the category in this blog.
  * @returns The category found or null if not found.
  */
@@ -15,15 +15,15 @@ export const findCategoryByName = async (
   categoryName: string,
   blogId?: string
 ): Promise<CategoryData | null> => {
-  const filter: { name: string, blogId?: string } = { name: categoryName };
+  const filter: { name: string; blogId?: string } = { name: categoryName };
   if (blogId) filter.blogId = blogId;
   const category = await Category.findOne(filter);
-  return category ? category.mapToCategoryData() : null;
+  return category?.mapToCategoryData() || null;
 };
 
 /**
  * Create a category.
- * @param category 
+ * @param category
  * @returns The category data created
  */
 export const createCategory = async (
@@ -36,17 +36,19 @@ export const createCategory = async (
 
 /**
  * Get a category by id
- * @param categoryId 
+ * @param categoryId
  * @returns The category found or null if not found.
  */
-export const readCategoryById = async (categoryId: string): Promise<CategoryData | null> => {
+export const readCategoryById = async (
+  categoryId: string
+): Promise<CategoryData | null> => {
   const category = await Category.findById(categoryId);
-  return category ? category.mapToCategoryData() : null;
-}
+  return category?.mapToCategoryData() || null;
+};
 
 /**
  * Get the categories for a blog.
- * @param blogId 
+ * @param blogId
  * @returns The categories under the blog with given blog id.
  */
 export const readCategoriesByBlogId = async (
@@ -81,17 +83,17 @@ export const updateCategory = async (
       returnDocument: "after",
     }
   );
-  return updatedCategory ? updatedCategory.mapToCategoryData() : null;
+  return updatedCategory?.mapToCategoryData() || null;
 };
 
 /**
  * Delete a category by id
- * @param id 
+ * @param id
  * @returns  The deleted category or null if category not found.
  */
-export const deleteCategory = async (id: string): Promise<CategoryData | null> => {
-  const category = await Category.findById(id);
-  if (!category) return null;
-  await category.deleteOne();
-  return category.mapToCategoryData();
-}
+export const deleteCategory = async (
+  id: string
+): Promise<CategoryData | null> => {
+  const category = await Category.findByIdAndDelete(id);
+  return category?.mapToCategoryData() || null;
+};

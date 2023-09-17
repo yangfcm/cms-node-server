@@ -12,11 +12,13 @@ import { CATEGORY } from "../settings/constants";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
 
-type CategoryResponse = {
-  category: CategoryData
-} | {
-  categories: CategoryData[]
-}
+type CategoryResponse =
+  | {
+      category: CategoryData;
+    }
+  | {
+      categories: CategoryData[];
+    };
 
 const router = Router();
 
@@ -28,9 +30,10 @@ router.get(
   ) => {
     const { blog } = req;
     try {
-      if (!blog) return res.json({
-        categories: []
-      });
+      if (!blog)
+        return res.json({
+          categories: [],
+        });
       const categories = await readCategoriesByBlogId(blog.id);
       res.json({ categories });
     } catch (err: any) {
@@ -49,10 +52,7 @@ router.post(
     try {
       const { blog } = req;
       const { category } = req.body;
-      const foundCategory = await findCategoryByName(
-        category.name,
-        blog!.id
-      );
+      const foundCategory = await findCategoryByName(category.name, blog?.id);
       if (foundCategory) throw new Error(CATEGORY.NAME_IN_USE);
       const newCategory = await createCategory({
         ...category,
@@ -100,7 +100,7 @@ router.put(
 );
 
 router.delete(
-  '/:categoryId',
+  "/:categoryId",
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ address?: string; blogId?: string; categoryId: string }>,
@@ -114,6 +114,6 @@ router.delete(
       res.status(400).json(parseError(err));
     }
   }
-)
+);
 
 export default router;

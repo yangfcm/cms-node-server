@@ -50,5 +50,5 @@ export const updateArticle = async (
     },
     { runValidators: true, returnDocument: "after" }
   );
-  return updatedArticle ? updatedArticle.mapToArticleData() : null;
+  return updatedArticle?.mapToArticleData() || null;
 };
