@@ -118,7 +118,9 @@ router.delete(
       const deletedTag = await deleteTag(req.params.tagId);
       if (!deletedTag) return res.status(404).send();
       res.json({ tag: deletedTag });
-    } catch (err: any) {}
+    } catch (err: any) {
+      res.status(500).json(parseError(err));
+    }
   }
 );
 
