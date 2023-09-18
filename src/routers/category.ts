@@ -10,6 +10,7 @@ import {
 import { CATEGORY } from "../settings/constants";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
+import { APIError } from "../utils/parseError";
 
 type CategoryResponse =
   | {
@@ -47,14 +48,18 @@ router.post(
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ address?: string }, any, { category: CategoryPostData }>,
-    res: Response<CategoryResponse>,
+    res: Response<CategoryResponse | APIError>,
     next: NextFunction
   ) => {
     try {
       const { blog } = req;
       const { category } = req.body;
       const foundCategory = await findCategoryByName(category.name, blog?.id);
-      if (foundCategory) throw new Error(CATEGORY.NAME_IN_USE);
+      if (foundCategory) {
+        return res.status(400).json({
+          message: CATEGORY.NAME_IN_USE,
+        });
+      }
       const newCategory = await createCategory({
         ...category,
         blogId: blog!.id,
@@ -75,7 +80,7 @@ router.put(
       any,
       { category: Partial<CategoryPostData> }
     >,
-    res: Response<CategoryResponse>,
+    res: Response<CategoryResponse | APIError>,
     next: NextFunction
   ) => {
     try {
@@ -85,7 +90,9 @@ router.put(
       if (category.name && blog?.id) {
         const foundCategory = await findCategoryByName(category.name, blog.id);
         if (foundCategory && foundCategory.id !== categoryId) {
-          throw new Error(CATEGORY.NAME_IN_USE);
+          return res.status(400).json({
+            message: CATEGORY.NAME_IN_USE,
+          });
         }
       }
       const updatedCategory = await updateCategory(
