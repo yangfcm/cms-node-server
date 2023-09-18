@@ -7,6 +7,7 @@ export enum CommentStatus {
   // So, pending is the status that user leaves the comment and awaiting author to approve it.
   PUBLIC = "public", // Can be viewed by every one.
   CENSORED = "censored", // Not displayed, only can be viewed by blog owner.
+  TRASH = "trash", // Deleted comment.
 }
 
 export interface IComment extends Document {
