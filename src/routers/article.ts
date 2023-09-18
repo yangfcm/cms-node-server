@@ -22,12 +22,12 @@ const router = Router();
 
 router.get(
   "/",
-  async (req: Request, res: Response<ArticleData[] | APIError>) => {
+  async (req: Request, res: Response<ArticleResponse | APIError>) => {
     const { blog } = req;
     try {
-      if (!blog) return res.json([]);
+      if (!blog) return res.json({ articles: [] });
       const articles = await readArticlesByBlogId(blog.id);
-      res.json(articles);
+      res.json({ articles });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
@@ -58,7 +58,7 @@ router.post(
   [authenticate, userOwnsBlog],
   async (
     req: Request<any, any, { article: ArticlePostData }>,
-    res: Response<ArticleData | APIError>
+    res: Response<ArticleResponse | APIError>
   ) => {
     const { blog, user } = req;
     const { article } = req.body;
@@ -68,7 +68,7 @@ router.post(
         userId: user!.id,
         blogId: blog!.id,
       });
-      res.json(newArticle);
+      res.json({ article: newArticle });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
@@ -84,7 +84,7 @@ router.put(
       any,
       { article: Partial<ArticlePostData> }
     >,
-    res: Response<ArticleData | APIError>
+    res: Response<ArticleResponse | APIError>
   ) => {
     try {
       const { blog } = req;
@@ -94,7 +94,7 @@ router.put(
         blogId: blog?.id,
       });
       if (!updatedArticle) return res.status(404).send();
-      res.json(updatedArticle);
+      res.json({ article: updatedArticle });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }
