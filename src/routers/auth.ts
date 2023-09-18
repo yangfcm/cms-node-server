@@ -3,7 +3,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { UserSignupData, UserSigninData, UserData } from "../dtos/user";
 import { createUser, findUserByCredentials } from "../repositories/user";
 import authenticate from "../middleware/authenticate";
-import parseError, { APIError } from "../utils/parseError";
+import { APIError } from "../utils/parseError";
 import generateAuthToken from "../utils/generateAuthToken";
 import { AUTH } from "../settings/constants";
 
@@ -27,7 +27,7 @@ router.post(
   "/signup",
   async (
     req: Request<any, any, UserSignupData>,
-    res: Response<AuthUserResponse | APIError>,
+    res: Response<AuthUserResponse>,
     next: NextFunction
   ) => {
     try {
@@ -44,7 +44,8 @@ router.post(
   "/signin",
   async (
     req: Request<any, any, UserSigninData>,
-    res: Response<AuthUserResponse | APIError>
+    res: Response<AuthUserResponse | APIError>,
+    next: NextFunction
   ) => {
     try {
       const user = await findUserByCredentials(req.body);
@@ -54,7 +55,7 @@ router.post(
       const { token, expiresAt } = generateAuthToken(user);
       res.json({ user, token, expiresAt });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -62,13 +63,17 @@ router.post(
 router.get(
   "/token",
   authenticate,
-  async (req: Request, res: Response<UserResponse | APIError>) => {
+  async (
+    req: Request,
+    res: Response<UserResponse | APIError>,
+    next: NextFunction
+  ) => {
     try {
       const { user } = req;
       if (!user) return res.status(403).json({ message: AUTH.INVALID_TOKEN });
       res.json({ user });
     } catch (err: any) {
-      res.status(403).json(parseError(err));
+      next(err);
     }
   }
 );

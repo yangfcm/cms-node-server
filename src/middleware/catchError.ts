@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import parseError from "../utils/parseError";
+import parseError, { APIError } from "../utils/parseError";
 
 const catchError = (
   err: any,
   req: Request,
-  res: Response,
+  res: Response<APIError>,
   next: NextFunction
 ) => {
   const parsedError = parseError(err);
