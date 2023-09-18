@@ -18,7 +18,7 @@ export interface IComment extends Document {
   updatedAt: Date;
   userId: string; // Reference to user.
   articleId: string; // Reference to posts
-  // blogId: string; // Reference to blog. Comments can be made to either post or blog. For now, not consider blog comments.
+  blogId: string; // Reference to blog
   mapToCommentData: () => CommentData;
 }
 
@@ -56,6 +56,11 @@ const commentSchema = new Schema<IComment>(
       required: true,
       ref: "Article",
     },
+    blogId: {
+      type: String,
+      required: true,
+      ref: "Blog",
+    },
   },
   {
     timestamps: {
@@ -74,6 +79,7 @@ commentSchema.methods.mapToCommentData = function (): CommentData {
     isTop: comment.isTop,
     userId: comment.userId,
     articleId: comment.articleId,
+    blogId: comment.blogId,
     createdAt: comment.createdAt,
     updatedAt: comment.updatedAt,
   };

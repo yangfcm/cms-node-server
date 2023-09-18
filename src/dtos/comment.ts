@@ -8,6 +8,7 @@ export type CommentPostData = {
 
 export type CommentNewData = CommentPostData & {
   articleId: IComment["articleId"];
+  blogId: IComment["blogId"];
   userId: IComment["userId"];
 };
 
@@ -17,6 +18,7 @@ export type CommentData = {
   status: IComment["status"];
   isTop: IComment["isTop"];
   articleId: IComment["articleId"];
+  blogId: IComment["blogId"];
   userId: IComment["userId"];
   createdAt: IComment["createdAt"];
   updatedAt: IComment["updatedAt"];
