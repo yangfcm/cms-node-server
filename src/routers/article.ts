@@ -2,12 +2,21 @@ import { Router, Request, Response, request } from "express";
 import { ArticleData, ArticlePostData } from "../dtos/article";
 import {
   createArticle,
+  readArticleById,
   readArticlesByBlogId,
   updateArticle,
 } from "../repositories/article";
 import parseError, { APIError } from "../utils/parseError";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
+
+type ArticleResponse =
+  | {
+      article: ArticleData;
+    }
+  | {
+      articles: ArticleData[];
+    };
 
 const router = Router();
 
@@ -19,6 +28,25 @@ router.get(
       if (!blog) return res.json([]);
       const articles = await readArticlesByBlogId(blog.id);
       res.json(articles);
+    } catch (err: any) {
+      res.status(400).json(parseError(err));
+    }
+  }
+);
+
+router.get(
+  "/:articleId",
+  async (
+    req: Request<{ address?: string; blogId?: string; articleId: string }>,
+    res: Response<ArticleResponse | APIError>
+  ) => {
+    try {
+      const { articleId } = req.params;
+      const article = await readArticleById(articleId);
+      if (!article) return res.status(404).send();
+      res.json({
+        article,
+      });
     } catch (err: any) {
       res.status(400).json(parseError(err));
     }

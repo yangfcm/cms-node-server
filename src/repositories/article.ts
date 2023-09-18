@@ -27,6 +27,18 @@ export const readArticlesByBlogId = async (
 };
 
 /**
+ * Get an article by id
+ * @param articleId
+ * @returns The article found or null if not found.
+ */
+export const readArticleById = async (
+  articleId: string
+): Promise<ArticleData | null> => {
+  const article = await Article.findById(articleId);
+  return article?.mapToArticleData() || null;
+};
+
+/**
  * Update an article by id.
  * @param id
  * @param article
