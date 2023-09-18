@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 
 import { UserSignupData, UserSigninData, UserData } from "../dtos/user";
 import { createUser, findUserByCredentials } from "../repositories/user";
@@ -27,14 +27,15 @@ router.post(
   "/signup",
   async (
     req: Request<any, any, UserSignupData>,
-    res: Response<AuthUserResponse | APIError>
+    res: Response<AuthUserResponse | APIError>,
+    next: NextFunction
   ) => {
     try {
       const user = await createUser(req.body);
       const { token, expiresAt } = generateAuthToken(user);
       res.json({ user, token, expiresAt });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );

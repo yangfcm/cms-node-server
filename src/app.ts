@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -12,6 +12,7 @@ import articleRouter from "./routers/article";
 import tagRouter from "./routers/tag";
 import commentRouter from "./routers/comment";
 import getBlogByAddress from "./middleware/getBlogByAddress";
+import catchError from "./middleware/catchError";
 
 connectDatabase(DATABASE_CONNECTION_URI);
 
@@ -26,5 +27,6 @@ app.use("/api/blogs/:address/categories", getBlogByAddress, categoryRouter);
 app.use("/api/blogs/:address/articles", getBlogByAddress, articleRouter);
 app.use("/api/blogs/:address/tags", getBlogByAddress, tagRouter);
 app.use("/api/blogs/:address/comments", getBlogByAddress, commentRouter);
+app.use(catchError);
 
 export default app;
