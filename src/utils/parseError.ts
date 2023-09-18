@@ -1,4 +1,5 @@
 export type APIError = {
+  name?: string;
   message: string;
   errors?: {
     name: string;
@@ -11,7 +12,8 @@ export type APIError = {
 
 function parseError(error: any): APIError {
   return {
-    message: error.message || "Error!",
+    name: error.name || "Server error",
+    message: error.message || "Something wrong happend.",
     errors: error.errors && Object.values(error.errors),
   };
 }
