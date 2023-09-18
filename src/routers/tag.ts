@@ -10,6 +10,7 @@ import {
   updateTag,
 } from "../repositories/tag";
 import { TAG } from "../settings/constants";
+import { APIError } from "../utils/parseError";
 
 type TagResponse =
   | {
@@ -53,14 +54,18 @@ router.post(
   [authenticate, userOwnsBlog],
   async (
     req: Request<any, any, { tag: TagPostData }>,
-    res: Response<TagResponse>,
+    res: Response<TagResponse | APIError>,
     next: NextFunction
   ) => {
     try {
       const { blog } = req;
       const { tag } = req.body;
       const foundTag = await findTagByName(tag.name, blog?.id);
-      if (foundTag) throw new Error(TAG.NAME_IN_USE);
+      if (foundTag) {
+        return res.status(400).json({
+          message: TAG.NAME_IN_USE,
+        });
+      }
       const newTag = await createTag({
         ...tag,
         blogId: blog?.id,
@@ -84,7 +89,7 @@ router.put(
       any,
       { tag: Partial<TagPostData> }
     >,
-    res: Response<TagResponse>,
+    res: Response<TagResponse | APIError>,
     next: NextFunction
   ) => {
     try {
@@ -94,7 +99,9 @@ router.put(
       if (tag.name && blog?.id) {
         const foundTag = await findTagByName(tag.name, blog.id);
         if (foundTag && foundTag.id !== tagId) {
-          throw new Error(TAG.NAME_IN_USE);
+          return res.status(400).json({
+            message: TAG.NAME_IN_USE,
+          });
         }
       }
       const updatedTag = await updateTag(tagId, tag, blog?.id);
