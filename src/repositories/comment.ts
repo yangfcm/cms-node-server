@@ -41,6 +41,20 @@ export const readCommentsByArticleId = async (
 };
 
 /**
+ * Get the comments for a blog
+ * @param blogId
+ * @returns The comments for a blog.
+ */
+export const readCommentsByBlogId = async (
+  blogId: string
+): Promise<CommentData[]> => {
+  const comments = await Comment.find({
+    blogId,
+  });
+  return comments.map((c) => c.mapToCommentData());
+};
+
+/**
  * Update a comment
  * @param id
  * @param comment
