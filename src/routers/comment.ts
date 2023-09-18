@@ -1,8 +1,7 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
 import { CommentData, CommentPostData } from "../dtos/comment";
-import parseError, { APIError } from "../utils/parseError";
 import {
   createComment,
   deleteComment,
@@ -34,7 +33,8 @@ router.post(
   [authenticate],
   async (
     req: Request<any, any, { comment: CommentPostData }>,
-    res: Response<CommentResponse | APIError>
+    res: Response<CommentResponse>,
+    next: NextFunction
   ) => {
     try {
       const { blog, user } = req;
@@ -46,7 +46,7 @@ router.post(
       });
       res.json({ comment: newComment });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -58,7 +58,8 @@ router.get(
   "/:commentId",
   async (
     req: Request<{ commentId: string }>,
-    res: Response<CommentResponse | APIError>
+    res: Response<CommentResponse>,
+    next: NextFunction
   ) => {
     try {
       const { commentId } = req.params;
@@ -66,7 +67,7 @@ router.get(
       if (!comment) return res.status(404).send();
       res.json({ comment });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -79,7 +80,8 @@ router.get(
   "/",
   async (
     req: Request<any, any, any, { articleId?: string }>,
-    res: Response<CommentResponse | APIError>
+    res: Response<CommentResponse>,
+    next: NextFunction
   ) => {
     try {
       const { articleId } = req.query;
@@ -92,7 +94,7 @@ router.get(
       comments = await readCommentsByBlogId(blog?.id);
       res.json({ comments });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -109,7 +111,8 @@ router.put(
       any,
       { comment: Partial<CommentPostData> }
     >,
-    res: Response<CommentResponse | APIError>
+    res: Response<CommentResponse>,
+    next: NextFunction
   ) => {
     try {
       const { commentId } = req.params;
@@ -118,7 +121,7 @@ router.put(
       if (!updatedComment) return res.status(404).send();
       res.json({ comment: updatedComment });
     } catch (err) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -131,14 +134,15 @@ router.delete(
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ address?: string; blogId?: string; commentId: string }>,
-    res: Response<CommentResponse | APIError>
+    res: Response<CommentResponse>,
+    next: NextFunction
   ) => {
     try {
       const deletedComment = await deleteComment(req.params.commentId);
       if (!deletedComment) return res.status(404).send();
       res.json({ comment: deletedComment });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );

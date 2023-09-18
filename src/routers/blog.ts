@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import { BlogData, BlogPostData } from "../dtos/blog";
 import authenticate from "../middleware/authenticate";
@@ -11,7 +11,6 @@ import {
   deleteBlog,
 } from "../repositories/blog";
 import { updateUser } from "../repositories/user";
-import parseError, { APIError } from "../utils/parseError";
 
 type BlogResponse =
   | {
@@ -26,7 +25,8 @@ router.post(
   authenticate,
   async (
     req: Request<any, any, { blog: BlogPostData }>,
-    res: Response<BlogResponse | APIError>
+    res: Response<BlogResponse>,
+    next: NextFunction
   ) => {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -48,7 +48,7 @@ router.post(
       return res.json({ blog: newBlog });
     } catch (err: any) {
       await session.abortTransaction();
-      res.status(500).json(parseError(err));
+      next(err);
     } finally {
       session.endSession();
     }
@@ -58,13 +58,13 @@ router.post(
 router.get(
   "/",
   authenticate,
-  async (req: Request, res: Response<BlogResponse | APIError>) => {
+  async (req: Request, res: Response<BlogResponse>, next: NextFunction) => {
     try {
       const { user } = req;
       const blogs = await readBlogsByUserId(user?.id);
       res.json({ blogs });
     } catch (err) {
-      res.status(500).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -73,7 +73,8 @@ router.get(
   "/:address",
   async (
     req: Request<{ address: string }>,
-    res: Response<BlogResponse | APIError>
+    res: Response<BlogResponse>,
+    next: NextFunction
   ) => {
     try {
       const { address } = req.params;
@@ -81,7 +82,7 @@ router.get(
       if (!blog) return res.status(404).send();
       res.json({ blog });
     } catch (err) {
-      res.status(500).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -91,7 +92,8 @@ router.put(
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ blogId?: string }, any, { blog: Partial<BlogPostData> }>,
-    res: Response<BlogResponse | APIError>
+    res: Response<BlogResponse>,
+    next: NextFunction
   ) => {
     try {
       const updatedBlog = await updateBlog(
@@ -101,7 +103,7 @@ router.put(
       if (!updatedBlog) return res.status(404).send();
       res.json({ blog: updatedBlog });
     } catch (err) {
-      res.status(500).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -111,7 +113,8 @@ router.delete(
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ blogId?: string }>,
-    res: Response<BlogResponse | APIError>
+    res: Response<BlogResponse>,
+    next: NextFunction
   ) => {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -137,7 +140,7 @@ router.delete(
       res.json({ blog: deletedBlog });
     } catch (err) {
       await session.abortTransaction();
-      res.status(500).json(parseError(err));
+      next(err);
     } finally {
       session.endSession();
     }

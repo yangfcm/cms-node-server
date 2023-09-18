@@ -1,4 +1,4 @@
-import { Router, Request, Response, request } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { ArticleData, ArticlePostData } from "../dtos/article";
 import {
   createArticle,
@@ -6,7 +6,6 @@ import {
   readArticlesByBlogId,
   updateArticle,
 } from "../repositories/article";
-import parseError, { APIError } from "../utils/parseError";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
 
@@ -22,14 +21,14 @@ const router = Router();
 
 router.get(
   "/",
-  async (req: Request, res: Response<ArticleResponse | APIError>) => {
+  async (req: Request, res: Response<ArticleResponse>, next: NextFunction) => {
     const { blog } = req;
     try {
       if (!blog) return res.json({ articles: [] });
       const articles = await readArticlesByBlogId(blog.id);
       res.json({ articles });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -38,7 +37,8 @@ router.get(
   "/:articleId",
   async (
     req: Request<{ address?: string; blogId?: string; articleId: string }>,
-    res: Response<ArticleResponse | APIError>
+    res: Response<ArticleResponse>,
+    next: NextFunction
   ) => {
     try {
       const { articleId } = req.params;
@@ -48,7 +48,7 @@ router.get(
         article,
       });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -58,7 +58,8 @@ router.post(
   [authenticate, userOwnsBlog],
   async (
     req: Request<any, any, { article: ArticlePostData }>,
-    res: Response<ArticleResponse | APIError>
+    res: Response<ArticleResponse>,
+    next: NextFunction
   ) => {
     const { blog, user } = req;
     const { article } = req.body;
@@ -70,7 +71,7 @@ router.post(
       });
       res.json({ article: newArticle });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -84,7 +85,8 @@ router.put(
       any,
       { article: Partial<ArticlePostData> }
     >,
-    res: Response<ArticleResponse | APIError>
+    res: Response<ArticleResponse>,
+    next: NextFunction
   ) => {
     try {
       const { blog } = req;
@@ -96,7 +98,7 @@ router.put(
       if (!updatedArticle) return res.status(404).send();
       res.json({ article: updatedArticle });
     } catch (err: any) {
-      res.status(400).json(parseError(err));
+      next(err);
     }
   }
 );

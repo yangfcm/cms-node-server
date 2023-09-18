@@ -1,8 +1,7 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { TagData, TagPostData } from "../dtos/tag";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
-import parseError, { APIError } from "../utils/parseError";
 import {
   createTag,
   deleteTag,
@@ -29,19 +28,22 @@ router.get("/check", (req, res) => {
 /**
  * Get all tags for a blog
  */
-router.get("/", async (req: Request, res: Response<TagResponse | APIError>) => {
-  const { blog } = req;
-  try {
-    if (!blog)
-      return res.json({
-        tags: [],
-      });
-    const tags = await readTagsByBlogId(blog.id);
-    res.json({ tags });
-  } catch (err: any) {
-    res.status(500).json(parseError(err));
+router.get(
+  "/",
+  async (req: Request, res: Response<TagResponse>, next: NextFunction) => {
+    const { blog } = req;
+    try {
+      if (!blog)
+        return res.json({
+          tags: [],
+        });
+      const tags = await readTagsByBlogId(blog.id);
+      res.json({ tags });
+    } catch (err: any) {
+      next(err);
+    }
   }
-});
+);
 
 /**
  * Create a tag for a blog
@@ -51,7 +53,8 @@ router.post(
   [authenticate, userOwnsBlog],
   async (
     req: Request<any, any, { tag: TagPostData }>,
-    res: Response<TagResponse | APIError>
+    res: Response<TagResponse>,
+    next: NextFunction
   ) => {
     try {
       const { blog } = req;
@@ -64,7 +67,7 @@ router.post(
       });
       res.json({ tag: newTag });
     } catch (err: any) {
-      res.status(500).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -81,7 +84,8 @@ router.put(
       any,
       { tag: Partial<TagPostData> }
     >,
-    res: Response<TagResponse | APIError>
+    res: Response<TagResponse>,
+    next: NextFunction
   ) => {
     try {
       const { blog } = req;
@@ -99,7 +103,7 @@ router.put(
         tag: updatedTag,
       });
     } catch (err) {
-      res.status(500).json(parseError(err));
+      next(err);
     }
   }
 );
@@ -112,14 +116,15 @@ router.delete(
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ address?: string; blogId?: string; tagId: string }>,
-    res: Response<TagResponse | APIError>
+    res: Response<TagResponse>,
+    next: NextFunction
   ) => {
     try {
       const deletedTag = await deleteTag(req.params.tagId);
       if (!deletedTag) return res.status(404).send();
       res.json({ tag: deletedTag });
     } catch (err: any) {
-      res.status(500).json(parseError(err));
+      next(err);
     }
   }
 );
