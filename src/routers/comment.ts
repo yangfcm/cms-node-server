@@ -1,4 +1,24 @@
 import { Router, Request, Response } from "express";
+import authenticate from "../middleware/authenticate";
+import userOwnsBlog from "../middleware/userOwnsBlog";
+import { CommentData, CommentPostData } from "../dtos/comment";
+import parseError, { APIError } from "../utils/parseError";
+import {
+  createComment,
+  deleteComment,
+  readCommentById,
+  readCommentsByArticleId,
+  readCommentsByBlogId,
+  updateComment,
+} from "../repositories/comment";
+
+type CommentResponse =
+  | {
+      comment: CommentData;
+    }
+  | {
+      comments: CommentData[];
+    };
 
 const router = Router();
 
@@ -9,27 +29,118 @@ router.get("/check", (req, res) => {
 /**
  * Post a comment
  */
-router.post("/", (req, res) => {});
+router.post(
+  "/",
+  [authenticate],
+  async (
+    req: Request<any, any, { comment: CommentPostData }>,
+    res: Response<CommentResponse | APIError>
+  ) => {
+    try {
+      const { blog, user } = req;
+      const { comment } = req.body;
+      const newComment = await createComment({
+        ...comment,
+        blogId: blog?.id,
+        userId: user?.id,
+      });
+      res.json({ comment: newComment });
+    } catch (err: any) {
+      res.status(400).json(parseError(err));
+    }
+  }
+);
 
 /**
  * Get one comment
  */
-router.get("/:id", (req, res) => {});
+router.get(
+  "/:commentId",
+  async (
+    req: Request<{ commentId: string }>,
+    res: Response<CommentResponse | APIError>
+  ) => {
+    try {
+      const { commentId } = req.params;
+      const comment = await readCommentById(commentId);
+      if (!comment) return res.status(404).send();
+      res.json({ comment });
+    } catch (err: any) {
+      res.status(400).json(parseError(err));
+    }
+  }
+);
 
 /**
  * Get all comments for a blog
- * Get comments for an article.
+ * Get comments for an article if articleId is specified.
  */
-router.get("/", (req, res) => {});
+router.get(
+  "/",
+  async (
+    req: Request<any, any, any, { articleId?: string }>,
+    res: Response<CommentResponse | APIError>
+  ) => {
+    try {
+      const { articleId } = req.query;
+      const { blog } = req;
+      let comments: CommentData[] = [];
+      if (articleId) {
+        comments = await readCommentsByArticleId(articleId);
+        return res.json({ comments });
+      }
+      comments = await readCommentsByBlogId(blog?.id);
+      res.json({ comments });
+    } catch (err: any) {
+      res.status(400).json(parseError(err));
+    }
+  }
+);
 
 /**
  * Update a comment
  */
-router.put("/:commentId", (req, res) => {});
+router.put(
+  "/:commentId",
+  [authenticate, userOwnsBlog],
+  async (
+    req: Request<
+      { address?: string; blogId?: string; commentId: string },
+      any,
+      { comment: Partial<CommentPostData> }
+    >,
+    res: Response<CommentResponse | APIError>
+  ) => {
+    try {
+      const { commentId } = req.params;
+      const { comment } = req.body;
+      const updatedComment = await updateComment(commentId, comment);
+      if (!updatedComment) return res.status(404).send();
+      res.json({ comment: updatedComment });
+    } catch (err) {
+      res.status(400).json(parseError(err));
+    }
+  }
+);
 
 /**
  * Delete a comment
  */
-router.delete("/:commentId", (req, res) => {});
+router.delete(
+  "/:commentId",
+  [authenticate, userOwnsBlog],
+  async (
+    req: Request<{ address?: string; blogId?: string; commentId: string }>,
+    res: Response<CommentResponse | APIError>
+  ) => {
+    try {
+      const deletedComment = await deleteComment(req.params.commentId);
+      if (!deletedComment) return res.status(404).send();
+      res.json({ comment: deletedComment });
+    } catch (err: any) {
+      res.status(400).json(parseError(err));
+    }
+  }
+);
 
 export default router;
