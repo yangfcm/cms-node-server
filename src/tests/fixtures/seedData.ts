@@ -30,7 +30,7 @@ export const seedData = async () => {
     userId: newUserMike.id,
   });
   await updateUser(newUserMike.id, {
-    blogs: [newMikeBlog1.id, newMikeBlog2.id]
+    blogs: [newMikeBlog1.id, newMikeBlog2.id],
   });
 
   // Create categories for blog mikeBlog1
@@ -57,6 +57,10 @@ export const seedData = async () => {
       email: newUserMike.email,
     }).token,
     mikeBlog1Address: newMikeBlog1.address,
+    userMike: newUserMike,
+    userJohn: newUserJohn,
+    mikeBlog1: newMikeBlog1,
+    mikeBlog2: newMikeBlog2,
   };
 };
 

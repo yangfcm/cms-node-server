@@ -1,3 +1,3 @@
 declare module globalThis {
-  var __TESTDATA__: record<string, string>;
+  var __TESTDATA__: record<string, any>;
 }

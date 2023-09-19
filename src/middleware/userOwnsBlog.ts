@@ -34,7 +34,7 @@ const userOwnsBlog = async (
     if (foundBlog && user && foundBlog.userId === user.id) {
       return next();
     }
-    res.status(402).send({
+    res.status(403).send({
       message: BLOG.NO_ACCESS_TO_BLOG,
     });
   } catch (err) {

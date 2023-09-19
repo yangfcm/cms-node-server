@@ -3,6 +3,7 @@ import app from "../app";
 import { readUserById } from "../repositories/user";
 import { readBlog } from "../repositories/blog";
 import { johnBlog } from "./fixtures/blog";
+import { BLOG } from "../settings/constants";
 
 describe("Test blog routers", () => {
   describe("POST /blogs", () => {
@@ -28,17 +29,67 @@ describe("Test blog routers", () => {
       expect((userJohn?.blogs || [])[0].id).toBe(createdBlog.id);
     });
 
-    test.todo("User creates a blog with existing address");
+    test("Post blog with empty title or existing address", async () => {
+      const { userJohnToken, userJohnId } = globalThis.__TESTDATA__;
+
+      const { body: error, status } = await request(app)
+        .post("/api/blogs")
+        .set("x-auth", userJohnToken)
+        .send({
+          blog: {
+            title: "",
+            userId: userJohnId,
+          },
+        });
+
+      expect(status).toBe(400);
+      expect(error.message).toMatch(BLOG.ADDRESS_REQUIRED);
+      expect(error.message).toMatch(BLOG.TITLE_REQUIRED);
+    });
+
+    test("User creates a blog with existing address", async () => {
+      const { userMikeToken, userMikeId, mikeBlog1 } = globalThis.__TESTDATA__;
+
+      const { body: error, status } = await request(app)
+        .post("/api/blogs")
+        .set("x-auth", userMikeToken)
+        .send({
+          blog: {
+            title: "Mike's new blog",
+            address: mikeBlog1.address, // Address is the same with mikeBlog1.address, which is populated when seeding data.
+            userId: userMikeId,
+          },
+        });
+
+      expect(status).toBe(400);
+      expect(error.message).toMatch(BLOG.ADDRESS_IN_USE);
+    });
   });
 
   describe("GET /blogs", () => {
-    test.todo("User can get the blogs");
+    test("User can get the blogs", async () => {
+      const { userMikeToken, mikeBlog1, mikeBlog2 } = globalThis.__TESTDATA__;
+      const {
+        body: { blogs },
+      } = await request(app).get("/api/blogs").set("x-auth", userMikeToken);
+      expect(blogs[0]).toMatchObject(mikeBlog1);
+      expect(blogs[1]).toMatchObject(mikeBlog2);
+    });
   });
 
   describe("GET /blogs/:address", () => {
-    test.todo("User can get the blog by address");
+    test("User can get the blog by address", async () => {
+      const { mikeBlog1 } = globalThis.__TESTDATA__;
+      const {
+        body: { blog },
+      } = await request(app).get(`/api/blogs/${mikeBlog1.address}`);
+      expect(blog).toEqual(mikeBlog1);
+    });
 
-    test.todo("User cannot get blog if the given address is unavailable");
+    test("User cannot get blog if the given address is unavailable", async () => {
+      const { status } = await request(app).get("/api/blogs/non-exist-address");
+      expect(status).toBe(404);
+    });
   });
 
   describe("PUT /blogs/:blogId", () => {
@@ -65,7 +116,18 @@ describe("Test blog routers", () => {
       });
     });
 
-    test.todo("User cannot update other user's blog");
+    test("User cannot update other user's blog", async () => {
+      const { userJohnToken, mikeBlog1 } = globalThis.__TESTDATA__;
+      const {
+        body: { message },
+        status,
+      } = await request(app)
+        .put(`/api/blogs/${mikeBlog1.id}`)
+        .set("x-auth", userJohnToken)
+        .send({ blog: { title: "Now it's John's blog!" } });
+      expect(status).toBe(403);
+      expect(message).toContain(BLOG.NO_ACCESS_TO_BLOG);
+    });
   });
 
   describe("DELETE /blogs/:blogId", () => {
@@ -93,6 +155,16 @@ describe("Test blog routers", () => {
       expect(oldBlog).toBeNull();
     });
 
-    test.todo("User cannot delete other user's blog");
+    test("User cannot delete other user's blog", async () => {
+      const { userJohnToken, mikeBlog1 } = globalThis.__TESTDATA__;
+      const {
+        body: { message },
+        status,
+      } = await request(app)
+        .delete(`/api/blogs/${mikeBlog1.id}`)
+        .set("x-auth", userJohnToken);
+      expect(status).toBe(403);
+      expect(message).toContain(BLOG.NO_ACCESS_TO_BLOG);
+    });
   });
 });
