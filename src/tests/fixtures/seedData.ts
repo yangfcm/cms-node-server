@@ -45,9 +45,7 @@ export const seedData = async () => {
 
   // Attach user ids and tokens to global so that test cases can read them.
   globalThis.__TESTDATA__ = {
-    // Put the user token in global variable so that they can be accessed by test cases.
-    userJohnId: newUserJohn.id,
-    userMikeId: newUserMike.id,
+    // Put the seeded data in global variable so that they can be accessed by test cases.
     userJohnToken: generateAuthToken({
       id: newUserJohn.id,
       email: newUserJohn.email,
@@ -56,7 +54,6 @@ export const seedData = async () => {
       id: newUserMike.id,
       email: newUserMike.email,
     }).token,
-    mikeBlog1Address: newMikeBlog1.address,
     userMike: newUserMike,
     userJohn: newUserJohn,
     mikeBlog1: newMikeBlog1,

@@ -5,8 +5,11 @@ import { techCategory, hobbyCategory } from "./fixtures/category";
 import { BLOG, CATEGORY } from "../settings/constants";
 
 describe("Test category routers", () => {
-  const { mikeBlog1Address, userMikeToken, userJohnToken } =
-    globalThis.__TESTDATA__;
+  const {
+    mikeBlog1: { address: mikeBlog1Address },
+    userMikeToken,
+    userJohnToken,
+  } = globalThis.__TESTDATA__;
   test("User should be able to get the categories under a particular blog", async () => {
     const {
       body: { categories },

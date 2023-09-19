@@ -8,7 +8,7 @@ import { BLOG } from "../settings/constants";
 describe("Test blog routers", () => {
   describe("POST /blogs", () => {
     test("User creates a blog", async () => {
-      const { userJohnToken, userJohnId } = globalThis.__TESTDATA__;
+      const { userJohnToken, userJohn } = globalThis.__TESTDATA__;
 
       const {
         body: { blog: createdBlog },
@@ -22,15 +22,15 @@ describe("Test blog routers", () => {
       expect(createdBlog.id).toBeDefined();
       expect(createdBlog.title).toBe(johnBlog.title);
       expect(createdBlog.address).toBe(johnBlog.address);
-      expect(createdBlog.userId).toBe(userJohnId);
+      expect(createdBlog.userId).toBe(userJohn.id);
 
-      const userJohn = await readUserById(userJohnId);
-      expect(userJohn?.blogs).toBeDefined();
-      expect((userJohn?.blogs || [])[0].id).toBe(createdBlog.id);
+      const currentUserJohn = await readUserById(userJohn.id);
+      expect(currentUserJohn?.blogs).toBeDefined();
+      expect((currentUserJohn?.blogs || [])[0].id).toBe(createdBlog.id);
     });
 
     test("Post blog with empty title or existing address", async () => {
-      const { userJohnToken, userJohnId } = globalThis.__TESTDATA__;
+      const { userJohnToken, userJohn } = globalThis.__TESTDATA__;
 
       const { body: error, status } = await request(app)
         .post("/api/blogs")
@@ -38,7 +38,7 @@ describe("Test blog routers", () => {
         .send({
           blog: {
             title: "",
-            userId: userJohnId,
+            userId: userJohn.id,
           },
         });
 
@@ -48,7 +48,7 @@ describe("Test blog routers", () => {
     });
 
     test("User creates a blog with existing address", async () => {
-      const { userMikeToken, userMikeId, mikeBlog1 } = globalThis.__TESTDATA__;
+      const { userMikeToken, userMike, mikeBlog1 } = globalThis.__TESTDATA__;
 
       const { body: error, status } = await request(app)
         .post("/api/blogs")
@@ -57,7 +57,7 @@ describe("Test blog routers", () => {
           blog: {
             title: "Mike's new blog",
             address: mikeBlog1.address, // Address is the same with mikeBlog1.address, which is populated when seeding data.
-            userId: userMikeId,
+            userId: userMike.id,
           },
         });
 
