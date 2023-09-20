@@ -58,6 +58,8 @@ export const seedData = async () => {
     userJohn: newUserJohn,
     mikeBlog1: newMikeBlog1,
     mikeBlog2: newMikeBlog2,
+    hobbyCategoryInMikeBlog1: newHobbyCategory,
+    techCategoryInMikeBlog1: newTechCategory,
   };
 };
 

@@ -27,6 +27,7 @@ const categorySchema = new Schema<ICategory>(
         CATEGORY.MAX_DESCRIPTION_LENGTH,
         CATEGORY.DESCRIPTION_TOO_LONG,
       ],
+      default: "",
     },
     blogId: {
       type: String,

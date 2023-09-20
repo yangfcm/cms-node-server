@@ -14,6 +14,6 @@ export type CategoryData = {
   name: ICategory["name"];
   description: ICategory["description"];
   blogId: ICategory["blogId"];
-  createdAt: ICategory['createdAt'];
-  updatedAt: ICategory['updatedAt'];
+  createdAt: ICategory["createdAt"];
+  updatedAt: ICategory["updatedAt"];
 };
