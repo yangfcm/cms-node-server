@@ -1,7 +1,7 @@
 import request from "supertest";
+import mongoose from "mongoose";
 import app from "../app";
 import { findCategoryByName } from "../repositories/category";
-import { techCategory, hobbyCategory } from "./fixtures/category";
 import { BLOG, CATEGORY } from "../settings/constants";
 
 describe("Test category routers", () => {
@@ -22,17 +22,35 @@ describe("Test category routers", () => {
       expect(categories.length).toBe(2);
 
       const foundTechCategory = categories.find(
-        (c: any) => c.name === techCategory.name
+        (c: any) => c.name === techCategoryInMikeBlog1.name
       );
       expect(foundTechCategory).toMatchObject(techCategoryInMikeBlog1);
 
       const foundHobbyCategory = categories.find(
-        (c: any) => c.name === hobbyCategory.name
+        (c: any) => c.name === hobbyCategoryInMikeBlog1.name
       );
       expect(foundHobbyCategory).toMatchObject(hobbyCategoryInMikeBlog1);
     });
   });
-  describe("GET /blogs/:address/categories/:categoryId", () => {});
+
+  describe("GET /blogs/:address/categories/:categoryId", () => {
+    test("User can get the category by id.", async () => {
+      const {
+        body: { category },
+      } = await request(app).get(
+        `/api/blogs/${mikeBlog1Address}/categories/${hobbyCategoryInMikeBlog1.id}`
+      );
+      expect(category).toMatchObject(hobbyCategoryInMikeBlog1);
+    });
+
+    test("User gets 404 error if category id doesn't exist", async () => {
+      const randomId = new mongoose.Types.ObjectId();
+      const { status } = await request(app).get(
+        `/api/blogs/${mikeBlog1Address}/categories/${randomId}`
+      );
+      expect(status).toBe(404);
+    });
+  });
 
   describe("POST /blogs/:address/categories", () => {
     test("Should not create a category with the existing name", async () => {
@@ -67,7 +85,9 @@ describe("Test category routers", () => {
 
   describe("PUT /blogs/:address/categories/:categoryId", () => {
     test("Should not update a category to an existing name", async () => {
-      const categoryToUpdate = await findCategoryByName(hobbyCategory.name);
+      const categoryToUpdate = await findCategoryByName(
+        hobbyCategoryInMikeBlog1.name
+      );
       const { body, status } = await request(app)
         .put(
           `/api/blogs/${mikeBlog1Address}/categories/${categoryToUpdate?.id}`
@@ -75,7 +95,7 @@ describe("Test category routers", () => {
         .set("x-auth", userMikeToken)
         .send({
           category: {
-            name: techCategory.name, // Change the name to tech category's name, which exists.
+            name: techCategoryInMikeBlog1.name, // Change the name to tech category's name, which exists.
           },
         });
       expect(status).toBe(400);
@@ -83,7 +103,9 @@ describe("Test category routers", () => {
     });
 
     test("Should not be able to update a category that user does not own", async () => {
-      const categoryToUpdate = await findCategoryByName(hobbyCategory.name);
+      const categoryToUpdate = await findCategoryByName(
+        hobbyCategoryInMikeBlog1.name
+      );
       const { body, status } = await request(app)
         .put(
           `/api/blogs/${mikeBlog1Address}/categories/${categoryToUpdate?.id}`
@@ -99,7 +121,9 @@ describe("Test category routers", () => {
     });
 
     test("Blog owner should be able to update a category", async () => {
-      const categoryToUpdate = await findCategoryByName(hobbyCategory.name);
+      const categoryToUpdate = await findCategoryByName(
+        hobbyCategoryInMikeBlog1.name
+      );
       const { body } = await request(app)
         .put(
           `/api/blogs/${mikeBlog1Address}/categories/${categoryToUpdate?.id}`
@@ -121,7 +145,9 @@ describe("Test category routers", () => {
 
   describe("DELETE /blogs/:address/categories/:categoryId", () => {
     test("Should not be able to delete a category that user does not own", async () => {
-      const categoryToDelete = await findCategoryByName(hobbyCategory.name);
+      const categoryToDelete = await findCategoryByName(
+        hobbyCategoryInMikeBlog1.name
+      );
       const { body, status } = await request(app)
         .delete(
           `/api/blogs/${mikeBlog1Address}/categories/${categoryToDelete?.id}`
@@ -132,7 +158,9 @@ describe("Test category routers", () => {
     });
 
     test("Blog owner should be able to delete a category", async () => {
-      const categoryToDelete = await findCategoryByName(hobbyCategory.name);
+      const categoryToDelete = await findCategoryByName(
+        hobbyCategoryInMikeBlog1.name
+      );
       const { body } = await request(app)
         .delete(
           `/api/blogs/${mikeBlog1Address}/categories/${categoryToDelete?.id}`
@@ -144,7 +172,7 @@ describe("Test category routers", () => {
         description: categoryToDelete?.description,
       });
 
-      const deleted = await findCategoryByName(hobbyCategory.name);
+      const deleted = await findCategoryByName(hobbyCategoryInMikeBlog1.name);
       expect(deleted).toBeNull();
     });
   });
