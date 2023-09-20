@@ -6,6 +6,7 @@ import {
   deleteCategory,
   readCategoriesByBlogId,
   updateCategory,
+  readCategoryById,
 } from "../repositories/category";
 import { CATEGORY } from "../settings/constants";
 import authenticate from "../middleware/authenticate";
@@ -37,6 +38,26 @@ router.get(
         });
       const categories = await readCategoriesByBlogId(blog.id);
       res.json({ categories });
+    } catch (err: any) {
+      next(err);
+    }
+  }
+);
+
+router.get(
+  "/:categoryId",
+  async (
+    req: Request<{ categoryId: string }>,
+    res: Response<CategoryResponse>,
+    next: NextFunction
+  ) => {
+    try {
+      const { categoryId } = req.params;
+      const category = await readCategoryById(categoryId);
+      if (!category) {
+        return res.status(404).send();
+      }
+      res.json({ category });
     } catch (err: any) {
       next(err);
     }

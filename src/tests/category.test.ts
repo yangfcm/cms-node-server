@@ -5,6 +5,10 @@ import { techCategory, hobbyCategory } from "./fixtures/category";
 import { BLOG, CATEGORY } from "../settings/constants";
 
 describe("Test category routers", () => {
+  describe("POST /blogs/:address/categories", () => {});
+  describe("GET /blogs/:address/categories", () => {});
+  describe("PUT /blogs/:address/categories/:categoryId", () => {});
+  describe("DELETE /blogs/:address/categories/:categoryId", () => {});
   const {
     mikeBlog1: { address: mikeBlog1Address },
     userMikeToken,
