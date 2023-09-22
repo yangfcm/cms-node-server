@@ -91,6 +91,7 @@ articleSchema.methods.mapToArticleData = function (): ArticleData {
     blogId: article.blogId,
     userId: article.userId,
     categoryId: article.categoryId,
+    tagIds: article.tagIds,
   };
 };
 

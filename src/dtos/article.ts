@@ -7,6 +7,7 @@ export type ArticlePostData = {
   status?: IArticle["status"];
   isTop?: IArticle["isTop"];
   categoryId?: IArticle["categoryId"];
+  tagIds?: IArticle["tagIds"];
 };
 
 export type ArticleNewData = ArticlePostData & {
@@ -24,4 +25,5 @@ export type ArticleData = {
   blogId: IArticle["blogId"];
   userId: IArticle["userId"];
   categoryId: IArticle["categoryId"];
+  tagIds: IArticle["tagIds"];
 };
