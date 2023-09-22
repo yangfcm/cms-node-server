@@ -23,10 +23,10 @@ export const readArticlesByBlogId = async (
   blogId: string
 ): Promise<ArticleData[]> => {
   const articles = await Article.find({ blogId })
-    .populate("blogId")
-    .populate("userId")
-    .populate("categoryId")
-    .populate("tagIds");
+    .populate("blogId", "_id title address")
+    .populate("userId", "_id email username nickname biography")
+    .populate("categoryId", "_id name description")
+    .populate("tagIds", "_id name");
   return articles.map((a) => a.mapToArticleData());
 };
 
