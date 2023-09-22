@@ -4,6 +4,7 @@ import { hobbyCategory, techCategory } from "./category";
 import { createUser, updateUser } from "../../repositories/user";
 import { createBlog } from "../../repositories/blog";
 import { createCategory } from "../../repositories/category";
+import { createTag } from "../../repositories/tag";
 import User from "../../models/user";
 import Blog from "../../models/blog";
 import Category from "../../models/category";
@@ -43,6 +44,22 @@ export const seedData = async () => {
     blogId: newMikeBlog1.id,
   });
 
+  // Create tags for blog mikeBlog1
+  const ideaTag = await createTag({
+    name: "idea",
+    blogId: newMikeBlog1.id,
+  });
+
+  const techTag = await createTag({
+    name: "tech",
+    blogId: newMikeBlog1.id,
+  });
+
+  const lifeTag = await createTag({
+    name: "life",
+    blogId: newMikeBlog1.id,
+  });
+
   // Attach user ids and tokens to global so that test cases can read them.
   globalThis.__TESTDATA__ = {
     // Put the seeded data in global variable so that they can be accessed by test cases.
@@ -60,6 +77,9 @@ export const seedData = async () => {
     mikeBlog2: newMikeBlog2,
     hobbyCategoryInMikeBlog1: newHobbyCategory,
     techCategoryInMikeBlog1: newTechCategory,
+    ideaTagInMikeBlog1: ideaTag,
+    techTagInMikeBlog1: techTag,
+    lifeTagInMikeBlog1: lifeTag,
   };
 };
 
