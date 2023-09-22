@@ -8,7 +8,11 @@ import { createTag } from "../../repositories/tag";
 import User from "../../models/user";
 import Blog from "../../models/blog";
 import Category from "../../models/category";
+import Article from "../../models/article";
+import Tag from "../../models/tag";
 import generateAuthToken from "../../utils/generateAuthToken";
+import { createArticle } from "../../repositories/article";
+import { ArticleStatus } from "../../models/article";
 
 /**
  * After seeding data, you will get below test data:
@@ -60,6 +64,17 @@ export const seedData = async () => {
     blogId: newMikeBlog1.id,
   });
 
+  const newArticle = await createArticle({
+    title: "My first article",
+    content: "This is my first article.",
+    status: ArticleStatus.DRAFT,
+    isTop: false,
+    categoryId: newTechCategory.id,
+    tagIds: [ideaTag.id, lifeTag.id],
+    blogId: newMikeBlog1.id,
+    userId: newUserMike.id,
+  });
+
   // Attach user ids and tokens to global so that test cases can read them.
   globalThis.__TESTDATA__ = {
     // Put the seeded data in global variable so that they can be accessed by test cases.
@@ -80,10 +95,13 @@ export const seedData = async () => {
     ideaTagInMikeBlog1: ideaTag,
     techTagInMikeBlog1: techTag,
     lifeTagInMikeBlog1: lifeTag,
+    newArticleInMikeBlog1: newArticle,
   };
 };
 
 export const cleanData = async () => {
+  await Article.deleteMany();
+  await Tag.deleteMany();
   await Category.deleteMany();
   await Blog.deleteMany();
   await User.deleteMany();

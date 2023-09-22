@@ -95,6 +95,6 @@ articleSchema.methods.mapToArticleData = function (): ArticleData {
   };
 };
 
-const Post = mongoose.model<IArticle>("Post", articleSchema);
+const Article = mongoose.model<IArticle>("Article", articleSchema);
 
-export default Post;
+export default Article;
