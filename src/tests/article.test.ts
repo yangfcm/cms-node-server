@@ -4,7 +4,7 @@ import { ArticleStatus } from "../models/article";
 
 describe("Test article routers", () => {
   const {
-    newArticleInMikeBlog1,
+    articleInMikeBlog1,
     mikeBlog1,
     techCategoryInMikeBlog1,
     ideaTagInMikeBlog1,
@@ -22,10 +22,10 @@ describe("Test article routers", () => {
       // console.log("==================", articles);
       expect(articles.length).toBe(1);
       expect(articles[0]).toMatchObject({
-        title: newArticleInMikeBlog1.title,
-        content: newArticleInMikeBlog1.content,
-        status: newArticleInMikeBlog1.status,
-        isTop: newArticleInMikeBlog1.isTop,
+        title: articleInMikeBlog1.title,
+        content: articleInMikeBlog1.content,
+        status: articleInMikeBlog1.status,
+        isTop: articleInMikeBlog1.isTop,
       });
     });
   });

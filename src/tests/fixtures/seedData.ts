@@ -13,6 +13,7 @@ import Tag from "../../models/tag";
 import generateAuthToken from "../../utils/generateAuthToken";
 import { createArticle } from "../../repositories/article";
 import { ArticleStatus } from "../../models/article";
+import { createComment } from "../../repositories/comment";
 
 /**
  * After seeding data, you will get below test data:
@@ -75,6 +76,13 @@ export const seedData = async () => {
     userId: newUserMike.id,
   });
 
+  const newComment = await createComment({
+    content: "my first comment",
+    articleId: newArticle.id,
+    blogId: newMikeBlog1.id,
+    userId: newUserMike.id,
+  });
+
   // Attach user ids and tokens to global so that test cases can read them.
   globalThis.__TESTDATA__ = {
     // Put the seeded data in global variable so that they can be accessed by test cases.
@@ -95,7 +103,8 @@ export const seedData = async () => {
     ideaTagInMikeBlog1: ideaTag,
     techTagInMikeBlog1: techTag,
     lifeTagInMikeBlog1: lifeTag,
-    newArticleInMikeBlog1: newArticle,
+    articleInMikeBlog1: newArticle,
+    commentInMikeBlog1: newComment,
   };
 };
 
