@@ -29,4 +29,22 @@ describe("Test article routers", () => {
       });
     });
   });
+
+  describe("GET /blogs/:address/articles/:articleId", () => {
+    test.todo("should not get the article if it is unavailable.");
+    test.todo("should get the article by id");
+  });
+
+  describe("POST /blogs/:address/articles", () => {
+    test.todo("blog owner should create an article");
+  });
+
+  describe("PUT /blogs/:address/articles/:articleId", () => {
+    test.todo("should not update an article that does not exist");
+    test.todo("should not update an article that user does not own");
+    test.todo("should update an article's title and content");
+    test.todo("should update article's metadata: status, isTop");
+    test.todo("should update an article's category");
+    test.todo("should update an article's tag");
+  });
 });
