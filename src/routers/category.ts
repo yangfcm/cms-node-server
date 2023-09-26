@@ -4,7 +4,7 @@ import {
   findCategoryByName,
   createCategory,
   deleteCategory,
-  readCategoriesByBlogId,
+  readCategories,
   updateCategory,
   readCategoryById,
 } from "../repositories/category";
@@ -32,11 +32,7 @@ router.get(
   ) => {
     const { blog } = req;
     try {
-      if (!blog)
-        return res.json({
-          categories: [],
-        });
-      const categories = await readCategoriesByBlogId(blog.id);
+      const categories = await readCategories(blog?.id);
       res.json({ categories });
     } catch (err: any) {
       next(err);
@@ -53,7 +49,8 @@ router.get(
   ) => {
     try {
       const { categoryId } = req.params;
-      const category = await readCategoryById(categoryId);
+      const { blog } = req;
+      const category = await readCategoryById(categoryId, blog?.id);
       if (!category) {
         return res.status(404).send();
       }
@@ -138,7 +135,11 @@ router.delete(
     next: NextFunction
   ) => {
     try {
-      const deletedCategory = await deleteCategory(req.params.categoryId);
+      const { blog } = req;
+      const deletedCategory = await deleteCategory(
+        req.params.categoryId,
+        blog?.id
+      );
       if (!deletedCategory) return res.status(404).send();
       res.json({ category: deletedCategory });
     } catch (err: any) {

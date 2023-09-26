@@ -36,25 +36,32 @@ export const createCategory = async (
 
 /**
  * Get a category by id
- * @param categoryId
+ * @param id
+ * @param blogId Optional. If provided, find category by id in the blog only.
  * @returns The category found or null if not found.
  */
 export const readCategoryById = async (
-  categoryId: string
+  id: string,
+  blogId?: string
 ): Promise<CategoryData | null> => {
-  const category = await Category.findById(categoryId);
+  const filter: { _id: string; blogId?: string } = { _id: id };
+  if (blogId) filter.blogId = blogId;
+  const category = await Category.findOne(filter);
   return category?.mapToCategoryData() || null;
 };
 
 /**
  * Get the categories for a blog.
+ * If blogId not provided, get all categories.
  * @param blogId
  * @returns The categories under the blog with given blog id.
  */
-export const readCategoriesByBlogId = async (
-  blogId: string
+export const readCategories = async (
+  blogId?: string
 ): Promise<CategoryData[]> => {
-  const categories = await Category.find({ blogId });
+  const filter: { blogId?: string } = {};
+  if (blogId) filter.blogId = blogId;
+  const categories = await Category.find(filter);
   return categories.map((c) => c.mapToCategoryData());
 };
 
@@ -88,12 +95,17 @@ export const updateCategory = async (
 
 /**
  * Delete a category by id
+ * If blogId exists, it restricts to deleting the category with the id under the blog.
  * @param id
+ * @param blogId
  * @returns  The deleted category or null if category not found.
  */
 export const deleteCategory = async (
-  id: string
+  id: string,
+  blogId?: string
 ): Promise<CategoryData | null> => {
-  const category = await Category.findByIdAndDelete(id);
+  const filter: { _id: string; blogId?: string } = { _id: id };
+  if (blogId) filter.blogId = blogId;
+  const category = await Category.findOneAndDelete(filter);
   return category?.mapToCategoryData() || null;
 };
