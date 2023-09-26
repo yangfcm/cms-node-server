@@ -14,22 +14,32 @@ export const createTag = async (tag: TagNewData): Promise<TagData> => {
 
 /**
  * Get a tag by id
+ * If blogId exists, restrict to getting the tag with the id under the blog.
  * @param tagId
+ * @param blogId
  * @returns The tag if found or null otherwise.
  */
-export const readTagById = async (tagId: string): Promise<TagData | null> => {
-  const tag = await Tag.findById(tagId);
+export const readTagById = async (
+  id: string,
+  blogId?: string
+): Promise<TagData | null> => {
+  const filter: { _id: string; blogId?: string } = { _id: id };
+  if (blogId) filter.blogId = blogId;
+  const tag = await Tag.findOne(filter);
   return tag?.mapToTagData() || null;
 };
 
 /**
- * Get the tags for a blog
+ * Get the tags for a blog.
+ * If blogId not provided, get all tags.
  * @param blogId
  * @returns The tags under the blog with the given id.
  */
-export const readTagsByBlogId = async (blogId: string): Promise<TagData[]> => {
-  const tags = await Tag.find({ blogId });
-  return tags.map((t) => t.mapToTagData());
+export const readTags = async (blogId: string): Promise<TagData[]> => {
+  const filter: { blogId?: string } = {};
+  if (blogId) filter.blogId = blogId;
+  const tags = await Tag.find(filter);
+  return (tags || []).map((t) => t.mapToTagData());
 };
 
 /**
@@ -63,10 +73,16 @@ export const updateTag = async (
 /**
  * Delete a tag
  * @param id
+ * @param blogId Optional. If blogId is given, find the tag in the blog.
  * @returns The deleted tag data.
  */
-export const deleteTag = async (id: string): Promise<TagData | null> => {
-  const deletedTag = await Tag.findByIdAndDelete(id);
+export const deleteTag = async (
+  id: string,
+  blogId?: string
+): Promise<TagData | null> => {
+  const filter: { _id: string; blogId?: string } = { _id: id };
+  if (blogId) filter.blogId = blogId;
+  const deletedTag = await Tag.findOneAndDelete(filter);
   return deletedTag?.mapToTagData() || null;
 };
 

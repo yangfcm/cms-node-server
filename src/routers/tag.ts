@@ -6,7 +6,8 @@ import {
   createTag,
   deleteTag,
   findTagByName,
-  readTagsByBlogId,
+  readTags,
+  readTagById,
   updateTag,
 } from "../repositories/tag";
 import { TAG } from "../settings/constants";
@@ -34,12 +35,30 @@ router.get(
   async (req: Request, res: Response<TagResponse>, next: NextFunction) => {
     const { blog } = req;
     try {
-      if (!blog)
-        return res.json({
-          tags: [],
-        });
-      const tags = await readTagsByBlogId(blog.id);
+      const tags = await readTags(blog?.id);
       res.json({ tags });
+    } catch (err: any) {
+      next(err);
+    }
+  }
+);
+
+/**
+ * Get one tag by id
+ */
+router.get(
+  "/:tagId",
+  async (
+    req: Request<{ tagId: string }>,
+    res: Response<TagResponse>,
+    next: NextFunction
+  ) => {
+    try {
+      const { tagId } = req.params;
+      const { blog } = req;
+      const tag = await readTagById(tagId, blog?.id);
+      if (!tag) return res.status(404).send();
+      res.json({ tag });
     } catch (err: any) {
       next(err);
     }
@@ -68,7 +87,7 @@ router.post(
       }
       const newTag = await createTag({
         ...tag,
-        blogId: blog?.id,
+        blogId: blog!.id,
       });
       res.json({ tag: newTag });
     } catch (err: any) {
@@ -127,7 +146,8 @@ router.delete(
     next: NextFunction
   ) => {
     try {
-      const deletedTag = await deleteTag(req.params.tagId);
+      const { blog } = req;
+      const deletedTag = await deleteTag(req.params.tagId, blog?.id);
       if (!deletedTag) return res.status(404).send();
       res.json({ tag: deletedTag });
     } catch (err: any) {
