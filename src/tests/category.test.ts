@@ -7,15 +7,17 @@ import { BLOG, CATEGORY } from "../settings/constants";
 describe("Test category routers", () => {
   const {
     mikeBlog1,
+    mikeBlog2,
     userMikeToken,
     userJohnToken,
     hobbyCategoryInMikeBlog1,
     techCategoryInMikeBlog1,
   } = globalThis.__TESTDATA__;
   const { address: mikeBlog1Address } = mikeBlog1;
+  const { address: mikeBlog2Address } = mikeBlog2;
 
   describe("GET /blogs/:address/categories", () => {
-    test("User should be able to get the categories under a particular blog", async () => {
+    test("Should get the categories under a particular blog", async () => {
       const {
         body: { categories },
       } = await request(app).get(`/api/blogs/${mikeBlog1Address}/categories`);
@@ -31,10 +33,19 @@ describe("Test category routers", () => {
       );
       expect(foundHobbyCategory).toMatchObject(hobbyCategoryInMikeBlog1);
     });
+
+    test("Should get blog not found error message if blog address is not found.", async () => {
+      const {
+        body: { message },
+        status,
+      } = await request(app).get("/api/blogs/non-exist-blog/categories");
+      expect(status).toBe(404);
+      expect(message).toBe(BLOG.NOT_FOUND);
+    });
   });
 
   describe("GET /blogs/:address/categories/:categoryId", () => {
-    test("User can get the category by id.", async () => {
+    test("Should get the category by id.", async () => {
       const {
         body: { category },
       } = await request(app).get(
@@ -43,10 +54,17 @@ describe("Test category routers", () => {
       expect(category).toMatchObject(hobbyCategoryInMikeBlog1);
     });
 
-    test("User gets 404 error if category id doesn't exist", async () => {
+    test("Should get category not found error if category id doesn't exist", async () => {
       const randomId = new mongoose.Types.ObjectId();
       const { status } = await request(app).get(
         `/api/blogs/${mikeBlog1Address}/categories/${randomId}`
+      );
+      expect(status).toBe(404);
+    });
+
+    test("Should get not found error if category id exists but in another blog", async () => {
+      const { status } = await request(app).get(
+        `/api/blogs/${mikeBlog2Address}/categories/${hobbyCategoryInMikeBlog1.id}`
       );
       expect(status).toBe(404);
     });
@@ -66,6 +84,18 @@ describe("Test category routers", () => {
         });
       expect(status).toBe(400);
       expect(body.message).toContain(CATEGORY.NAME_IN_USE);
+    });
+
+    test("Should not create a category for the blog you do not own", async () => {
+      const newCategory = { name: "Play" };
+      const { body, status } = await request(app)
+        .post(`/api/blogs/${mikeBlog1Address}/categories`)
+        .set("x-auth", userJohnToken)
+        .send({
+          category: newCategory,
+        });
+      expect(status).toBe(403);
+      expect(body.message).toContain(BLOG.NO_ACCESS_TO_BLOG);
     });
 
     test("Blog owner should be able to create a category", async () => {

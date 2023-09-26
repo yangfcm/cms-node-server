@@ -62,7 +62,7 @@ export const readCategories = async (
   const filter: { blogId?: string } = {};
   if (blogId) filter.blogId = blogId;
   const categories = await Category.find(filter);
-  return categories.map((c) => c.mapToCategoryData());
+  return (categories || []).map((c) => c.mapToCategoryData());
 };
 
 /**

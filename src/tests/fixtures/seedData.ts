@@ -1,6 +1,6 @@
 import { userJohn, userMike } from "./user";
 import { mikeBlog1, mikeBlog2 } from "./blog";
-import { hobbyCategory, techCategory } from "./category";
+import { hobbyCategory, techCategory, devCategory } from "./category";
 import { createUser, updateUser } from "../../repositories/user";
 import { createBlog } from "../../repositories/blog";
 import { createCategory } from "../../repositories/category";
@@ -47,6 +47,12 @@ export const seedData = async () => {
   const newTechCategory = await createCategory({
     ...techCategory,
     blogId: newMikeBlog1.id,
+  });
+
+  // Create one category for blog mikeBlog2
+  const newDevCategory = await createCategory({
+    ...devCategory,
+    blogId: newMikeBlog2.id,
   });
 
   // Create tags for blog mikeBlog1
@@ -100,6 +106,7 @@ export const seedData = async () => {
     mikeBlog2: newMikeBlog2,
     hobbyCategoryInMikeBlog1: newHobbyCategory,
     techCategoryInMikeBlog1: newTechCategory,
+    devCategoryInMikeBlog2: newDevCategory,
     ideaTagInMikeBlog1: ideaTag,
     techTagInMikeBlog1: techTag,
     lifeTagInMikeBlog1: lifeTag,
