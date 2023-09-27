@@ -172,23 +172,19 @@ describe("Test category routers", () => {
     });
 
     test("Blog owner should be able to update a category", async () => {
-      const categoryToUpdate = await findCategoryByName(
-        hobbyCategoryInMikeBlog1.name
-      );
       const { body } = await request(app)
         .put(
-          `/api/blogs/${mikeBlog1Address}/categories/${categoryToUpdate?.id}`
+          `/api/blogs/${mikeBlog1Address}/categories/${hobbyCategoryInMikeBlog1.id}`
         )
         .set("x-auth", userMikeToken)
         .send({
           category: {
-            name: categoryToUpdate?.name,
             description: "I love music and dancing.",
           },
         });
       expect(body.category).toMatchObject({
-        id: categoryToUpdate?.id,
-        name: categoryToUpdate?.name,
+        id: hobbyCategoryInMikeBlog1.id,
+        name: hobbyCategoryInMikeBlog1.name,
         description: "I love music and dancing.",
       });
     });
@@ -206,19 +202,16 @@ describe("Test category routers", () => {
     test("Should get not found error if category id exists but in another blog", async () => {
       const { status } = await request(app)
         .delete(
-          `/api/blogs/${mikeBlog2Address}/categories/${hobbyCategoryInMikeBlog1.id}`
+          `/api/blogs/${mikeBlog2Address}/categories/${techCategoryInMikeBlog1.id}`
         )
         .set("x-auth", userMikeToken);
       expect(status).toBe(404);
     });
 
     test("Should not be able to delete a category that user does not own", async () => {
-      const categoryToDelete = await findCategoryByName(
-        hobbyCategoryInMikeBlog1.name
-      );
       const { body, status } = await request(app)
         .delete(
-          `/api/blogs/${mikeBlog1Address}/categories/${categoryToDelete?.id}`
+          `/api/blogs/${mikeBlog1Address}/categories/${techCategoryInMikeBlog1.id}`
         )
         .set("x-auth", userJohnToken);
       expect(status).toBe(403);
@@ -226,21 +219,18 @@ describe("Test category routers", () => {
     });
 
     test("Blog owner should be able to delete a category", async () => {
-      const categoryToDelete = await findCategoryByName(
-        hobbyCategoryInMikeBlog1.name
-      );
       const { body } = await request(app)
         .delete(
-          `/api/blogs/${mikeBlog1Address}/categories/${categoryToDelete?.id}`
+          `/api/blogs/${mikeBlog1Address}/categories/${techCategoryInMikeBlog1.id}`
         )
         .set("x-auth", userMikeToken);
       expect(body.category).toMatchObject({
-        id: categoryToDelete?.id,
-        name: categoryToDelete?.name,
-        description: categoryToDelete?.description,
+        id: techCategoryInMikeBlog1.id,
+        name: techCategoryInMikeBlog1.name,
+        description: techCategoryInMikeBlog1.description,
       });
 
-      const deleted = await findCategoryByName(hobbyCategoryInMikeBlog1.name);
+      const deleted = await findCategoryByName(techCategoryInMikeBlog1.name);
       expect(deleted).toBeNull();
     });
   });

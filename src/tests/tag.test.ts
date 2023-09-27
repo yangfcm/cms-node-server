@@ -2,6 +2,7 @@ import request from "supertest";
 import mongoose from "mongoose";
 import app from "../app";
 import { BLOG, TAG } from "../settings/constants";
+import { readTagById } from "../repositories/tag";
 
 describe("Test tag routers", () => {
   const {
@@ -109,17 +110,100 @@ describe("Test tag routers", () => {
   });
 
   describe("PUT /blogs/:address/tags/:tagId", () => {
-    test.todo("Should get not found error if tag id does not exist");
-    test.todo(
-      "Should get not found error if tag id exists but in another blog"
-    );
-    test.todo("Should not update a tag to an existing name");
-    test.todo("Should not update a tag that user does not own");
-    test.todo("Blog owner should update a tag");
+    test("Should get not found error if tag id does not exist", async () => {
+      const randomId = new mongoose.Types.ObjectId();
+      const { status } = await request(app)
+        .put(`/api/blogs/${mikeBlog1Address}/tags/${randomId}`)
+        .set("x-auth", userMikeToken)
+        .send({
+          tag: {
+            name: "New",
+          },
+        });
+      expect(status).toBe(404);
+    });
+    test("Should get not found error if tag id exists but in another blog", async () => {
+      const { status } = await request(app)
+        .put(`/api/blogs/${mikeBlog2Address}/tags/${ideaTagInMikeBlog1.id}`)
+        .set("x-auth", userMikeToken)
+        .send({
+          tag: {
+            name: "New",
+          },
+        });
+      expect(status).toBe(404);
+    });
+    test("Should not update a tag to an existing name", async () => {
+      const { body, status } = await request(app)
+        .put(`/api/blogs/${mikeBlog1Address}/tags/${ideaTagInMikeBlog1.id}`)
+        .set("x-auth", userMikeToken)
+        .send({
+          tag: {
+            name: lifeTagInMikeBlog1.name,
+          },
+        });
+      expect(status).toBe(400);
+      expect(body.message).toBe(TAG.NAME_IN_USE);
+    });
+    test("Should not update a tag that user does not own", async () => {
+      const { body, status } = await request(app)
+        .put(`/api/blogs/${mikeBlog1Address}/tags/${ideaTagInMikeBlog1.id}`)
+        .set("x-auth", userJohnToken)
+        .send({
+          tag: {
+            name: "New",
+          },
+        });
+      expect(status).toBe(403);
+      expect(body.message).toContain(BLOG.NO_ACCESS_TO_BLOG);
+    });
+    test("Blog owner should update a tag", async () => {
+      const newTag = {
+        name: "New idea",
+      };
+      const { body } = await request(app)
+        .put(`/api/blogs/${mikeBlog1Address}/tags/${ideaTagInMikeBlog1.id}`)
+        .set("x-auth", userMikeToken)
+        .send({
+          tag: newTag,
+        });
+
+      expect(body.tag).toMatchObject(newTag);
+    });
   });
 
   describe("DELETE /blogs/:address/tags/:tagId", () => {
-    test.todo("Should not delete a tag that user does not own");
-    test.todo("Blog owner should delete a tag");
+    test("Should get not found error if tag id does not exist", async () => {
+      const randomId = new mongoose.Types.ObjectId();
+      const { status } = await request(app)
+        .delete(`/api/blogs/${mikeBlog1Address}/tags/${randomId}`)
+        .set("x-auth", userMikeToken);
+      expect(status).toBe(404);
+    });
+
+    test("Should get not found error if tag id exists but in another blog", async () => {
+      const { status } = await request(app)
+        .delete(`/api/blogs/${mikeBlog2Address}/tags/${techTagInMikeBlog1.id}`)
+        .set("x-auth", userMikeToken);
+      expect(status).toBe(404);
+    });
+
+    test("Should not delete a tag that user does not own", async () => {
+      const { body, status } = await request(app)
+        .delete(`/api/blogs/${mikeBlog1Address}/tags/${techTagInMikeBlog1.id}`)
+        .set("x-auth", userJohnToken);
+      expect(status).toBe(403);
+      expect(body.message).toContain(BLOG.NO_ACCESS_TO_BLOG);
+    });
+
+    test("Blog owner should delete a tag", async () => {
+      const { body } = await request(app)
+        .delete(`/api/blogs/${mikeBlog1Address}/tags/${techTagInMikeBlog1.id}`)
+        .set("x-auth", userMikeToken);
+      expect(body.tag).toMatchObject(techTagInMikeBlog1);
+
+      const deleted = await readTagById(techTagInMikeBlog1.id);
+      expect(deleted).toBeNull();
+    });
   });
 });
