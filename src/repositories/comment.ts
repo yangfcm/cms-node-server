@@ -16,28 +16,36 @@ export const createComment = async (
 
 /**
  * Get a comment by id
+ * If blogId is provided, get the comment by id in this blog only.
  * @param id
+ * @param blogId
  * @returns The comment if found or null otherwise.
  */
 export const readCommentById = async (
-  id: string
+  id: string,
+  blogId?: string
 ): Promise<CommentData | null> => {
-  const comment = await Comment.findById(id);
+  const filter: { _id: string; blogId?: string } = { _id: id };
+  if (blogId) filter.blogId = blogId;
+  const comment = await Comment.findOne(filter);
   return comment?.mapToCommentData() || null;
 };
 
 /**
  * Get the comments for an article.
+ * If blogId is provided, get the comment by id in this blog only.
  * @param articleId
+ * @param blogId
  * @returns The comments for an article.
  */
 export const readCommentsByArticleId = async (
-  articleId: string
+  articleId: string,
+  blogId?: string
 ): Promise<CommentData[]> => {
-  const comments = await Comment.find({
-    articleId,
-  });
-  return comments.map((c) => c.mapToCommentData());
+  const filter: { articleId: string; blogId?: string } = { articleId };
+  if (blogId) filter.blogId = blogId;
+  const comments = await Comment.find(filter);
+  return (comments || []).map((c) => c.mapToCommentData());
 };
 
 /**
@@ -51,21 +59,26 @@ export const readCommentsByBlogId = async (
   const comments = await Comment.find({
     blogId,
   });
-  return comments.map((c) => c.mapToCommentData());
+  return (comments || []).map((c) => c.mapToCommentData());
 };
 
 /**
  * Update a comment
+ * If blogId provided, it restricts to updating the comment under the blog.
  * @param id
  * @param comment
+ * @param blogId
  * @returns
  */
 export const updateComment = async (
   id: string,
-  comment: Partial<CommentPostData>
+  comment: Partial<CommentPostData>,
+  blogId?: string
 ): Promise<CommentData | null> => {
-  const updatedComment = await Comment.findByIdAndUpdate(
-    id,
+  const filter: { _id: string; blogId?: string } = { _id: id };
+  if (blogId) filter.blogId = blogId;
+  const updatedComment = await Comment.findOneAndUpdate(
+    filter,
     {
       $set: comment,
     },
@@ -79,12 +92,17 @@ export const updateComment = async (
 
 /**
  * Delete a comment
+ * If blodId exists, it restricts to deleting the comment with the id under the blog.
  * @param id
+ * @param blogId
  * @returns The deleted comment data.
  */
 export const deleteComment = async (
-  id: string
+  id: string,
+  blogId?: string
 ): Promise<CommentData | null> => {
-  const deletedComment = await Comment.findByIdAndDelete(id);
+  const filter: { _id: string; blogId?: string } = { _id: id };
+  if (blogId) filter.blogId = blogId;
+  const deletedComment = await Comment.findOneAndDelete(filter);
   return deletedComment?.mapToCommentData() || null;
 };
