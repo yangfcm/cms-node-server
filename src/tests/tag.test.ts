@@ -13,6 +13,7 @@ describe("Test tag routers", () => {
     ideaTagInMikeBlog1,
     techTagInMikeBlog1,
     lifeTagInMikeBlog1,
+    aiTagInMikeBlog2,
   } = globalThis.__TESTDATA__;
   const { address: mikeBlog1Address } = mikeBlog1;
   const { address: mikeBlog2Address } = mikeBlog2;
@@ -196,11 +197,11 @@ describe("Test tag routers", () => {
 
     test("Blog owner should delete a tag", async () => {
       const { body } = await request(app)
-        .delete(`/api/blogs/${mikeBlog1Address}/tags/${techTagInMikeBlog1.id}`)
+        .delete(`/api/blogs/${mikeBlog2Address}/tags/${aiTagInMikeBlog2.id}`)
         .set("x-auth", userMikeToken);
-      expect(body.tag).toMatchObject(techTagInMikeBlog1);
+      expect(body.tag).toMatchObject(aiTagInMikeBlog2);
 
-      const deleted = await readTagById(techTagInMikeBlog1.id);
+      const deleted = await readTagById(aiTagInMikeBlog2.id);
       expect(deleted).toBeNull();
     });
   });

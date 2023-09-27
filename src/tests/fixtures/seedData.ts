@@ -49,9 +49,15 @@ export const seedData = async () => {
     blogId: newMikeBlog1.id,
   });
 
-  // Create one category for blog mikeBlog2
+  // Create one category for blog mikeBlog2 for deletion.
   const newDevCategory = await createCategory({
     ...devCategory,
+    blogId: newMikeBlog2.id,
+  });
+
+  const newOperationCategory = await createCategory({
+    name: "Operation",
+    description: "Something about operation",
     blogId: newMikeBlog2.id,
   });
 
@@ -132,6 +138,7 @@ export const seedData = async () => {
     mikeBlog2: newMikeBlog2,
     hobbyCategoryInMikeBlog1: newHobbyCategory,
     techCategoryInMikeBlog1: newTechCategory,
+    operationCategoryInMikeBlog2: newOperationCategory,
     devCategoryInMikeBlog2: newDevCategory,
     ideaTagInMikeBlog1: ideaTag,
     techTagInMikeBlog1: techTag,

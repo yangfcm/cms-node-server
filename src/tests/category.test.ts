@@ -1,7 +1,7 @@
 import request from "supertest";
 import mongoose from "mongoose";
 import app from "../app";
-import { findCategoryByName } from "../repositories/category";
+import { readCategoryById } from "../repositories/category";
 import { BLOG, CATEGORY } from "../settings/constants";
 
 describe("Test category routers", () => {
@@ -12,6 +12,8 @@ describe("Test category routers", () => {
     userJohnToken,
     hobbyCategoryInMikeBlog1,
     techCategoryInMikeBlog1,
+    operationCategoryInMikeBlog2,
+    devCategoryInMikeBlog2,
   } = globalThis.__TESTDATA__;
   const { address: mikeBlog1Address } = mikeBlog1;
   const { address: mikeBlog2Address } = mikeBlog2;
@@ -117,12 +119,12 @@ describe("Test category routers", () => {
     test("Should not update a category to an existing name", async () => {
       const { body, status } = await request(app)
         .put(
-          `/api/blogs/${mikeBlog1Address}/categories/${hobbyCategoryInMikeBlog1.id}`
+          `/api/blogs/${mikeBlog2Address}/categories/${operationCategoryInMikeBlog2.id}`
         )
         .set("x-auth", userMikeToken)
         .send({
           category: {
-            name: techCategoryInMikeBlog1.name, // Change the name to tech category's name, which exists.
+            name: devCategoryInMikeBlog2.name, // Change the name to dev category's name, which exists.
           },
         });
       expect(status).toBe(400);
@@ -132,7 +134,7 @@ describe("Test category routers", () => {
     test("Should not be able to update a category that user does not own", async () => {
       const { body, status } = await request(app)
         .put(
-          `/api/blogs/${mikeBlog1Address}/categories/${hobbyCategoryInMikeBlog1.id}`
+          `/api/blogs/${mikeBlog2Address}/categories/${operationCategoryInMikeBlog2.id}`
         )
         .set("x-auth", userJohnToken)
         .send({
@@ -146,7 +148,7 @@ describe("Test category routers", () => {
 
     test("Should get not found error if category id does not exist", async () => {
       const { status } = await request(app)
-        .put(`/api/blogs/${mikeBlog1Address}/categories/${randomId}`)
+        .put(`/api/blogs/${mikeBlog2Address}/categories/${randomId}`)
         .set("x-auth", userMikeToken)
         .send({
           category: {
@@ -159,7 +161,7 @@ describe("Test category routers", () => {
     test("Should get not found error if category id exists but in another blog", async () => {
       const { status } = await request(app)
         .put(
-          `/api/blogs/${mikeBlog2Address}/categories/${hobbyCategoryInMikeBlog1.id}`
+          `/api/blogs/${mikeBlog1Address}/categories/${operationCategoryInMikeBlog2.id}`
         )
         .set("x-auth", userMikeToken)
         .send({
@@ -173,18 +175,18 @@ describe("Test category routers", () => {
     test("Blog owner should be able to update a category", async () => {
       const { body } = await request(app)
         .put(
-          `/api/blogs/${mikeBlog1Address}/categories/${hobbyCategoryInMikeBlog1.id}`
+          `/api/blogs/${mikeBlog2Address}/categories/${operationCategoryInMikeBlog2.id}`
         )
         .set("x-auth", userMikeToken)
         .send({
           category: {
-            description: "I love music and dancing.",
+            description: "Updated description",
           },
         });
       expect(body.category).toMatchObject({
-        id: hobbyCategoryInMikeBlog1.id,
-        name: hobbyCategoryInMikeBlog1.name,
-        description: "I love music and dancing.",
+        id: operationCategoryInMikeBlog2.id,
+        name: operationCategoryInMikeBlog2.name,
+        description: "Updated description",
       });
     });
   });
@@ -192,7 +194,7 @@ describe("Test category routers", () => {
   describe("DELETE /blogs/:address/categories/:categoryId", () => {
     test("Should get not found error if category id does not exist", async () => {
       const { status } = await request(app)
-        .delete(`/api/blogs/${mikeBlog1Address}/categories/${randomId}`)
+        .delete(`/api/blogs/${mikeBlog2Address}/categories/${randomId}`)
         .set("x-auth", userMikeToken);
       expect(status).toBe(404);
     });
@@ -200,7 +202,7 @@ describe("Test category routers", () => {
     test("Should get not found error if category id exists but in another blog", async () => {
       const { status } = await request(app)
         .delete(
-          `/api/blogs/${mikeBlog2Address}/categories/${techCategoryInMikeBlog1.id}`
+          `/api/blogs/${mikeBlog1Address}/categories/${devCategoryInMikeBlog2.id}`
         )
         .set("x-auth", userMikeToken);
       expect(status).toBe(404);
@@ -209,7 +211,7 @@ describe("Test category routers", () => {
     test("Should not be able to delete a category that user does not own", async () => {
       const { body, status } = await request(app)
         .delete(
-          `/api/blogs/${mikeBlog1Address}/categories/${techCategoryInMikeBlog1.id}`
+          `/api/blogs/${mikeBlog2Address}/categories/${devCategoryInMikeBlog2.id}`
         )
         .set("x-auth", userJohnToken);
       expect(status).toBe(403);
@@ -219,16 +221,16 @@ describe("Test category routers", () => {
     test("Blog owner should be able to delete a category", async () => {
       const { body } = await request(app)
         .delete(
-          `/api/blogs/${mikeBlog1Address}/categories/${techCategoryInMikeBlog1.id}`
+          `/api/blogs/${mikeBlog2Address}/categories/${devCategoryInMikeBlog2.id}`
         )
         .set("x-auth", userMikeToken);
       expect(body.category).toMatchObject({
-        id: techCategoryInMikeBlog1.id,
-        name: techCategoryInMikeBlog1.name,
-        description: techCategoryInMikeBlog1.description,
+        id: devCategoryInMikeBlog2.id,
+        name: devCategoryInMikeBlog2.name,
+        description: devCategoryInMikeBlog2.description,
       });
 
-      const deleted = await findCategoryByName(techCategoryInMikeBlog1.name);
+      const deleted = await readCategoryById(devCategoryInMikeBlog2.id);
       expect(deleted).toBeNull();
     });
   });

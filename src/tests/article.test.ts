@@ -30,6 +30,8 @@ describe("Test article routers", () => {
         isTop: article1InMikeBlog1.isTop,
       });
       expect(mikeBlog1).toMatchObject(articles[0].blog);
+      expect(techCategoryInMikeBlog1).toMatchObject(articles[0].category);
+      expect(userMike).toMatchObject(articles[0].user);
     });
   });
 

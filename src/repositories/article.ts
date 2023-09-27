@@ -25,7 +25,7 @@ export const readArticles = async (blogId?: string): Promise<ArticleData[]> => {
   if (blogId) filter.blogId = blogId;
   const articles = await Article.find(filter)
     .populate("blogId", "_id title address")
-    .populate("userId", "_id email username nickname biography")
+    .populate("userId", "_id username nickname biography avatar")
     .populate("categoryId", "_id name description")
     .populate("tagIds", "_id name");
   return (articles || []).map((a) => a.mapToArticleData());
