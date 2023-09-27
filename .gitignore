@@ -1,3 +1,5 @@
-node_modules
-*.drawio
-config/config.json
+node_modules/
+.env
+.env.*
+dist/
+src/settings/config.json
