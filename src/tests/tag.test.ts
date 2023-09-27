@@ -17,7 +17,7 @@ describe("Test tag routers", () => {
   const { address: mikeBlog2Address } = mikeBlog2;
 
   describe("GET /blogs/:address/tags", () => {
-    test("should get the tags under a particular blog", async () => {
+    test("Should get the tags under a particular blog", async () => {
       const {
         body: { tags },
       } = await request(app).get(`/api/blogs/${mikeBlog1Address}/tags`);
@@ -64,7 +64,7 @@ describe("Test tag routers", () => {
   });
 
   describe("POST /blogs/:address/tags", () => {
-    test("should not create a tag with the existing name", async () => {
+    test("Should not create a tag with the existing name", async () => {
       const newTag = {
         name: ideaTagInMikeBlog1.name,
       };
@@ -92,7 +92,7 @@ describe("Test tag routers", () => {
       expect(body.message).toContain(BLOG.NO_ACCESS_TO_BLOG);
     });
 
-    test("blog owner should create a tag", async () => {
+    test("Blog owner should create a tag", async () => {
       const newTag = {
         name: "new tag",
       };
@@ -113,13 +113,13 @@ describe("Test tag routers", () => {
     test.todo(
       "Should get not found error if tag id exists but in another blog"
     );
-    test.todo("should not update a tag to an existing name");
-    test.todo("should not update a tag that user does not own");
-    test.todo("blog owner should update a tag");
+    test.todo("Should not update a tag to an existing name");
+    test.todo("Should not update a tag that user does not own");
+    test.todo("Blog owner should update a tag");
   });
 
   describe("DELETE /blogs/:address/tags/:tagId", () => {
-    test.todo("should not delete a tag that user does not own");
-    test.todo("blog owner should delete a tag");
+    test.todo("Should not delete a tag that user does not own");
+    test.todo("Blog owner should delete a tag");
   });
 });
