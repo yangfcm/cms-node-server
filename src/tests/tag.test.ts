@@ -13,6 +13,7 @@ describe("Test tag routers", () => {
     ideaTagInMikeBlog1,
     techTagInMikeBlog1,
     lifeTagInMikeBlog1,
+    dataTagInMikeBlog2,
     aiTagInMikeBlog2,
   } = globalThis.__TESTDATA__;
   const { address: mikeBlog1Address } = mikeBlog1;
@@ -113,7 +114,7 @@ describe("Test tag routers", () => {
   describe("PUT /blogs/:address/tags/:tagId", () => {
     test("Should get not found error if tag id does not exist", async () => {
       const { status } = await request(app)
-        .put(`/api/blogs/${mikeBlog1Address}/tags/${randomId}`)
+        .put(`/api/blogs/${mikeBlog2Address}/tags/${randomId}`)
         .set("x-auth", userMikeToken)
         .send({
           tag: {
@@ -124,7 +125,7 @@ describe("Test tag routers", () => {
     });
     test("Should get not found error if tag id exists but in another blog", async () => {
       const { status } = await request(app)
-        .put(`/api/blogs/${mikeBlog2Address}/tags/${ideaTagInMikeBlog1.id}`)
+        .put(`/api/blogs/${mikeBlog1Address}/tags/${dataTagInMikeBlog2.id}`)
         .set("x-auth", userMikeToken)
         .send({
           tag: {
@@ -135,11 +136,11 @@ describe("Test tag routers", () => {
     });
     test("Should not update a tag to an existing name", async () => {
       const { body, status } = await request(app)
-        .put(`/api/blogs/${mikeBlog1Address}/tags/${ideaTagInMikeBlog1.id}`)
+        .put(`/api/blogs/${mikeBlog2Address}/tags/${dataTagInMikeBlog2.id}`)
         .set("x-auth", userMikeToken)
         .send({
           tag: {
-            name: lifeTagInMikeBlog1.name,
+            name: aiTagInMikeBlog2.name,
           },
         });
       expect(status).toBe(400);
@@ -147,7 +148,7 @@ describe("Test tag routers", () => {
     });
     test("Should not update a tag that user does not own", async () => {
       const { body, status } = await request(app)
-        .put(`/api/blogs/${mikeBlog1Address}/tags/${ideaTagInMikeBlog1.id}`)
+        .put(`/api/blogs/${mikeBlog2Address}/tags/${dataTagInMikeBlog2.id}`)
         .set("x-auth", userJohnToken)
         .send({
           tag: {
@@ -162,7 +163,7 @@ describe("Test tag routers", () => {
         name: "New idea",
       };
       const { body } = await request(app)
-        .put(`/api/blogs/${mikeBlog1Address}/tags/${ideaTagInMikeBlog1.id}`)
+        .put(`/api/blogs/${mikeBlog2Address}/tags/${dataTagInMikeBlog2.id}`)
         .set("x-auth", userMikeToken)
         .send({
           tag: newTag,
@@ -175,21 +176,21 @@ describe("Test tag routers", () => {
   describe("DELETE /blogs/:address/tags/:tagId", () => {
     test("Should get not found error if tag id does not exist", async () => {
       const { status } = await request(app)
-        .delete(`/api/blogs/${mikeBlog1Address}/tags/${randomId}`)
+        .delete(`/api/blogs/${mikeBlog2Address}/tags/${randomId}`)
         .set("x-auth", userMikeToken);
       expect(status).toBe(404);
     });
 
     test("Should get not found error if tag id exists but in another blog", async () => {
       const { status } = await request(app)
-        .delete(`/api/blogs/${mikeBlog2Address}/tags/${techTagInMikeBlog1.id}`)
+        .delete(`/api/blogs/${mikeBlog1Address}/tags/${aiTagInMikeBlog2.id}`)
         .set("x-auth", userMikeToken);
       expect(status).toBe(404);
     });
 
     test("Should not delete a tag that user does not own", async () => {
       const { body, status } = await request(app)
-        .delete(`/api/blogs/${mikeBlog1Address}/tags/${techTagInMikeBlog1.id}`)
+        .delete(`/api/blogs/${mikeBlog2Address}/tags/${aiTagInMikeBlog2.id}`)
         .set("x-auth", userJohnToken);
       expect(status).toBe(403);
       expect(body.message).toContain(BLOG.NO_ACCESS_TO_BLOG);
