@@ -15,6 +15,7 @@ describe("Test category routers", () => {
   } = globalThis.__TESTDATA__;
   const { address: mikeBlog1Address } = mikeBlog1;
   const { address: mikeBlog2Address } = mikeBlog2;
+  const randomId = new mongoose.Types.ObjectId();
 
   describe("GET /blogs/:address/categories", () => {
     test("Should get the categories under a particular blog", async () => {
@@ -55,7 +56,6 @@ describe("Test category routers", () => {
     });
 
     test("Should get category not found error if category id doesn't exist", async () => {
-      const randomId = new mongoose.Types.ObjectId();
       const { status } = await request(app).get(
         `/api/blogs/${mikeBlog1Address}/categories/${randomId}`
       );
@@ -145,7 +145,6 @@ describe("Test category routers", () => {
     });
 
     test("Should get not found error if category id does not exist", async () => {
-      const randomId = new mongoose.Types.ObjectId();
       const { status } = await request(app)
         .put(`/api/blogs/${mikeBlog1Address}/categories/${randomId}`)
         .set("x-auth", userMikeToken)
@@ -192,7 +191,6 @@ describe("Test category routers", () => {
 
   describe("DELETE /blogs/:address/categories/:categoryId", () => {
     test("Should get not found error if category id does not exist", async () => {
-      const randomId = new mongoose.Types.ObjectId();
       const { status } = await request(app)
         .delete(`/api/blogs/${mikeBlog1Address}/categories/${randomId}`)
         .set("x-auth", userMikeToken);

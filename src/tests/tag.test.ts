@@ -16,6 +16,7 @@ describe("Test tag routers", () => {
   } = globalThis.__TESTDATA__;
   const { address: mikeBlog1Address } = mikeBlog1;
   const { address: mikeBlog2Address } = mikeBlog2;
+  const randomId = new mongoose.Types.ObjectId();
 
   describe("GET /blogs/:address/tags", () => {
     test("Should get the tags under a particular blog", async () => {
@@ -49,7 +50,6 @@ describe("Test tag routers", () => {
     });
 
     test("Should get tag not found error if tag id doesn't exist", async () => {
-      const randomId = new mongoose.Types.ObjectId();
       const { status } = await request(app).get(
         `/api/blogs/${mikeBlog1Address}/tags/${randomId}`
       );
@@ -111,7 +111,6 @@ describe("Test tag routers", () => {
 
   describe("PUT /blogs/:address/tags/:tagId", () => {
     test("Should get not found error if tag id does not exist", async () => {
-      const randomId = new mongoose.Types.ObjectId();
       const { status } = await request(app)
         .put(`/api/blogs/${mikeBlog1Address}/tags/${randomId}`)
         .set("x-auth", userMikeToken)
@@ -174,7 +173,6 @@ describe("Test tag routers", () => {
 
   describe("DELETE /blogs/:address/tags/:tagId", () => {
     test("Should get not found error if tag id does not exist", async () => {
-      const randomId = new mongoose.Types.ObjectId();
       const { status } = await request(app)
         .delete(`/api/blogs/${mikeBlog1Address}/tags/${randomId}`)
         .set("x-auth", userMikeToken);
