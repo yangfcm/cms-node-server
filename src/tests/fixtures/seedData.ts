@@ -119,10 +119,31 @@ export const seedData = async () => {
     userId: newUserMike.id,
   });
 
-  const newComment = await createComment({
-    content: "my first comment",
+  const newComment1ForArticle1 = await createComment({
+    content: "my first comment for article 1",
     articleId: article1.id,
     blogId: newMikeBlog1.id,
+    userId: newUserMike.id,
+  });
+
+  const newComment2ForArticle1 = await createComment({
+    content: "my next comment for article 1",
+    articleId: article1.id,
+    blogId: newMikeBlog1.id,
+    userId: newUserMike.id,
+  });
+
+  const newComment1ForArticle3 = await createComment({
+    content: "new comment for article 3",
+    articleId: article3.id,
+    blogId: newMikeBlog2.id,
+    userId: newUserMike.id,
+  });
+
+  const newComment2ForArticle3 = await createComment({
+    content: "another comment for article 3",
+    articleId: article3.id,
+    blogId: newMikeBlog2.id,
     userId: newUserMike.id,
   });
 
@@ -153,7 +174,10 @@ export const seedData = async () => {
     article1InMikeBlog1: article1,
     article2InMikeBlog1: article2,
     article3InMikeBlog2: article3,
-    commentInMikeBlog1: newComment,
+    commen1ForArticle1: newComment1ForArticle1,
+    commen2ForArticle1: newComment2ForArticle1,
+    commen1ForArticle3: newComment1ForArticle3,
+    commen2ForArticle3: newComment1ForArticle3,
   };
 };
 

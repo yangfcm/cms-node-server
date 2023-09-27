@@ -42,7 +42,7 @@ describe("Test tag routers", () => {
   });
 
   describe("GET /blogs/:address/tags/:tagId", () => {
-    test("Should get the blog by id", async () => {
+    test("Should get the tag by id", async () => {
       const {
         body: { tag },
       } = await request(app).get(
