@@ -77,7 +77,7 @@ export const seedData = async () => {
     blogId: newMikeBlog2.id,
   });
 
-  const newArticle = await createArticle({
+  const article1 = await createArticle({
     title: "My first article",
     content: "This is my first article.",
     status: ArticleStatus.DRAFT,
@@ -88,9 +88,29 @@ export const seedData = async () => {
     userId: newUserMike.id,
   });
 
+  const article2 = await createArticle({
+    title: "My second article",
+    content: "This is my second article.",
+    status: ArticleStatus.PUBLISHED,
+    categoryId: newTechCategory.id,
+    tagIds: [],
+    blogId: newMikeBlog1.id,
+    userId: newUserMike.id,
+  });
+
+  const article3 = await createArticle({
+    title: "My article for another blog",
+    content: "This is my second for another blog - newMikeBlog2",
+    status: ArticleStatus.PUBLISHED,
+    categoryId: newDevCategory.id,
+    tagIds: [aiTag.id],
+    blogId: newMikeBlog2.id,
+    userId: newUserMike.id,
+  });
+
   const newComment = await createComment({
     content: "my first comment",
-    articleId: newArticle.id,
+    articleId: article1.id,
     blogId: newMikeBlog1.id,
     userId: newUserMike.id,
   });
@@ -117,7 +137,9 @@ export const seedData = async () => {
     techTagInMikeBlog1: techTag,
     lifeTagInMikeBlog1: lifeTag,
     aiTagInMikeBlog2: aiTag,
-    articleInMikeBlog1: newArticle,
+    article1InMikeBlog1: article1,
+    article2InMikeBlog1: article2,
+    article3InMikeBlog2: article3,
     commentInMikeBlog1: newComment,
   };
 };

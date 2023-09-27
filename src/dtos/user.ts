@@ -27,5 +27,5 @@ export type UserData = {
     id: string;
     title: string;
     address: string;
-  }[]
+  }[];
 };

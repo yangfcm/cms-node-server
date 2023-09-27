@@ -4,7 +4,8 @@ import { ArticleStatus } from "../models/article";
 
 describe("Test article routers", () => {
   const {
-    articleInMikeBlog1,
+    article1InMikeBlog1,
+    article2InMikeBlog2,
     mikeBlog1,
     techCategoryInMikeBlog1,
     ideaTagInMikeBlog1,
@@ -20,12 +21,12 @@ describe("Test article routers", () => {
       } = await request(app).get(`/api/blogs/${mikeBlog1Address}/articles`);
 
       // console.log("==================", articles);
-      expect(articles.length).toBe(1);
+      expect(articles.length).toBe(2);
       expect(articles[0]).toMatchObject({
-        title: articleInMikeBlog1.title,
-        content: articleInMikeBlog1.content,
-        status: articleInMikeBlog1.status,
-        isTop: articleInMikeBlog1.isTop,
+        title: article1InMikeBlog1.title,
+        content: article1InMikeBlog1.content,
+        status: article1InMikeBlog1.status,
+        isTop: article1InMikeBlog1.isTop,
       });
     });
   });
