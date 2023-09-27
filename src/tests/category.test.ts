@@ -115,12 +115,9 @@ describe("Test category routers", () => {
 
   describe("PUT /blogs/:address/categories/:categoryId", () => {
     test("Should not update a category to an existing name", async () => {
-      const categoryToUpdate = await findCategoryByName(
-        hobbyCategoryInMikeBlog1.name
-      );
       const { body, status } = await request(app)
         .put(
-          `/api/blogs/${mikeBlog1Address}/categories/${categoryToUpdate?.id}`
+          `/api/blogs/${mikeBlog1Address}/categories/${hobbyCategoryInMikeBlog1.id}`
         )
         .set("x-auth", userMikeToken)
         .send({
@@ -133,12 +130,9 @@ describe("Test category routers", () => {
     });
 
     test("Should not be able to update a category that user does not own", async () => {
-      const categoryToUpdate = await findCategoryByName(
-        hobbyCategoryInMikeBlog1.name
-      );
       const { body, status } = await request(app)
         .put(
-          `/api/blogs/${mikeBlog1Address}/categories/${categoryToUpdate?.id}`
+          `/api/blogs/${mikeBlog1Address}/categories/${hobbyCategoryInMikeBlog1.id}`
         )
         .set("x-auth", userJohnToken)
         .send({
@@ -148,6 +142,33 @@ describe("Test category routers", () => {
         });
       expect(status).toBe(403);
       expect(body.message).toMatch(BLOG.NO_ACCESS_TO_BLOG);
+    });
+
+    test("Should get not found error if category id does not exist", async () => {
+      const randomId = new mongoose.Types.ObjectId();
+      const { status } = await request(app)
+        .put(`/api/blogs/${mikeBlog1Address}/categories/${randomId}`)
+        .set("x-auth", userMikeToken)
+        .send({
+          category: {
+            name: "New",
+          },
+        });
+      expect(status).toBe(404);
+    });
+
+    test("Should get not found error if category id exists but in another blog", async () => {
+      const { status } = await request(app)
+        .put(
+          `/api/blogs/${mikeBlog2Address}/categories/${hobbyCategoryInMikeBlog1.id}`
+        )
+        .set("x-auth", userMikeToken)
+        .send({
+          category: {
+            name: "New",
+          },
+        });
+      expect(status).toBe(404);
     });
 
     test("Blog owner should be able to update a category", async () => {
@@ -174,6 +195,23 @@ describe("Test category routers", () => {
   });
 
   describe("DELETE /blogs/:address/categories/:categoryId", () => {
+    test("Should get not found error if category id does not exist", async () => {
+      const randomId = new mongoose.Types.ObjectId();
+      const { status } = await request(app)
+        .delete(`/api/blogs/${mikeBlog1Address}/categories/${randomId}`)
+        .set("x-auth", userMikeToken);
+      expect(status).toBe(404);
+    });
+
+    test("Should get not found error if category id exists but in another blog", async () => {
+      const { status } = await request(app)
+        .delete(
+          `/api/blogs/${mikeBlog2Address}/categories/${hobbyCategoryInMikeBlog1.id}`
+        )
+        .set("x-auth", userMikeToken);
+      expect(status).toBe(404);
+    });
+
     test("Should not be able to delete a category that user does not own", async () => {
       const categoryToDelete = await findCategoryByName(
         hobbyCategoryInMikeBlog1.name

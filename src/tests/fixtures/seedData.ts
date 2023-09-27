@@ -71,6 +71,12 @@ export const seedData = async () => {
     blogId: newMikeBlog1.id,
   });
 
+  // Create tags for blog mikeBlog2
+  const aiTag = await createTag({
+    name: "AI",
+    blogId: newMikeBlog2.id,
+  });
+
   const newArticle = await createArticle({
     title: "My first article",
     content: "This is my first article.",
@@ -110,6 +116,7 @@ export const seedData = async () => {
     ideaTagInMikeBlog1: ideaTag,
     techTagInMikeBlog1: techTag,
     lifeTagInMikeBlog1: lifeTag,
+    aiTagInMikeBlog2: aiTag,
     articleInMikeBlog1: newArticle,
     commentInMikeBlog1: newComment,
   };
