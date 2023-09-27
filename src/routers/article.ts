@@ -3,7 +3,7 @@ import { ArticleData, ArticlePostData } from "../dtos/article";
 import {
   createArticle,
   readArticleById,
-  readArticlesByBlogId,
+  readArticles,
   updateArticle,
 } from "../repositories/article";
 import authenticate from "../middleware/authenticate";
@@ -24,8 +24,7 @@ router.get(
   async (req: Request, res: Response<ArticleResponse>, next: NextFunction) => {
     const { blog } = req;
     try {
-      if (!blog) return res.json({ articles: [] });
-      const articles = await readArticlesByBlogId(blog.id);
+      const articles = await readArticles(blog?.id);
       res.json({ articles });
     } catch (err: any) {
       next(err);
@@ -92,9 +91,7 @@ router.put(
       const { blog } = req;
       const { articleId } = req.params;
       const { article } = req.body;
-      const updatedArticle = await updateArticle(articleId, article, {
-        blogId: blog?.id,
-      });
+      const updatedArticle = await updateArticle(articleId, article, blog?.id);
       if (!updatedArticle) return res.status(404).send();
       res.json({ article: updatedArticle });
     } catch (err: any) {
