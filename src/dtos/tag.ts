@@ -15,3 +15,5 @@ export type TagData = {
   createdAt: ITag["createdAt"];
   updatedAt: ITag["updatedAt"];
 };
+
+export type TagPopulatedData = Pick<TagData, "id" | "name">;

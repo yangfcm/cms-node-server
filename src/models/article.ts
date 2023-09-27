@@ -96,9 +96,32 @@ articleSchema.methods.mapToArticleData = function (): ArticleData {
             title: article.blogId.title,
             address: article.blogId.address,
           },
-    userId: article.userId,
-    categoryId: article.categoryId,
-    tagIds: article.tagIds,
+    user:
+      typeof article.userId === "string"
+        ? article.userId
+        : {
+            id: article.userId._id?.toString(),
+            username: article.userId.username,
+            nickname: article.userId.nickname,
+            biography: article.userId.biography,
+            avatar: article.userId.avatar,
+          },
+    category:
+      typeof article.categoryId === "string"
+        ? article.categoryId
+        : {
+            id: article.categoryId._id?.toString(),
+            name: article.categoryId.name,
+            description: article.categoryId.description,
+          },
+    tags: article.tagIds.map((t: any) =>
+      typeof t === "string"
+        ? t
+        : {
+            id: t._id?.toString(),
+            name: t.name,
+          }
+    ),
   };
 };
 

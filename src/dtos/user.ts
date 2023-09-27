@@ -29,3 +29,8 @@ export type UserData = {
     address: string;
   }[];
 };
+
+export type UserPopulatedData = Pick<
+  UserData,
+  "id" | "username" | "nickname" | "biography" | "avatar"
+>;

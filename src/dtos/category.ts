@@ -17,3 +17,8 @@ export type CategoryData = {
   createdAt: ICategory["createdAt"];
   updatedAt: ICategory["updatedAt"];
 };
+
+export type CategoryPopulatedData = Pick<
+  CategoryData,
+  "id" | "name" | "description"
+>;

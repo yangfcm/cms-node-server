@@ -1,5 +1,8 @@
 import { IArticle } from "../models/article";
 import { BlogPopulatedData } from "./blog";
+import { CategoryPopulatedData } from "./category";
+import { TagPopulatedData } from "./tag";
+import { UserPopulatedData } from "./user";
 
 export type ArticlePostData = {
   title: IArticle["title"];
@@ -24,7 +27,7 @@ export type ArticleData = {
   status: IArticle["status"];
   isTop: IArticle["isTop"];
   blog: BlogPopulatedData | IArticle["blogId"];
-  userId: IArticle["userId"];
-  categoryId: IArticle["categoryId"];
-  tagIds: IArticle["tagIds"];
+  user: UserPopulatedData | IArticle["userId"];
+  category: CategoryPopulatedData | IArticle["categoryId"];
+  tags: TagPopulatedData[] | IArticle["tagIds"];
 };
