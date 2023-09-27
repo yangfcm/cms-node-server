@@ -88,7 +88,14 @@ articleSchema.methods.mapToArticleData = function (): ArticleData {
     featuredImage: article.featuredImage,
     status: article.status,
     isTop: article.isTop,
-    blogId: article.blogId,
+    blog:
+      typeof article.blogId === "string"
+        ? article.blogId
+        : {
+            id: article.blogId._id?.toString(),
+            title: article.blogId.title,
+            address: article.blogId.address,
+          },
     userId: article.userId,
     categoryId: article.categoryId,
     tagIds: article.tagIds,

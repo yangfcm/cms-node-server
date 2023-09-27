@@ -1,4 +1,5 @@
 import { IArticle } from "../models/article";
+import { BlogPopulatedData } from "./blog";
 
 export type ArticlePostData = {
   title: IArticle["title"];
@@ -22,7 +23,7 @@ export type ArticleData = {
   featuredImage: IArticle["featuredImage"];
   status: IArticle["status"];
   isTop: IArticle["isTop"];
-  blogId: IArticle["blogId"];
+  blog: BlogPopulatedData | IArticle["blogId"];
   userId: IArticle["userId"];
   categoryId: IArticle["categoryId"];
   tagIds: IArticle["tagIds"];

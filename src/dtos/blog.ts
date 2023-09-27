@@ -16,3 +16,5 @@ export type BlogData = {
   address: IBlog["address"];
   userId: IBlog["userId"];
 };
+
+export type BlogPopulatedData = Pick<BlogData, "id" | "title" | "address">;

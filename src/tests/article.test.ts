@@ -20,14 +20,16 @@ describe("Test article routers", () => {
         body: { articles },
       } = await request(app).get(`/api/blogs/${mikeBlog1Address}/articles`);
 
-      // console.log("==================", articles);
+      console.log("==================", articles);
       expect(articles.length).toBe(2);
       expect(articles[0]).toMatchObject({
+        id: article1InMikeBlog1.id,
         title: article1InMikeBlog1.title,
         content: article1InMikeBlog1.content,
         status: article1InMikeBlog1.status,
         isTop: article1InMikeBlog1.isTop,
       });
+      expect(mikeBlog1).toMatchObject(articles[0].blog);
     });
   });
 
