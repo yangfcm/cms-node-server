@@ -174,10 +174,10 @@ export const seedData = async () => {
     article1InMikeBlog1: article1,
     article2InMikeBlog1: article2,
     article3InMikeBlog2: article3,
-    commen1ForArticle1: newComment1ForArticle1,
-    commen2ForArticle1: newComment2ForArticle1,
-    commen1ForArticle3: newComment1ForArticle3,
-    commen2ForArticle3: newComment1ForArticle3,
+    comment1ForArticle1: newComment1ForArticle1,
+    comment2ForArticle1: newComment2ForArticle1,
+    comment1ForArticle3: newComment1ForArticle3,
+    comment2ForArticle3: newComment2ForArticle3,
   };
 };
 

@@ -88,7 +88,7 @@ router.get(
       const { blog } = req;
       let comments: CommentData[] = [];
       if (articleId) {
-        comments = await readCommentsByArticleId(articleId);
+        comments = await readCommentsByArticleId(articleId, blog?.id);
         return res.json({ comments });
       }
       comments = await readCommentsByBlogId(blog?.id);
@@ -115,9 +115,10 @@ router.put(
     next: NextFunction
   ) => {
     try {
+      const { blog } = req;
       const { commentId } = req.params;
       const { comment } = req.body;
-      const updatedComment = await updateComment(commentId, comment);
+      const updatedComment = await updateComment(commentId, comment, blog?.id);
       if (!updatedComment) return res.status(404).send();
       res.json({ comment: updatedComment });
     } catch (err) {
@@ -138,7 +139,11 @@ router.delete(
     next: NextFunction
   ) => {
     try {
-      const deletedComment = await deleteComment(req.params.commentId);
+      const { blog } = req;
+      const deletedComment = await deleteComment(
+        req.params.commentId,
+        blog?.id
+      );
       if (!deletedComment) return res.status(404).send();
       res.json({ comment: deletedComment });
     } catch (err: any) {
