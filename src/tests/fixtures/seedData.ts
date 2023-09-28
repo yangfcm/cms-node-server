@@ -112,7 +112,7 @@ export const seedData = async () => {
   const article3 = await createArticle({
     title: "My article for another blog",
     content: "This is my second for another blog - newMikeBlog2",
-    status: ArticleStatus.PUBLISHED,
+    status: ArticleStatus.DRAFT,
     categoryId: newDevCategory.id,
     tagIds: [aiTag.id],
     blogId: newMikeBlog2.id,

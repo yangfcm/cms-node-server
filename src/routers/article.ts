@@ -40,8 +40,9 @@ router.get(
     next: NextFunction
   ) => {
     try {
+      const { blog } = req;
       const { articleId } = req.params;
-      const article = await readArticleById(articleId);
+      const article = await readArticleById(articleId, blog?.id);
       if (!article) return res.status(404).send();
       res.json({
         article,
