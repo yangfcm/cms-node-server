@@ -61,13 +61,14 @@ const articleSchema = new mongoose.Schema<IArticle>(
     },
     categoryId: {
       type: String,
-      required: true,
+      // required: true,
       ref: "Category",
+      default: "",
     },
     tagIds: {
       type: [String],
       ref: "Tag",
-      required: true,
+      // required: true,
       default: [],
     },
   },
