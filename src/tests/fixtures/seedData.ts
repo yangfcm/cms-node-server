@@ -51,11 +51,13 @@ export const seedData = async () => {
 
   // Create categories for blog mikeBlog2 for testing deletion and updating.
   const newDevCategory = await createCategory({
+    // To be deleted for testing.
     ...devCategory,
     blogId: newMikeBlog2.id,
   });
 
   const newOperationCategory = await createCategory({
+    // To be updated for testing.
     name: "Operation",
     description: "Something about operation",
     blogId: newMikeBlog2.id,
@@ -79,11 +81,13 @@ export const seedData = async () => {
 
   // Create tags for blog mikeBlog2 for testing deletion and updating.
   const aiTag = await createTag({
+    // To be deleted for testing.
     name: "AI",
     blogId: newMikeBlog2.id,
   });
 
   const dataTag = await createTag({
+    // To be updated for testing.
     name: "data",
     blogId: newMikeBlog2.id,
   });
@@ -113,8 +117,8 @@ export const seedData = async () => {
     title: "My article for another blog",
     content: "This is my second for another blog - newMikeBlog2",
     status: ArticleStatus.DRAFT,
-    categoryId: newDevCategory.id,
-    tagIds: [aiTag.id],
+    categoryId: newOperationCategory.id,
+    tagIds: [dataTag.id],
     blogId: newMikeBlog2.id,
     userId: newUserMike.id,
   });
