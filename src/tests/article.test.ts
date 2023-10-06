@@ -15,7 +15,6 @@ describe("Test article routers", () => {
     ideaTagInMikeBlog1,
     lifeTagInMikeBlog1,
     userMike,
-    userJohn,
     userMikeToken,
     userJohnToken,
   } = globalThis.__TESTDATA__;

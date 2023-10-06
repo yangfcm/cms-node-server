@@ -1,6 +1,8 @@
 import request from "supertest";
 import mongoose from "mongoose";
 import app from "../app";
+import { BLOG } from "../settings/constants";
+import { CommentStatus } from "../models/comment";
 
 describe("Test comment routers", () => {
   const {
@@ -100,17 +102,111 @@ describe("Test comment routers", () => {
   });
 
   describe("PUT /blogs/:address/comments/:commentId", () => {
-    test.todo("should not update a comment that does not exist");
-    test.todo("should not update a comment that exists but in another blog");
-    test.todo("should not update a comment in a blog that user does not own");
-    test.todo("should update a comment's content");
-    test.todo("should update a comment's status and isTop");
+    test("should not update a comment that does not exist", async () => {
+      const { status } = await request(app)
+        .put(`/api/blogs/${mikeBlog1Address}/comments/${randomId}`)
+        .set("x-auth", userMikeToken)
+        .send({
+          comment: {
+            content: "updated",
+          },
+        });
+      expect(status).toBe(404);
+    });
+    test("should not update a comment that exists but in another blog", async () => {
+      const { status } = await request(app)
+        .put(
+          `/api/blogs/${mikeBlog1Address}/comments/${comment1ForArticle3.id}`
+        )
+        .set("x-auth", userMikeToken)
+        .send({
+          comment: {
+            content: "updated",
+          },
+        });
+      expect(status).toBe(404);
+    });
+    test("should not update a comment in a blog that user does not own", async () => {
+      const { body, status } = await request(app)
+        .put(
+          `/api/blogs/${mikeBlog2Address}/comments/${comment1ForArticle3.id}`
+        )
+        .set("x-auth", userJohnToken)
+        .send({
+          comment: {
+            content: "updated",
+          },
+        });
+      expect(status).toBe(403);
+      expect(body.message).toContain(BLOG.NO_ACCESS_TO_BLOG);
+    });
+    test("should update a comment's content", async () => {
+      const {
+        body: { comment },
+      } = await request(app)
+        .put(
+          `/api/blogs/${mikeBlog2Address}/comments/${comment1ForArticle3.id}`
+        )
+        .set("x-auth", userMikeToken)
+        .send({
+          comment: {
+            content: "updated",
+          },
+        });
+      expect(comment.content).toBe("updated");
+    });
+    test("should update a comment's status and isTop", async () => {
+      const {
+        body: { comment },
+      } = await request(app)
+        .put(
+          `/api/blogs/${mikeBlog2Address}/comments/${comment1ForArticle3.id}`
+        )
+        .set("x-auth", userMikeToken)
+        .send({
+          comment: {
+            status: CommentStatus.PENDING,
+            isTop: true,
+          },
+        });
+      expect(comment.status).toBe(CommentStatus.PENDING);
+      expect(comment.isTop).toBe(true);
+    });
   });
 
   describe("DELETE /blogs/:address/comments/:commentId", () => {
-    test.todo("should not delete a comment that does not exist");
-    test.todo("should not delete a comment that exists but in another blog");
-    test.todo("should not delete a comment in a blog that user does not own");
-    test.todo("blog owner should delete a comment");
+    test("should not delete a comment that does not exist", async () => {
+      const { status } = await request(app)
+        .delete(`/api/blogs/${mikeBlog2Address}/comments/${randomId}`)
+        .set("x-auth", userMikeToken);
+      expect(status).toBe(404);
+    });
+    test("should not delete a comment that exists but in another blog", async () => {
+      const { status } = await request(app)
+        .delete(
+          `/api/blogs/${mikeBlog1Address}/comments/${comment2ForArticle3.id}`
+        )
+        .set("x-auth", userMikeToken);
+      expect(status).toBe(404);
+    });
+    test("should not delete a comment in a blog that user does not own", async () => {
+      const { body, status } = await request(app)
+        .delete(
+          `/api/blogs/${mikeBlog2Address}/comments/${comment2ForArticle3.id}`
+        )
+        .set("x-auth", userJohnToken);
+      expect(status).toBe(403);
+      expect(body.message).toBe(BLOG.NO_ACCESS_TO_BLOG);
+    });
+    test("blog owner should delete a comment", async () => {
+      const {
+        body: { comment },
+      } = await request(app)
+        .delete(
+          `/api/blogs/${mikeBlog2Address}/comments/${comment2ForArticle3.id}`
+        )
+        .set("x-auth", userMikeToken);
+      expect(comment).toMatchObject(comment2ForArticle3);
+    });
   });
 });
