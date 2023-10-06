@@ -57,13 +57,14 @@ router.post(
 router.get(
   "/:commentId",
   async (
-    req: Request<{ commentId: string }>,
+    req: Request<{ commentId: string }, any, any, { articleId?: string }>,
     res: Response<CommentResponse>,
     next: NextFunction
   ) => {
     try {
       const { commentId } = req.params;
-      const comment = await readCommentById(commentId);
+      const { blog } = req;
+      const comment = await readCommentById(commentId, blog?.id);
       if (!comment) return res.status(404).send();
       res.json({ comment });
     } catch (err: any) {
