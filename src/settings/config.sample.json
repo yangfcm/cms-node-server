@@ -1,0 +1,8 @@
+{
+  "development": {
+    "MONGODB_CONNECTION_URI": "mongodb+srv://[username]:[password]@[connection-string]/[dev-db-name]?retryWrites=true&w=majority"
+  },
+  "test": {
+    "MONGODB_CONNECTION_URI": "mongodb+srv://[username]:[password]@[connection-string]/[test-db-name]?retryWrites=true&w=majority"
+  }
+}
