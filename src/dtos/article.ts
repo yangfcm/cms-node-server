@@ -30,4 +30,6 @@ export type ArticleData = {
   user: UserPopulatedData | IArticle["userId"];
   category: CategoryPopulatedData | IArticle["categoryId"];
   tags: TagPopulatedData[] | IArticle["tagIds"];
+  createdAt: IArticle["createdAt"];
+  updatedAt: IArticle["updatedAt"];
 };

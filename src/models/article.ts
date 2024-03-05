@@ -123,6 +123,8 @@ articleSchema.methods.mapToArticleData = function (): ArticleData {
             name: t.name,
           }
     ),
+    createdAt: article.createdAt,
+    updatedAt: article.updatedAt,
   };
 };
 
