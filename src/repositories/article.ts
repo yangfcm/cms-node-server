@@ -11,6 +11,18 @@ export const createArticle = async (
 ): Promise<ArticleData> => {
   const newArticle = new Article(article);
   await newArticle.save();
+  await Article.populate(newArticle, [
+    { path: "blogId", select: "_id title address" },
+    { path: "userId", select: "_id username nickname biography avatar" },
+    {
+      path: "categoryId",
+      select: "_id name description",
+    },
+    {
+      path: "tagIds",
+      select: "_id, name",
+    },
+  ]);
   return newArticle.mapToArticleData();
 };
 

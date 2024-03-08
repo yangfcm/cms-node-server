@@ -108,11 +108,26 @@ describe("Test article routers", () => {
         title: "A brand new article",
         content: "Here is my new ideas.",
         categoryId: techCategoryInMikeBlog1.id,
+        tagIds: [ideaTagInMikeBlog1.id, lifeTagInMikeBlog1.id],
       };
       const expectedNewArticle = {
         title: newArticle.title,
         content: newArticle.content,
-        category: newArticle.categoryId,
+        category: {
+          id: techCategoryInMikeBlog1.id,
+          name: techCategoryInMikeBlog1.name,
+          description: techCategoryInMikeBlog1.description,
+        },
+        tags: [
+          {
+            id: ideaTagInMikeBlog1.id,
+            name: ideaTagInMikeBlog1.name,
+          },
+          {
+            id: lifeTagInMikeBlog1.id,
+            name: lifeTagInMikeBlog1.name,
+          },
+        ],
       };
       const { body } = await request(app)
         .post(`/api/blogs/${mikeBlog1Address}/articles`)
