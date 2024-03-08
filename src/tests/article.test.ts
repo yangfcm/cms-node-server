@@ -107,12 +107,18 @@ describe("Test article routers", () => {
       const newArticle = {
         title: "A brand new article",
         content: "Here is my new ideas.",
+        categoryId: techCategoryInMikeBlog1.id,
+      };
+      const expectedNewArticle = {
+        title: newArticle.title,
+        content: newArticle.content,
+        category: newArticle.categoryId,
       };
       const { body } = await request(app)
         .post(`/api/blogs/${mikeBlog1Address}/articles`)
         .set("x-auth", userMikeToken)
         .send({ article: newArticle });
-      expect(body.article).toMatchObject(newArticle);
+      expect(body.article).toMatchObject(expectedNewArticle);
     });
   });
 
