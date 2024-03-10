@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { ArticleData, ArticlePostData } from "../dtos/article";
 import {
   createArticle,
+  deleteArticle,
   readArticleById,
   readArticles,
   updateArticle,
@@ -95,6 +96,26 @@ router.put(
       const updatedArticle = await updateArticle(articleId, article, blog?.id);
       if (!updatedArticle) return res.status(404).send();
       res.json({ article: updatedArticle });
+    } catch (err: any) {
+      next(err);
+    }
+  }
+);
+
+router.delete(
+  "/:articleId",
+  [authenticate, userOwnsBlog],
+  async (
+    req: Request<{ address?: string; blogId?: string; articleId: string }>,
+    res: Response<ArticleResponse>,
+    next: NextFunction
+  ) => {
+    try {
+      const { blog } = req;
+      const { articleId } = req.params;
+      const deletedArticle = await deleteArticle(articleId, blog?.id);
+      if (!deletedArticle) return res.status(404).send();
+      res.json({ article: deletedArticle });
     } catch (err: any) {
       next(err);
     }
