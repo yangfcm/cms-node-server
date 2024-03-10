@@ -191,6 +191,7 @@ describe("Test article routers", () => {
         .send({
           article: newArticle,
         });
+      expect(article.id).toBe(article3InMikeBlog2.id);
       expect(article.title).toBe(newArticle.title);
       expect(article.content).toBe(newArticle.content);
     });
@@ -208,8 +209,50 @@ describe("Test article routers", () => {
             isTop: true,
           },
         });
+      expect(article.id).toBe(article3InMikeBlog2.id);
       expect(article.status).toBe(ArticleStatus.PUBLISHED);
       expect(article.isTop).toBe(true);
+    });
+  });
+
+  describe("DELETE /blogs/:address/articles/:articleId", () => {
+    test("Should get not found error if article id does not exist", async () => {
+      const { status } = await request(app)
+        .delete(`/api/blogs/${mikeBlog2Address}/articles/${randomId}`)
+        .set("x-auth", userMikeToken);
+      expect(status).toBe(404);
+    });
+
+    test("Should get not found error if article id exists but in another blog", async () => {
+      const { status } = await request(app)
+        .delete(
+          `/api/blogs/${mikeBlog1Address}/articles/${article3InMikeBlog2.id}`
+        )
+        .set("x-auth", userMikeToken);
+      expect(status).toBe(404);
+    });
+
+    test("Should not be able to delete an article that user does not own", async () => {
+      const { body, status } = await request(app)
+        .delete(
+          `/api/blogs/${mikeBlog2Address}/articles/${article3InMikeBlog2.id}`
+        )
+        .set("x-auth", userJohnToken);
+      expect(status).toBe(403);
+      expect(body.message).toContain(BLOG.NO_ACCESS_TO_BLOG);
+    });
+
+    test("Blog owner should be able to delete an article", async () => {
+      const {
+        status,
+        body: { article },
+      } = await request(app)
+        .delete(
+          `/api/blogs/${mikeBlog2Address}/articles/${article3InMikeBlog2.id}`
+        )
+        .set("x-auth", userMikeToken);
+      expect(article.id).toBe(article3InMikeBlog2.id);
+      expect(status).toBe(200);
     });
   });
 });
