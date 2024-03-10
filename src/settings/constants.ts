@@ -50,6 +50,7 @@ export const ARTICLE = {
   TITLE_REQUIRED: "Article title is required.",
   TITLE_TOO_LONG: "Article title is too long",
   MAX_TITLE_LENGTH: 200,
+  NOT_FOUND: "Article not found.",
 };
 
 export const TAG = {

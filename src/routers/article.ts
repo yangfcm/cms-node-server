@@ -9,6 +9,8 @@ import {
 } from "../repositories/article";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
+import { ARTICLE } from "../settings/constants";
+import { ErrorResponse } from "../settings/types";
 
 type ArticleResponse =
   | {
@@ -107,14 +109,15 @@ router.delete(
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ address?: string; blogId?: string; articleId: string }>,
-    res: Response<ArticleResponse>,
+    res: Response<ArticleResponse | ErrorResponse>,
     next: NextFunction
   ) => {
     try {
       const { blog } = req;
       const { articleId } = req.params;
       const deletedArticle = await deleteArticle(articleId, blog?.id);
-      if (!deletedArticle) return res.status(404).send();
+      if (!deletedArticle)
+        return res.status(404).send({ message: ARTICLE.NOT_FOUND });
       res.json({ article: deletedArticle });
     } catch (err: any) {
       next(err);
