@@ -106,6 +106,10 @@ export const deleteArticle = async (
 ): Promise<ArticleData | null> => {
   const filter: { _id: string; blogId?: string } = { _id: id };
   if (blogId) filter.blogId = blogId;
-  const article = await Article.findOneAndDelete(filter);
+  const article = await Article.findOneAndDelete(filter)
+    .populate("blogId", "_id title address")
+    .populate("userId", "_id email username nickname biography")
+    .populate("categoryId", "_id name description")
+    .populate("tagIds", "_id name");
   return article?.mapToArticleData() || null;
 };

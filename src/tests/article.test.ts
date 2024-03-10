@@ -251,6 +251,7 @@ describe("Test article routers", () => {
           `/api/blogs/${mikeBlog2Address}/articles/${article3InMikeBlog2.id}`
         )
         .set("x-auth", userMikeToken);
+      console.log(article);
       expect(article.id).toBe(article3InMikeBlog2.id);
       expect(status).toBe(200);
     });
