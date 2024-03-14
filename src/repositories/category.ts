@@ -3,6 +3,7 @@ import {
   CategoryNewData,
   CategoryData,
 } from "../dtos/category";
+import Article from "../models/article";
 import Category from "../models/category";
 
 /**
@@ -108,4 +109,12 @@ export const deleteCategory = async (
   if (blogId) filter.blogId = blogId;
   const category = await Category.findOneAndDelete(filter);
   return category?.mapToCategoryData() || null;
+};
+
+export const categoryHasArticlesReferenced = async (
+  id: string,
+  blogId: string
+): Promise<boolean> => {
+  const count = await Article.countDocuments({ categoryId: id, blogId });
+  return count >= 1;
 };

@@ -7,6 +7,7 @@ import {
   readCategories,
   updateCategory,
   readCategoryById,
+  categoryHasArticlesReferenced,
 } from "../repositories/category";
 import { CATEGORY } from "../settings/constants";
 import authenticate from "../middleware/authenticate";
@@ -131,11 +132,20 @@ router.delete(
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ address?: string; blogId?: string; categoryId: string }>,
-    res: Response<CategoryResponse>,
+    res: Response<CategoryResponse | APIError>,
     next: NextFunction
   ) => {
     try {
       const { blog } = req;
+      const { categoryId } = req.params;
+      const isCategoryReferencedByArticle = await categoryHasArticlesReferenced(
+        categoryId,
+        blog?.id
+      );
+      if (isCategoryReferencedByArticle)
+        return res.status(400).json({
+          message: CATEGORY.CATEGORY_REFERENCED_BY_ARTICLE,
+        });
       const deletedCategory = await deleteCategory(
         req.params.categoryId,
         blog?.id

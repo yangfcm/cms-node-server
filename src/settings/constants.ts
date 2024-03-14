@@ -13,6 +13,8 @@ export const CATEGORY = {
   MAX_DESCRIPTION_LENGTH: 100,
   DESCRIPTION_TOO_LONG: "Category description is too long.",
   NAME_IN_USE: "The category already exists.",
+  CATEGORY_REFERENCED_BY_ARTICLE:
+    "There is one or more articles under this category",
 };
 
 export const USER = {
