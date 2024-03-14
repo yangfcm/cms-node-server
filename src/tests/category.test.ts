@@ -218,6 +218,16 @@ describe("Test category routers", () => {
       expect(body.message).toMatch(BLOG.NO_ACCESS_TO_BLOG);
     });
 
+    test("Should not be able to delete a category if it's referenced by articles", async () => {
+      const { body, status } = await request(app)
+        .delete(
+          `/api/blogs/${mikeBlog1Address}/categories/${techCategoryInMikeBlog1.id}`
+        )
+        .set("x-auth", userMikeToken);
+      expect(status).toBe(400);
+      expect(body.message).toMatch(CATEGORY.REFERENCED_BY_ARTICLE);
+    });
+
     test("Blog owner should be able to delete a category", async () => {
       const { body } = await request(app)
         .delete(
