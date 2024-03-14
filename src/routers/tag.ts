@@ -9,6 +9,7 @@ import {
   readTags,
   readTagById,
   updateTag,
+  tagHasArticlesReferenced,
 } from "../repositories/tag";
 import { TAG } from "../settings/constants";
 import { APIError } from "../utils/parseError";
@@ -142,12 +143,22 @@ router.delete(
   [authenticate, userOwnsBlog],
   async (
     req: Request<{ address?: string; blogId?: string; tagId: string }>,
-    res: Response<TagResponse>,
+    res: Response<TagResponse | APIError>,
     next: NextFunction
   ) => {
     try {
       const { blog } = req;
-      const deletedTag = await deleteTag(req.params.tagId, blog?.id);
+      const { tagId } = req.params;
+      const isTagReferencedByArticle = await tagHasArticlesReferenced(
+        tagId,
+        blog?.id
+      );
+      if (isTagReferencedByArticle) {
+        return res.status(400).json({
+          message: TAG.REFERENCED_BY_ARTICLE,
+        });
+      }
+      const deletedTag = await deleteTag(tagId, blog?.id);
       if (!deletedTag) return res.status(404).send();
       res.json({ tag: deletedTag });
     } catch (err: any) {

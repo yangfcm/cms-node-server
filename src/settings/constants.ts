@@ -13,8 +13,7 @@ export const CATEGORY = {
   MAX_DESCRIPTION_LENGTH: 100,
   DESCRIPTION_TOO_LONG: "Category description is too long.",
   NAME_IN_USE: "The category already exists.",
-  CATEGORY_REFERENCED_BY_ARTICLE:
-    "There is one or more articles under this category",
+  REFERENCED_BY_ARTICLE: "There is one or more articles under this category",
 };
 
 export const USER = {
@@ -60,6 +59,7 @@ export const TAG = {
   MAX_NAME_LENGTH: 20,
   NAME_TOO_LONG: "Tag name is too long.",
   NAME_IN_USE: "The tag already exists.",
+  REFERENCED_BY_ARTICLE: "There is one or more articles using this tag",
 };
 
 export const COMMENT = {

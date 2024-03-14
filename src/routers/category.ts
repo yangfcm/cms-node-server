@@ -144,7 +144,7 @@ router.delete(
       );
       if (isCategoryReferencedByArticle)
         return res.status(400).json({
-          message: CATEGORY.CATEGORY_REFERENCED_BY_ARTICLE,
+          message: CATEGORY.REFERENCED_BY_ARTICLE,
         });
       const deletedCategory = await deleteCategory(
         req.params.categoryId,

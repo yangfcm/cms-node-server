@@ -1,4 +1,5 @@
 import { TagPostData, TagNewData, TagData } from "../dtos/tag";
+import Article from "../models/article";
 import Tag from "../models/tag";
 
 /**
@@ -100,4 +101,15 @@ export const findTagByName = async (
   if (blogId) filter.blogId = blogId;
   const tag = await Tag.findOne(filter);
   return tag?.mapToTagData() || null;
+};
+
+export const tagHasArticlesReferenced = async (
+  id: string,
+  blogId: string
+): Promise<boolean> => {
+  const count = await Article.countDocuments({
+    blogId,
+    tagIds: { $in: [id] },
+  });
+  return count >= 1;
 };
