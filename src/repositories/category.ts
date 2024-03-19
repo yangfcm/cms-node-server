@@ -110,11 +110,3 @@ export const deleteCategory = async (
   const category = await Category.findOneAndDelete(filter);
   return category?.mapToCategoryData() || null;
 };
-
-export const categoryHasArticlesReferenced = async (
-  id: string,
-  blogId: string
-): Promise<boolean> => {
-  const count = await Article.countDocuments({ categoryId: id, blogId });
-  return count >= 1;
-};

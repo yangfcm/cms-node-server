@@ -113,3 +113,19 @@ export const deleteArticle = async (
     .populate("tagIds", "_id name");
   return article?.mapToArticleData() || null;
 };
+
+/**
+ * Get how many articles are under a category.
+ * @param id
+ * @param blogId
+ * @returns The number of articles under a category.
+ */
+export const countArticlesBycategoryId = async (
+  categoryId: string,
+  blogId?: string
+): Promise<number> => {
+  const filter: { categoryId: string; blogId?: string } = { categoryId };
+  if (blogId) filter.blogId = blogId;
+  const count = await Article.countDocuments(filter);
+  return count;
+};

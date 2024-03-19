@@ -7,8 +7,8 @@ import {
   readCategories,
   updateCategory,
   readCategoryById,
-  categoryHasArticlesReferenced,
 } from "../repositories/category";
+import { countArticlesBycategoryId } from "../repositories/article";
 import { CATEGORY } from "../settings/constants";
 import authenticate from "../middleware/authenticate";
 import userOwnsBlog from "../middleware/userOwnsBlog";
@@ -138,11 +138,11 @@ router.delete(
     try {
       const { blog } = req;
       const { categoryId } = req.params;
-      const isCategoryReferencedByArticle = await categoryHasArticlesReferenced(
+      const numberOfArticlesInCategory = await countArticlesBycategoryId(
         categoryId,
         blog?.id
       );
-      if (isCategoryReferencedByArticle)
+      if (numberOfArticlesInCategory > 0)
         return res.status(400).json({
           message: CATEGORY.REFERENCED_BY_ARTICLE,
         });
