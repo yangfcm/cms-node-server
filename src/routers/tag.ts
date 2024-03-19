@@ -13,6 +13,7 @@ import {
 } from "../repositories/tag";
 import { TAG } from "../settings/constants";
 import { APIError } from "../utils/parseError";
+import { countArticlesByTagId } from "../repositories/article";
 
 type TagResponse =
   | {
@@ -149,11 +150,8 @@ router.delete(
     try {
       const { blog } = req;
       const { tagId } = req.params;
-      const isTagReferencedByArticle = await tagHasArticlesReferenced(
-        tagId,
-        blog?.id
-      );
-      if (isTagReferencedByArticle) {
+      const numberOfArticlesInTag = await countArticlesByTagId(tagId, blog?.id);
+      if (numberOfArticlesInTag > 0) {
         return res.status(400).json({
           message: TAG.REFERENCED_BY_ARTICLE,
         });

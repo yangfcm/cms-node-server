@@ -116,7 +116,7 @@ export const deleteArticle = async (
 
 /**
  * Get how many articles are under a category.
- * @param id
+ * @param categoryId
  * @param blogId
  * @returns The number of articles under a category.
  */
@@ -125,6 +125,22 @@ export const countArticlesBycategoryId = async (
   blogId?: string
 ): Promise<number> => {
   const filter: { categoryId: string; blogId?: string } = { categoryId };
+  if (blogId) filter.blogId = blogId;
+  const count = await Article.countDocuments(filter);
+  return count;
+};
+
+/**
+ * Get how many articles are under a tag.
+ * @param tagId
+ * @param blogId
+ * @returns The number of articles under a tag.
+ */
+export const countArticlesByTagId = async (
+  tagId: string,
+  blogId?: string
+): Promise<number> => {
+  const filter: { tagId: string; blogId?: string } = { tagId };
   if (blogId) filter.blogId = blogId;
   const count = await Article.countDocuments(filter);
   return count;
