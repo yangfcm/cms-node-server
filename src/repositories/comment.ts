@@ -106,3 +106,27 @@ export const deleteComment = async (
   const deletedComment = await Comment.findOneAndDelete(filter);
   return deletedComment?.mapToCommentData() || null;
 };
+
+/**
+ * Delete comments by blogId.
+ * @param blogId
+ * @returns The number of comments deleted.
+ */
+export const deleteCommentsByBlogId = async (
+  blogId: string
+): Promise<number> => {
+  const { deletedCount } = await Comment.deleteMany({ blogId });
+  return deletedCount;
+};
+
+/**
+ * Delete comments by articleId
+ * @param articleId
+ * @returns The number of comments deleted.
+ */
+export const deleteCommentsByArticleId = async (
+  articleId: string
+): Promise<number> => {
+  const { deletedCount } = await Comment.deleteMany({ articleId });
+  return deletedCount;
+};
